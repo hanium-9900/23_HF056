@@ -16,7 +16,7 @@
 
 ## 설치 및 실행
 
-``` bash
+```bash
 # node_modules 설치
 npm install
 
@@ -27,6 +27,7 @@ npm run dev
 <br>
 
 ## 레퍼런스
+
 - [React 공식 문서](https://react.dev/)
 - [Next.js 공식 문서](https://nextjs.org/docs)
 - [Next.js 공식 튜토리얼](https://nextjs.org/learn)
