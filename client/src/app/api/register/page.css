@@ -1,0 +1,12 @@
+input[type='text'],
+input[type='password'],
+input[type='number'],
+textarea {
+  @apply block w-full rounded border border-slate-300 bg-slate-50 py-2 px-4 transition-all outline-none;
+  @apply focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500 focus:outline-none;
+}
+
+select {
+  @apply inline-flex items-center rounded border border-slate-300 bg-slate-50 py-2 px-4 transition-all;
+  @apply focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500 focus:outline-none;
+}
