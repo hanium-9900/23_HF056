@@ -6,8 +6,13 @@
 
 ## 개발 환경
 
-- Node 18
-- NPM 8
+- Node `18`
+- NPM `8`
+
+## 기술 스택
+
+- Next `13` (typescript)
+- Tailwind CSS `3`
 
 ## 설치 및 실행
 
