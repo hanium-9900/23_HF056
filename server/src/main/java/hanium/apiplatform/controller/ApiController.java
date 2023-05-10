@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApiController {
 
     @PostMapping()
-    public void test(@RequestBody ApiRegisterForm apiRegisterForm) {
+    public void registerApi(@RequestBody ApiRegisterForm apiRegisterForm) {
         String title = apiRegisterForm.getTitle();
         String description = apiRegisterForm.getDescription();
         int price = apiRegisterForm.getPrice();
