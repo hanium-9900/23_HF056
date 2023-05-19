@@ -274,10 +274,7 @@ export default function Register() {
                     </div>
                   ))}
                   <div className="flex justify-end">
-                    <button
-                      className="rounded border-2 border-blue-500 bg-white-500 text-blue-500 py-3 px-6 transition-colors hover:bg-blue-500 hover:text-white"
-                      onClick={() => addHeader(apiIdx)}
-                    >
+                    <button className="btn btn-form-outline" onClick={() => addHeader(apiIdx)}>
                       헤더 추가
                     </button>
                   </div>
@@ -317,10 +314,7 @@ export default function Register() {
                     </div>
                   ))}
                   <div className="flex justify-end">
-                    <button
-                      className="rounded border-2 border-blue-500 bg-white-500 text-blue-500 py-3 px-6 transition-colors hover:bg-blue-500 hover:text-white"
-                      onClick={() => addParameter(apiIdx)}
-                    >
+                    <button className="btn btn-form-outline" onClick={() => addParameter(apiIdx)}>
                       파라미터 추가
                     </button>
                   </div>
@@ -360,10 +354,7 @@ export default function Register() {
                     </div>
                   ))}
                   <div className="flex justify-end">
-                    <button
-                      className="rounded border-2 border-blue-500 bg-white-500 text-blue-500 py-3 px-6 transition-colors hover:bg-blue-500 hover:text-white"
-                      onClick={() => addResponseParameter(apiIdx)}
-                    >
+                    <button className="btn btn-form-outline" onClick={() => addResponseParameter(apiIdx)}>
                       파라미터 추가
                     </button>
                   </div>
@@ -403,10 +394,7 @@ export default function Register() {
                     </div>
                   ))}
                   <div className="flex justify-end">
-                    <button
-                      className="rounded border-2 border-blue-500 bg-white-500 text-blue-500 py-3 px-6 transition-colors hover:bg-blue-500 hover:text-white"
-                      onClick={() => addErrorCode(apiIdx)}
-                    >
+                    <button className="btn btn-form-outline" onClick={() => addErrorCode(apiIdx)}>
                       에러 코드 추가
                     </button>
                   </div>
@@ -426,7 +414,7 @@ export default function Register() {
         </div>
 
         <div className="flex justify-end mb-12">
-          <button className="rounded bg-blue-500 text-white py-3 px-6" onClick={addApi}>
+          <button className="btn btn-form" onClick={addApi}>
             API 추가
           </button>
         </div>
@@ -434,8 +422,8 @@ export default function Register() {
         <hr className="mb-12" />
 
         <div className="flex justify-end">
-          <button className="rounded bg-blue-500 text-white py-3 px-6" onClick={submitForm}>
-            서비스 등록 (미구현)
+          <button className="btn btn-form" onClick={submitForm}>
+            서비스 등록
           </button>
         </div>
       </form>
