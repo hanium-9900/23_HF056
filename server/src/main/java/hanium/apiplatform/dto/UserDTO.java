@@ -1,6 +1,6 @@
 package hanium.apiplatform.dto;
 
-import hanium.apiplatform.entity.UserEntity;
+import hanium.apiplatform.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +11,7 @@ public class UserDTO {
     private String email;
     private String password;
 
-    public UserEntity toEntity() {
-        return new UserEntity(email, password);
+    public User toEntity() {
+        return new User(email, password);
     }
 }
