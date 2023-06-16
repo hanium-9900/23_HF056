@@ -1,12 +1,14 @@
-package hanium.apiplatform.data;
+package hanium.apiplatform.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ErrorCode {
+public class ParameterDTO {
 
     private String description;
     private String key;
+    private int required;
+
 }

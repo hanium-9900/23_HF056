@@ -1,11 +1,8 @@
 package hanium.apiplatform.controller;
 
-import hanium.apiplatform.data.Api;
-import hanium.apiplatform.data.ApiRegisterForm;
+import hanium.apiplatform.dto.ApiDTO;
+import hanium.apiplatform.dto.ApiRegisterFormDTO;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,12 +15,12 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 public class ApiController {
 
     @PostMapping()
-    public void registerApi(@RequestBody ApiRegisterForm apiRegisterForm) {
+    public void registerApi(@RequestBody ApiRegisterFormDTO apiRegisterForm) {
         String title = apiRegisterForm.getTitle();
         String description = apiRegisterForm.getDescription();
         int price = apiRegisterForm.getPrice();
         String key = apiRegisterForm.getKey();
-        ArrayList<Api> apis = apiRegisterForm.getApis();
+        ArrayList<ApiDTO> apis = apiRegisterForm.getApis();
 
         // apis는 배열이고, 요소에 접근하고 싶으면 인덱싱한 후 위에처럼 .get(...)으로 접근하면 됨
         // ex) apis.get(0).getPath()
