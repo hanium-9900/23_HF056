@@ -1,6 +1,7 @@
 package hanium.apiplatform.controller;
 
 import hanium.apiplatform.dto.UserDTO;
+import hanium.apiplatform.entity.UserEntity;
 import hanium.apiplatform.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,9 +18,8 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping()
-    public String save(@RequestBody UserDTO userDTO) {
-        userService.save(userDTO.getEmail(), userDTO.getPassword());
-        return "success";
+    @PostMapping("/signup")
+    public UserEntity signup(@RequestBody UserDTO userDTO) {
+        return userService.join(userDTO);
     }
 }
