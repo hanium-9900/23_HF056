@@ -10,5 +10,4 @@ public class ResponseParameterDTO {
     private String description;
     private String key;
     private int required;
-
 }
