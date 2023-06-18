@@ -16,7 +16,7 @@ export default function ApiRequestParametersInput({ onChange }: { onChange: (req
     }
 
     const updatedRequestParameters = [...requestParameters];
-    updatedRequestParameters.push({ key: '', description: '', required: false });
+    updatedRequestParameters.push({ key: '', type: 'string', description: '', required: false });
 
     setRequestParameters(updatedRequestParameters);
   }
@@ -47,6 +47,15 @@ export default function ApiRequestParametersInput({ onChange }: { onChange: (req
                 updateParameter(idx, { key: e.target.value });
               }}
               value={parameter.key}
+            />
+            <input
+              className="mr-3"
+              type="text"
+              placeholder="타입"
+              onChange={e => {
+                updateParameter(idx, { type: e.target.value });
+              }}
+              value={parameter.type}
             />
             <input
               type="text"
