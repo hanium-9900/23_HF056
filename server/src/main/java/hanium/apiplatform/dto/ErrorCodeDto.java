@@ -1,6 +1,5 @@
 package hanium.apiplatform.dto;
 
-import hanium.apiplatform.entity.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ErrorCodeDTO {
+public class ErrorCodeDto {
 
     private String description;
     private String key;

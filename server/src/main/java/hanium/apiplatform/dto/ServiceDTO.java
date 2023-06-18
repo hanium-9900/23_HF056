@@ -16,7 +16,7 @@ public class ServiceDTO {
     private String description;
     private int price;
     private String key;
-    private ArrayList<ApiDTO> apis = new ArrayList<>();
+    private ArrayList<ApiDto> apis = new ArrayList<>();
 
     public ServiceDTO(Service service) {
         setTitle(service.getTitle());
@@ -25,7 +25,7 @@ public class ServiceDTO {
         setKey(service.getKey());
 
         for (Api api : service.getApis()) {
-            apis.add(new ApiDTO(api));
+            apis.add(new ApiDto(api));
         }
     }
 }

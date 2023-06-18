@@ -11,25 +11,25 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ApiDTO {
+public class ApiDto {
 
     private String host;
     private String description;
     private String method;
     private String path;
-    private ArrayList<HeaderDTO> headers = new ArrayList<>();
-    private ArrayList<RequestParameterDTO> requestParameters = new ArrayList<>();
-    private ArrayList<ResponseParameterDTO> responseParameters = new ArrayList<>();
-    private ArrayList<ErrorCodeDTO> errorCodes = new ArrayList<>();
-
-    public ApiDTO(Api api) {
+    private ArrayList<HeaderDto> headers = new ArrayList<>();
+    private ArrayList<RequestParameterDto> requestParameters = new ArrayList<>();
+    private ArrayList<ResponseParameterDto> responseParameters = new ArrayList<>();
+    private ArrayList<ErrorCodeDto> errorCodes = new ArrayList<>();
+    
+    public ApiDto(Api api) {
         this.host = api.getHost();
         this.description = api.getDescription();
         this.method = api.getMethod();
         this.path = api.getPath();
 
         for (Header header : api.getHeaders()) {
-            HeaderDTO headerDTO = new HeaderDTO();
+            HeaderDto headerDTO = new HeaderDto();
             headerDTO.setDescription(header.getDescription());
             headerDTO.setKey(header.getKey());
             headerDTO.setRequired(header.getRequired());
@@ -42,7 +42,7 @@ public class ApiDTO {
         }
 
         for (RequestParameter requestParameter : api.getRequestParameters()) {
-            RequestParameterDTO requestParameterDTO = new RequestParameterDTO();
+            RequestParameterDto requestParameterDTO = new RequestParameterDto();
             requestParameterDTO.setDescription(requestParameter.getDescription());
             requestParameterDTO.setKey(requestParameter.getKey());
             requestParameterDTO.setRequired(requestParameter.getRequired());
@@ -51,7 +51,7 @@ public class ApiDTO {
         }
 
         for (ResponseParameter responseParameter : api.getResponseParameters()) {
-            ResponseParameterDTO responseParameterDTO = new ResponseParameterDTO();
+            ResponseParameterDto responseParameterDTO = new ResponseParameterDto();
             responseParameterDTO.setDescription(responseParameter.getDescription());
             responseParameterDTO.setKey(responseParameter.getKey());
             responseParameterDTO.setRequired(responseParameter.getRequired());
@@ -60,7 +60,7 @@ public class ApiDTO {
         }
 
         for (ErrorCode errorCode : api.getErrorCodes()) {
-            ErrorCodeDTO errorCodeDTO = new ErrorCodeDTO();
+            ErrorCodeDto errorCodeDTO = new ErrorCodeDto();
             errorCodeDTO.setDescription(errorCode.getDescription());
             errorCodeDTO.setKey(errorCode.getKey());
 

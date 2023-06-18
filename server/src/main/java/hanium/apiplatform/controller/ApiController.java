@@ -1,11 +1,11 @@
 package hanium.apiplatform.controller;
 
-import hanium.apiplatform.dto.ApiDTO;
+import hanium.apiplatform.dto.ApiDto;
 import hanium.apiplatform.dto.ServiceDTO;
-import hanium.apiplatform.dto.ErrorCodeDTO;
-import hanium.apiplatform.dto.HeaderDTO;
-import hanium.apiplatform.dto.RequestParameterDTO;
-import hanium.apiplatform.dto.ResponseParameterDTO;
+import hanium.apiplatform.dto.ErrorCodeDto;
+import hanium.apiplatform.dto.HeaderDto;
+import hanium.apiplatform.dto.RequestParameterDto;
+import hanium.apiplatform.dto.ResponseParameterDto;
 import hanium.apiplatform.entity.Api;
 import hanium.apiplatform.entity.ErrorCode;
 import hanium.apiplatform.entity.Header;
@@ -46,7 +46,7 @@ public class ApiController {
         String description = serviceDTO.getDescription();
         int price = serviceDTO.getPrice();
         String key = serviceDTO.getKey();
-        ArrayList<ApiDTO> apis = serviceDTO.getApis();
+        ArrayList<ApiDto> apis = serviceDTO.getApis();
 
         // apis는 배열이고, 요소에 접근하고 싶으면 인덱싱한 후 위에처럼 .get(...)으로 접근하면 됨
         // ex) apis.get(0).getPath()
@@ -63,14 +63,14 @@ public class ApiController {
         service.setPrice(price);
         service.setKey(key);
 
-        for (ApiDTO apiDTO : apis) {
+        for (ApiDto apiDTO : apis) {
             Api api = new Api();
             api.setHost(apiDTO.getHost());
             api.setDescription(apiDTO.getDescription());
             api.setMethod(apiDTO.getMethod());
             api.setPath(apiDTO.getPath());
 
-            for (HeaderDTO headerDTO : apiDTO.getHeaders()) {
+            for (HeaderDto headerDTO : apiDTO.getHeaders()) {
                 Header header = new Header();
                 header.setDescription(headerDTO.getDescription());
                 header.setKey(headerDTO.getKey());
@@ -79,7 +79,7 @@ public class ApiController {
                 api.addHeader(header);
             }
 
-            for (RequestParameterDTO parameterDTO : apiDTO.getRequestParameters()) {
+            for (RequestParameterDto parameterDTO : apiDTO.getRequestParameters()) {
                 RequestParameter parameter = new RequestParameter();
                 parameter.setDescription(parameterDTO.getDescription());
                 parameter.setKey(parameterDTO.getKey());
@@ -88,7 +88,7 @@ public class ApiController {
                 api.addRequestParameter(parameter);
             }
 
-            for (ResponseParameterDTO responseParameterDTO : apiDTO.getResponseParameters()) {
+            for (ResponseParameterDto responseParameterDTO : apiDTO.getResponseParameters()) {
                 ResponseParameter responseParameter = new ResponseParameter();
                 responseParameter.setDescription(responseParameterDTO.getDescription());
                 responseParameter.setKey(responseParameterDTO.getKey());
@@ -97,7 +97,7 @@ public class ApiController {
                 api.addResponseParameter(responseParameter);
             }
 
-            for (ErrorCodeDTO errorCodeDTO : apiDTO.getErrorCodes()) {
+            for (ErrorCodeDto errorCodeDTO : apiDTO.getErrorCodes()) {
                 ErrorCode errorCode = new ErrorCode();
                 errorCode.setDescription(errorCodeDTO.getDescription());
                 errorCode.setKey(errorCodeDTO.getKey());

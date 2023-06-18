@@ -1,7 +1,7 @@
 package hanium.apiplatform.controller;
 
 import hanium.apiplatform.config.JwtTokenProvider;
-import hanium.apiplatform.dto.UserDTO;
+import hanium.apiplatform.dto.UserDto;
 import hanium.apiplatform.entity.User;
 import hanium.apiplatform.exception.DuplicateEmailException;
 import hanium.apiplatform.exception.UserNotFoundException;
@@ -28,7 +28,7 @@ public class UserController {
 
     // 회원가입
     @PostMapping("/join")
-    public String join(@RequestBody UserDTO userDTO) {
+    public String join(@RequestBody UserDto userDTO) {
         Optional<User> found = userRepository.findByEmail(userDTO.getEmail());
 
         if (found.isPresent()) {
@@ -44,7 +44,7 @@ public class UserController {
 
     // 로그인
     @PostMapping("/login")
-    public String login(@RequestBody UserDTO userDTO) {
+    public String login(@RequestBody UserDto userDTO) {
         User user = userRepository.findByEmail(userDTO.getEmail())
             .orElseThrow(() -> new UserNotFoundException());
         if (!passwordEncoder.matches(userDTO.getPassword(), user.getPassword())) {

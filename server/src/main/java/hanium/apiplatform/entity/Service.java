@@ -1,6 +1,5 @@
 package hanium.apiplatform.entity;
 
-import hanium.apiplatform.dto.ApiDTO;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -13,9 +12,7 @@ import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter

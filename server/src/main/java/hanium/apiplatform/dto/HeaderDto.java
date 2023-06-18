@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class HeaderDTO {
+public class HeaderDto {
 
     private String description;
     private String key;
