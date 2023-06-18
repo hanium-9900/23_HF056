@@ -21,12 +21,13 @@ public class ApiDto {
     private ArrayList<RequestParameterDto> requestParameters = new ArrayList<>();
     private ArrayList<ResponseParameterDto> responseParameters = new ArrayList<>();
     private ArrayList<ErrorCodeDto> errorCodes = new ArrayList<>();
-    
-    public ApiDto(Api api) {
-        this.host = api.getHost();
-        this.description = api.getDescription();
-        this.method = api.getMethod();
-        this.path = api.getPath();
+
+    public static ApiDto toDto(Api api) {
+        ApiDto apiDto = new ApiDto();
+        apiDto.host = api.getHost();
+        apiDto.description = api.getDescription();
+        apiDto.method = api.getMethod();
+        apiDto.path = api.getPath();
 
         for (Header header : api.getHeaders()) {
             HeaderDto headerDTO = new HeaderDto();
@@ -38,7 +39,7 @@ public class ApiDto {
             System.out.println(headerDTO.getKey());
             System.out.println(headerDTO.getRequired());
 
-            headers.add(headerDTO);
+            apiDto.headers.add(headerDTO);
         }
 
         for (RequestParameter requestParameter : api.getRequestParameters()) {
@@ -47,7 +48,7 @@ public class ApiDto {
             requestParameterDTO.setKey(requestParameter.getKey());
             requestParameterDTO.setRequired(requestParameter.getRequired());
 
-            requestParameters.add(requestParameterDTO);
+            apiDto.requestParameters.add(requestParameterDTO);
         }
 
         for (ResponseParameter responseParameter : api.getResponseParameters()) {
@@ -56,7 +57,7 @@ public class ApiDto {
             responseParameterDTO.setKey(responseParameter.getKey());
             responseParameterDTO.setRequired(responseParameter.getRequired());
 
-            responseParameters.add(responseParameterDTO);
+            apiDto.responseParameters.add(responseParameterDTO);
         }
 
         for (ErrorCode errorCode : api.getErrorCodes()) {
@@ -64,7 +65,9 @@ public class ApiDto {
             errorCodeDTO.setDescription(errorCode.getDescription());
             errorCodeDTO.setKey(errorCode.getKey());
 
-            errorCodes.add(errorCodeDTO);
+            apiDto.errorCodes.add(errorCodeDTO);
         }
+
+        return apiDto;
     }
 }

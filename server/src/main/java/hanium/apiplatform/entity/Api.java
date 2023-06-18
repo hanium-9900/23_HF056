@@ -1,5 +1,10 @@
 package hanium.apiplatform.entity;
 
+import hanium.apiplatform.dto.ApiDto;
+import hanium.apiplatform.dto.ErrorCodeDto;
+import hanium.apiplatform.dto.HeaderDto;
+import hanium.apiplatform.dto.RequestParameterDto;
+import hanium.apiplatform.dto.ResponseParameterDto;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -56,6 +61,52 @@ public class Api {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "service_id")
     private Service service;
+
+    public static Api toEntity(ApiDto apiDto) {
+        Api api = new Api();
+
+        api.setHost(apiDto.getHost());
+        api.setDescription(apiDto.getDescription());
+        api.setMethod(apiDto.getMethod());
+        api.setPath(apiDto.getPath());
+
+        for (HeaderDto headerDTO : apiDto.getHeaders()) {
+            Header header = new Header();
+            header.setDescription(headerDTO.getDescription());
+            header.setKey(headerDTO.getKey());
+            header.setRequired(headerDTO.getRequired());
+
+            api.addHeader(header);
+        }
+
+        for (RequestParameterDto parameterDTO : apiDto.getRequestParameters()) {
+            RequestParameter parameter = new RequestParameter();
+            parameter.setDescription(parameterDTO.getDescription());
+            parameter.setKey(parameterDTO.getKey());
+            parameter.setRequired(parameterDTO.getRequired());
+
+            api.addRequestParameter(parameter);
+        }
+
+        for (ResponseParameterDto responseParameterDTO : apiDto.getResponseParameters()) {
+            ResponseParameter responseParameter = new ResponseParameter();
+            responseParameter.setDescription(responseParameterDTO.getDescription());
+            responseParameter.setKey(responseParameterDTO.getKey());
+            responseParameter.setRequired(responseParameterDTO.getRequired());
+
+            api.addResponseParameter(responseParameter);
+        }
+
+        for (ErrorCodeDto errorCodeDTO : apiDto.getErrorCodes()) {
+            ErrorCode errorCode = new ErrorCode();
+            errorCode.setDescription(errorCodeDTO.getDescription());
+            errorCode.setKey(errorCodeDTO.getKey());
+
+            api.addErrorCode(errorCode);
+        }
+
+        return api;
+    }
 
     public void addHeader(Header header) {
         this.headers.add(header);
