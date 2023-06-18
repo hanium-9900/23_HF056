@@ -24,12 +24,14 @@ export interface Header {
 
 export interface RequestParameter {
   key: string;
+  type: string; // [TODO] enum-like type
   description: string;
   required: boolean;
 }
 
 export interface ResponseParameter {
   key: string;
+  type: string; // [TODO] enum-like type
   description: string;
   required: boolean;
 }

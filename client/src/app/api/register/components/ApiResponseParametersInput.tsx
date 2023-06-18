@@ -16,7 +16,7 @@ export default function ApiResponseParametersInput({ onChange }: { onChange: (re
     }
 
     const updatedResponseParameters = [...responseParameters];
-    updatedResponseParameters.push({ key: '', description: '', required: false });
+    updatedResponseParameters.push({ key: '', type: 'string', description: '', required: false });
 
     setResponseParameters(updatedResponseParameters);
   }
@@ -47,6 +47,15 @@ export default function ApiResponseParametersInput({ onChange }: { onChange: (re
                 updateParameter(idx, { key: e.target.value });
               }}
               value={parameter.key}
+            />
+            <input
+              className="mr-3"
+              type="text"
+              placeholder="타입"
+              onChange={e => {
+                updateParameter(idx, { type: e.target.value });
+              }}
+              value={parameter.type}
             />
             <input
               type="text"
