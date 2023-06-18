@@ -42,7 +42,7 @@ export default function ApiErrorCodesInput({ onChange }: { onChange: (errorCodes
             <input
               className="mr-3"
               type="text"
-              placeholder="에러 코드"
+              placeholder="상태 코드 (ex: 404)"
               onChange={e => {
                 updateErrorCode(idx, { key: e.target.value });
               }}
