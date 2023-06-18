@@ -33,6 +33,9 @@ public class ResponseParameter {
     private String key;
 
     @Column
+    private String type;
+
+    @Column
     private int required;
 
     @ManyToOne(fetch = FetchType.EAGER)

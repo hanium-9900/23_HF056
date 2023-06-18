@@ -74,24 +74,27 @@ public class Api {
             Header header = new Header();
             header.setDescription(headerDto.getDescription());
             header.setKey(headerDto.getKey());
+            header.setType(headerDto.getType());
             header.setRequired(headerDto.getRequired());
 
             api.addHeader(header);
         }
 
-        for (RequestParameterDto parameterDto : apiDto.getRequestParameters()) {
-            RequestParameter parameter = new RequestParameter();
-            parameter.setDescription(parameterDto.getDescription());
-            parameter.setKey(parameterDto.getKey());
-            parameter.setRequired(parameterDto.getRequired());
+        for (RequestParameterDto requestParameterDto : apiDto.getRequestParameters()) {
+            RequestParameter requestParameter = new RequestParameter();
+            requestParameter.setDescription(requestParameterDto.getDescription());
+            requestParameter.setKey(requestParameterDto.getKey());
+            requestParameter.setType(requestParameterDto.getType());
+            requestParameter.setRequired(requestParameterDto.getRequired());
 
-            api.addRequestParameter(parameter);
+            api.addRequestParameter(requestParameter);
         }
 
         for (ResponseParameterDto responseParameterDto : apiDto.getResponseParameters()) {
             ResponseParameter responseParameter = new ResponseParameter();
             responseParameter.setDescription(responseParameterDto.getDescription());
             responseParameter.setKey(responseParameterDto.getKey());
+            responseParameter.setType(responseParameterDto.getType());
             responseParameter.setRequired(responseParameterDto.getRequired());
 
             api.addResponseParameter(responseParameter);

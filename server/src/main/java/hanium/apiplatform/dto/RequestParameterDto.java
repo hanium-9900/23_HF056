@@ -9,5 +9,6 @@ public class RequestParameterDto {
 
     private String description;
     private String key;
+    private String type;
     private int required;
 }

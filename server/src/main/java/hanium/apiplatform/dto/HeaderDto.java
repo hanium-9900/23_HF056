@@ -9,5 +9,6 @@ public class HeaderDto {
 
     private String description;
     private String key;
+    private String type;
     private int required;
 }

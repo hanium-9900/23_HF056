@@ -33,6 +33,7 @@ public class ApiDto {
             HeaderDto headerDto = new HeaderDto();
             headerDto.setDescription(header.getDescription());
             headerDto.setKey(header.getKey());
+            headerDto.setType(header.getType());
             headerDto.setRequired(header.getRequired());
 
             System.out.println(headerDto.getDescription());
@@ -46,6 +47,7 @@ public class ApiDto {
             RequestParameterDto requestParameterDto = new RequestParameterDto();
             requestParameterDto.setDescription(requestParameter.getDescription());
             requestParameterDto.setKey(requestParameter.getKey());
+            requestParameterDto.setType(requestParameter.getType());
             requestParameterDto.setRequired(requestParameter.getRequired());
 
             apiDto.requestParameters.add(requestParameterDto);
@@ -55,6 +57,7 @@ public class ApiDto {
             ResponseParameterDto responseParameterDto = new ResponseParameterDto();
             responseParameterDto.setDescription(responseParameter.getDescription());
             responseParameterDto.setKey(responseParameter.getKey());
+            responseParameterDto.setType(responseParameter.getType());
             responseParameterDto.setRequired(responseParameter.getRequired());
 
             apiDto.responseParameters.add(responseParameterDto);
