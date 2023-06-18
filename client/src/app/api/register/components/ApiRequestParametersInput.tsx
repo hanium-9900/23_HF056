@@ -48,15 +48,17 @@ export default function ApiRequestParametersInput({ onChange }: { onChange: (req
               }}
               value={parameter.key}
             />
-            <input
+            <select
               className="mr-3"
-              type="text"
-              placeholder="타입"
+              defaultValue={parameter.type}
               onChange={e => {
                 updateParameter(idx, { type: e.target.value });
               }}
-              value={parameter.type}
-            />
+            >
+              <option value="string">String</option>
+              <option value="number">Number</option>
+              <option value="boolean">Boolean</option>
+            </select>
             <input
               type="text"
               placeholder="설명"
