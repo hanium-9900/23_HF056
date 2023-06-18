@@ -29,25 +29,25 @@ public class UserController {
     private final UserRepository userRepository;
 
     @PostMapping("/join")
-    public String join(@RequestBody UserDto userDTO) {
-        Optional<User> found = userRepository.findByEmail(userDTO.getEmail());
+    public String join(@RequestBody UserDto userDto) {
+        Optional<User> found = userRepository.findByEmail(userDto.getEmail());
 
         if (found.isPresent()) {
             throw new DuplicateEmailException();
         }
 
         return userRepository.save(User.builder()
-            .email(userDTO.getEmail())
-            .password(passwordEncoder.encode(userDTO.getPassword()))
+            .email(userDto.getEmail())
+            .password(passwordEncoder.encode(userDto.getPassword()))
             .roles(Collections.singletonList("ROLE_USER")) // 최초 가입시 USER로 설정
             .build()).getEmail();
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody UserDto userDTO) {
-        User user = userRepository.findByEmail(userDTO.getEmail())
+    public String login(@RequestBody UserDto userDto) {
+        User user = userRepository.findByEmail(userDto.getEmail())
             .orElseThrow(() -> new UserNotFoundException());
-        if (!passwordEncoder.matches(userDTO.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(userDto.getPassword(), user.getPassword())) {
             throw new WrongPasswordException();
         }
         return jwtTokenProvider.createToken(user.getUsername(), user.getRoles());

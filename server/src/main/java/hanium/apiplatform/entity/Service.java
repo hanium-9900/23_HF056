@@ -49,8 +49,8 @@ public class Service {
         service.setPrice(serviceDto.getPrice());
         service.setKey(serviceDto.getKey());
 
-        for (ApiDto apiDTO : serviceDto.getApis()) {
-            service.addApi(Api.toEntity(apiDTO));
+        for (ApiDto apiDto : serviceDto.getApis()) {
+            service.addApi(Api.toEntity(apiDto));
         }
 
         return service;

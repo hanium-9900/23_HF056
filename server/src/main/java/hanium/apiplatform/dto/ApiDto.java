@@ -30,42 +30,42 @@ public class ApiDto {
         apiDto.path = api.getPath();
 
         for (Header header : api.getHeaders()) {
-            HeaderDto headerDTO = new HeaderDto();
-            headerDTO.setDescription(header.getDescription());
-            headerDTO.setKey(header.getKey());
-            headerDTO.setRequired(header.getRequired());
+            HeaderDto headerDto = new HeaderDto();
+            headerDto.setDescription(header.getDescription());
+            headerDto.setKey(header.getKey());
+            headerDto.setRequired(header.getRequired());
 
-            System.out.println(headerDTO.getDescription());
-            System.out.println(headerDTO.getKey());
-            System.out.println(headerDTO.getRequired());
+            System.out.println(headerDto.getDescription());
+            System.out.println(headerDto.getKey());
+            System.out.println(headerDto.getRequired());
 
-            apiDto.headers.add(headerDTO);
+            apiDto.headers.add(headerDto);
         }
 
         for (RequestParameter requestParameter : api.getRequestParameters()) {
-            RequestParameterDto requestParameterDTO = new RequestParameterDto();
-            requestParameterDTO.setDescription(requestParameter.getDescription());
-            requestParameterDTO.setKey(requestParameter.getKey());
-            requestParameterDTO.setRequired(requestParameter.getRequired());
+            RequestParameterDto requestParameterDto = new RequestParameterDto();
+            requestParameterDto.setDescription(requestParameter.getDescription());
+            requestParameterDto.setKey(requestParameter.getKey());
+            requestParameterDto.setRequired(requestParameter.getRequired());
 
-            apiDto.requestParameters.add(requestParameterDTO);
+            apiDto.requestParameters.add(requestParameterDto);
         }
 
         for (ResponseParameter responseParameter : api.getResponseParameters()) {
-            ResponseParameterDto responseParameterDTO = new ResponseParameterDto();
-            responseParameterDTO.setDescription(responseParameter.getDescription());
-            responseParameterDTO.setKey(responseParameter.getKey());
-            responseParameterDTO.setRequired(responseParameter.getRequired());
+            ResponseParameterDto responseParameterDto = new ResponseParameterDto();
+            responseParameterDto.setDescription(responseParameter.getDescription());
+            responseParameterDto.setKey(responseParameter.getKey());
+            responseParameterDto.setRequired(responseParameter.getRequired());
 
-            apiDto.responseParameters.add(responseParameterDTO);
+            apiDto.responseParameters.add(responseParameterDto);
         }
 
         for (ErrorCode errorCode : api.getErrorCodes()) {
-            ErrorCodeDto errorCodeDTO = new ErrorCodeDto();
-            errorCodeDTO.setDescription(errorCode.getDescription());
-            errorCodeDTO.setKey(errorCode.getKey());
+            ErrorCodeDto errorCodeDto = new ErrorCodeDto();
+            errorCodeDto.setDescription(errorCode.getDescription());
+            errorCodeDto.setKey(errorCode.getKey());
 
-            apiDto.errorCodes.add(errorCodeDTO);
+            apiDto.errorCodes.add(errorCodeDto);
         }
 
         return apiDto;

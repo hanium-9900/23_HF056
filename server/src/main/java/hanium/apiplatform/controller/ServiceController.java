@@ -29,7 +29,7 @@ public class ServiceController {
     }
 
     @PostMapping()
-    public Long addService(@RequestBody ServiceDto serviceDTO) {
-        return serviceRepository.save(Service.toEntity(serviceDTO)).getId();
+    public Long addService(@RequestBody ServiceDto serviceDto) {
+        return serviceRepository.save(Service.toEntity(serviceDto)).getId();
     }
 }
