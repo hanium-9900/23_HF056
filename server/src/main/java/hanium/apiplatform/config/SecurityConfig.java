@@ -34,7 +34,7 @@ public class SecurityConfig {
             .authorizeRequests() // 요청에 대한 사용권한 체크
             .antMatchers("/users/join").permitAll()
             .antMatchers("/users/login").permitAll()
-            .antMatchers("/api/**").hasRole("USER")
+            .antMatchers("/services/**").hasRole("USER")
             .and()
             .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
         // JwtAuthenticationFilter를 UsernamePasswordAuthenticationFilter 전에 넣는다

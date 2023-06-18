@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ServiceDTO {
+public class ServiceDto {
 
     private String title;
     private String description;
@@ -18,14 +18,17 @@ public class ServiceDTO {
     private String key;
     private ArrayList<ApiDto> apis = new ArrayList<>();
 
-    public ServiceDTO(Service service) {
-        setTitle(service.getTitle());
-        setDescription(service.getDescription());
-        setPrice(service.getPrice());
-        setKey(service.getKey());
+    public static ServiceDto toDto(Service service) {
+        ServiceDto serviceDto = new ServiceDto();
+        serviceDto.setTitle(service.getTitle());
+        serviceDto.setDescription(service.getDescription());
+        serviceDto.setPrice(service.getPrice());
+        serviceDto.setKey(service.getKey());
 
         for (Api api : service.getApis()) {
-            apis.add(new ApiDto(api));
+            serviceDto.apis.add(ApiDto.toDto(api));
         }
+
+        return serviceDto;
     }
 }

@@ -1,5 +1,7 @@
 package hanium.apiplatform.entity;
 
+import hanium.apiplatform.dto.ApiDto;
+import hanium.apiplatform.dto.ServiceDto;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -39,6 +41,20 @@ public class Service {
 
     @OneToMany(mappedBy = "service", cascade = CascadeType.ALL)
     private List<Api> apis = new ArrayList<>();
+
+    public static Service toEntity(ServiceDto serviceDto) {
+        Service service = new Service();
+        service.setTitle(serviceDto.getTitle());
+        service.setDescription(serviceDto.getDescription());
+        service.setPrice(serviceDto.getPrice());
+        service.setKey(serviceDto.getKey());
+
+        for (ApiDto apiDTO : serviceDto.getApis()) {
+            service.addApi(Api.toEntity(apiDTO));
+        }
+
+        return service;
+    }
 
     public void addApi(Api api) {
         this.apis.add(api);
