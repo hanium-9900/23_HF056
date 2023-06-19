@@ -13,6 +13,7 @@ import lombok.Setter;
 @Setter
 public class ApiDto {
 
+    private Long id;
     private String host;
     private String description;
     private String method;
@@ -24,51 +25,26 @@ public class ApiDto {
 
     public static ApiDto toDto(Api api) {
         ApiDto apiDto = new ApiDto();
-        apiDto.host = api.getHost();
-        apiDto.description = api.getDescription();
-        apiDto.method = api.getMethod();
-        apiDto.path = api.getPath();
+        apiDto.setId(api.getId());
+        apiDto.setHost(api.getHost());
+        apiDto.setDescription(api.getDescription());
+        apiDto.setMethod(api.getMethod());
+        apiDto.setPath(api.getPath());
 
         for (Header header : api.getHeaders()) {
-            HeaderDto headerDto = new HeaderDto();
-            headerDto.setDescription(header.getDescription());
-            headerDto.setKey(header.getKey());
-            headerDto.setType(header.getType());
-            headerDto.setRequired(header.getRequired());
-
-            System.out.println(headerDto.getDescription());
-            System.out.println(headerDto.getKey());
-            System.out.println(headerDto.getRequired());
-
-            apiDto.headers.add(headerDto);
+            apiDto.headers.add(HeaderDto.toDto(header));
         }
 
         for (RequestParameter requestParameter : api.getRequestParameters()) {
-            RequestParameterDto requestParameterDto = new RequestParameterDto();
-            requestParameterDto.setDescription(requestParameter.getDescription());
-            requestParameterDto.setKey(requestParameter.getKey());
-            requestParameterDto.setType(requestParameter.getType());
-            requestParameterDto.setRequired(requestParameter.getRequired());
-
-            apiDto.requestParameters.add(requestParameterDto);
+            apiDto.requestParameters.add(RequestParameterDto.toDto(requestParameter));
         }
 
         for (ResponseParameter responseParameter : api.getResponseParameters()) {
-            ResponseParameterDto responseParameterDto = new ResponseParameterDto();
-            responseParameterDto.setDescription(responseParameter.getDescription());
-            responseParameterDto.setKey(responseParameter.getKey());
-            responseParameterDto.setType(responseParameter.getType());
-            responseParameterDto.setRequired(responseParameter.getRequired());
-
-            apiDto.responseParameters.add(responseParameterDto);
+            apiDto.responseParameters.add(ResponseParameterDto.toDto(responseParameter));
         }
 
         for (ErrorCode errorCode : api.getErrorCodes()) {
-            ErrorCodeDto errorCodeDto = new ErrorCodeDto();
-            errorCodeDto.setDescription(errorCode.getDescription());
-            errorCodeDto.setKey(errorCode.getKey());
-
-            apiDto.errorCodes.add(errorCodeDto);
+            apiDto.errorCodes.add(ErrorCodeDto.toDto(errorCode));
         }
 
         return apiDto;

@@ -12,6 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ServiceDto {
 
+    private Long id;
     private String title;
     private String description;
     private int price;
@@ -20,6 +21,7 @@ public class ServiceDto {
 
     public static ServiceDto toDto(Service service) {
         ServiceDto serviceDto = new ServiceDto();
+        serviceDto.setId(service.getId());
         serviceDto.setTitle(service.getTitle());
         serviceDto.setDescription(service.getDescription());
         serviceDto.setPrice(service.getPrice());
