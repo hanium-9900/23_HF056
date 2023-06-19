@@ -3,16 +3,15 @@ package hanium.apiplatform.controller;
 import hanium.apiplatform.dto.ServiceDto;
 import hanium.apiplatform.entity.Service;
 import hanium.apiplatform.exception.ServiceNotFoundException;
-import hanium.apiplatform.exception.UserNotFoundException;
 import hanium.apiplatform.repository.ServiceRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RestController
 @CrossOrigin()
@@ -22,10 +21,10 @@ public class ServiceController {
 
     private final ServiceRepository serviceRepository;
 
-    @GetMapping
+    @GetMapping()
     public ServiceDto getServiceById(@RequestParam Long id) {
-        Service service = serviceRepository.findById(id).orElseThrow(() -> new ServiceNotFoundException());
-        return ServiceDto.toDto(service);
+        Service found = serviceRepository.findById(id).orElseThrow(() -> new ServiceNotFoundException());
+        return ServiceDto.toDto(found);
     }
 
     @PostMapping()
