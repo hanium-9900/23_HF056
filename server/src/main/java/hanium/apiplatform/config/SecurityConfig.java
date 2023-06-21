@@ -3,7 +3,7 @@ package hanium.apiplatform.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -35,6 +35,7 @@ public class SecurityConfig {
             .antMatchers("/users/join").permitAll()
             .antMatchers("/users/login").permitAll()
             .antMatchers("/services/**").hasRole("USER")
+            .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .and()
             .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
         // JwtAuthenticationFilter를 UsernamePasswordAuthenticationFilter 전에 넣는다
