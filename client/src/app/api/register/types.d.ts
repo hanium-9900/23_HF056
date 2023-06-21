@@ -11,7 +11,7 @@ export interface ApiInfo {
   path: string;
   description: string;
   headers: Header[];
-  parameters: RequestParameter[];
+  requestParameters: RequestParameter[];
   responseParameters: ResponseParameter[];
   errorCodes: ErrorCode[];
 }

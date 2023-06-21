@@ -26,7 +26,7 @@ export default function ServiceRegisterForm() {
         path: '',
         description: '',
         headers: [],
-        parameters: [],
+        requestParameters: [],
         responseParameters: [],
         errorCodes: [],
       },
@@ -60,8 +60,8 @@ export default function ServiceRegisterForm() {
           ...header,
           required: 1,
         })),
-        parameters: api.parameters.map(parameter => ({
-          ...parameter,
+        requestParameters: api.requestParameters.map(requestParameter => ({
+          ...requestParameter,
           required: 1,
         })),
         responseParameters: api.responseParameters.map(responseParameter => ({
@@ -74,11 +74,12 @@ export default function ServiceRegisterForm() {
     console.log(data);
 
     try {
-      const response = await fetch('http://localhost:8080/api', {
+      const response = await fetch('http://localhost:8080/services', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
           'Content-Type': 'application/json',
+          'X-AUTH-TOKEN': localStorage.getItem('temp_token')!,
         },
       });
 

@@ -59,7 +59,7 @@ export default function ApiSpecificationInput({
       {/* Headers */}
       <ApiHeadersInput onChange={headers => updateSpecification({ headers })} />
       {/* Request Parameters */}
-      <ApiRequestParametersInput onChange={parameters => updateSpecification({ parameters })} />
+      <ApiRequestParametersInput onChange={requestParameters => updateSpecification({ requestParameters })} />
       {/* Response Parameters */}
       <ApiResponseParametersInput onChange={responseParameters => updateSpecification({ responseParameters })} />
       {/* Error Code */}
