@@ -13,6 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
@@ -38,6 +39,7 @@ public class SecurityConfig {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 토큰 기반 인증이므로 세션 역시 사용하지 않음.
             .and()
             .authorizeRequests() // 요청에 대한 사용권한 체크
+            .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
             .antMatchers("/users/join").permitAll()
             .antMatchers("/users/login").permitAll()
             .antMatchers("/services/**").hasRole("USER")
