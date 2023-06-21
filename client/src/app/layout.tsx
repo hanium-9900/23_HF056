@@ -1,5 +1,6 @@
 import './globals.css';
 import { Noto_Sans_KR } from 'next/font/google';
+import Header from './components/Header';
 
 const notoSansKR = Noto_Sans_KR({ weight: ['100', '300', '400', '500', '700', '900'], subsets: ['latin'] });
 
@@ -11,7 +12,10 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
-      <body className={notoSansKR.className}>{children}</body>
+      <body className={notoSansKR.className}>
+        <Header />
+        {children}
+      </body>
     </html>
   );
 }
