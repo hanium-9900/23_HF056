@@ -6,36 +6,18 @@ const bigData = [
   {
     id: 1,
     name: 'iPhone 12',
-    price: 999,
+    price: 999000,
     category: 'Electronics',
     description: 'The latest iPhone model.',
-    timestamp: '2023-06-18 10:00:00',
-    location: {
-      latitude: 37.12345,
-      longitude: 127.6789,
-    },
-    tags: ['Apple', 'Smartphone'],
-    metadata: {
-      source: 'Apple Store',
-      owner: 'Apple Inc.',
-    },
+    owner: 'Apple Inc.',
   },
   {
     id: 2,
     name: 'Samsung Galaxy S21',
-    price: 899,
+    price: 899000,
     category: 'Electronics',
     description: 'A flagship smartphone from Samsung.',
-    timestamp: '2023-06-18 11:00:00',
-    location: {
-      latitude: 37.54321,
-      longitude: 127.09876,
-    },
-    tags: ['Samsung', 'Smartphone'],
-    metadata: {
-      source: 'Samsung Store',
-      owner: 'Samsung Electronics',
-    },
+    owner: 'Samsung Electronics',
   },
 ];
 
