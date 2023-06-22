@@ -4,7 +4,6 @@ const app = express();
 
 const bigData = [
   {
-    id: 1,
     name: 'iPhone 12',
     price: 999000,
     category: 'Electronics',
@@ -12,7 +11,6 @@ const bigData = [
     owner: 'Apple Inc.',
   },
   {
-    id: 2,
     name: 'Samsung Galaxy S21',
     price: 899000,
     category: 'Electronics',
