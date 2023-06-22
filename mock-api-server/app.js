@@ -6,14 +6,12 @@ const bigData = [
   {
     name: 'iPhone 12',
     price: 999000,
-    category: 'Electronics',
     description: 'The latest iPhone model.',
     owner: 'Apple Inc.',
   },
   {
     name: 'Samsung Galaxy S21',
     price: 899000,
-    category: 'Electronics',
     description: 'A flagship smartphone from Samsung.',
     owner: 'Samsung Electronics',
   },
