@@ -40,7 +40,7 @@ const bigData = [
 ];
 
 app.get('/phone', (req, res) => {
-  const key = req.query.key;
+  const key = req.header('X-API-KEY');
 
   if (key != '12345') {
     res.status(400).json({ message: 'API Key is Not Valid' });
@@ -51,7 +51,7 @@ app.get('/phone', (req, res) => {
 });
 
 app.get('/phone/apple', (req, res) => {
-  const key = req.query.key;
+  const key = req.header('X-API-KEY');
 
   if (key != '12345') {
     res.status(400).json({ message: 'API Key is Not Valid' });
@@ -62,7 +62,7 @@ app.get('/phone/apple', (req, res) => {
 });
 
 app.get('/phone/samsung', (req, res) => {
-  const key = req.query.key;
+  const key = req.header('X-API-KEY');
 
   if (key != '12345') {
     res.status(400).json({ message: 'API Key is Not Valid' });
