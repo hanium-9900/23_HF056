@@ -19,35 +19,24 @@ const bigData = [
 
 app.get('/phone', (req, res) => {
   const key = req.header('X-API-KEY');
+  const { corporation } = req.query;
 
   if (key != '12345') {
-    res.status(400).json({ message: 'API Key is Not Valid' });
+    res.status(401).json({ message: 'API Key is Not Valid' });
     return;
   }
 
-  res.json(bigData);
-});
-
-app.get('/phone/apple', (req, res) => {
-  const key = req.header('X-API-KEY');
-
-  if (key != '12345') {
-    res.status(400).json({ message: 'API Key is Not Valid' });
+  if (corporation == 'apple') {
+    res.json(bigData[0]);
     return;
   }
 
-  res.json(bigData[0]);
-});
-
-app.get('/phone/samsung', (req, res) => {
-  const key = req.header('X-API-KEY');
-
-  if (key != '12345') {
-    res.status(400).json({ message: 'API Key is Not Valid' });
+  if (corporation == 'samsung') {
+    res.json(bigData[1]);
     return;
   }
 
-  res.json(bigData[1]);
+  res.status(400).json({ message: 'Wrong Query Parameter' });
 });
 
 app.listen(8081, () => {
