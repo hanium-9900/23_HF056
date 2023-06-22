@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useState } from 'react';
 import { ApiInfo, ServiceInfo } from '../types';
 import ApiSpecificationInput from './ApiSpecificationInput';
