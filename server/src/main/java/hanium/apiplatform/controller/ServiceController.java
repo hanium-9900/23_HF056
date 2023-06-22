@@ -44,4 +44,7 @@ public class ServiceController {
 
         return ServiceDto.toDto(serviceRepository.save(Service.toEntity(serviceDto)));
     }
+
+    // TODO: 구매 요청 처리
+
 }

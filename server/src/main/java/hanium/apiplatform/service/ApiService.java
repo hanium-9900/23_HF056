@@ -11,4 +11,8 @@ public class ApiService {
 
         return true;
     }
+
+    // TODO: Proxy service key 생성
+    
+    // TODO: Proxy service key 검증
 }
