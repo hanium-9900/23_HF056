@@ -115,6 +115,7 @@ export default function ServiceRegisterForm() {
       <label className="block mb-6">
         <div className="font-bold mb-2">API 키</div>
         <input type="password" onChange={e => updateInfo({ key: e.target.value })} />
+        <div className="text-xs text-blue-500 mt-1">API 키는 요청 시 X-API-KEY 헤더에 담아 보내집니다.</div>
       </label>
       {/* API 명세 */}
       <div className="block mb-6">
