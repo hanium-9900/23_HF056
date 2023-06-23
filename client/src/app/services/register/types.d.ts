@@ -40,3 +40,7 @@ export interface ErrorCode {
   key: string;
   description: string;
 }
+
+export interface Service extends ServiceInfo {
+  apis: ApiInfo[];
+}
