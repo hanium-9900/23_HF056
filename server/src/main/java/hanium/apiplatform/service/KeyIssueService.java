@@ -10,7 +10,8 @@ import java.security.NoSuchAlgorithmException;
 @Service
 public class KeyIssueService {
 
-    // TODO: Proxy service key 생성
+    // Proxy service key 생성
+    // TODO: TEST
     public String issueServiceKey(ServiceDto serviceDto, UserDto userDto){
         String result = "";
         try{
@@ -36,4 +37,5 @@ public class KeyIssueService {
     }
 
     // TODO: Proxy service key 검증
+
 }

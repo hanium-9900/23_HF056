@@ -60,7 +60,7 @@ public class ServiceController {
 
     // 구매 요청 처리
     // TODO: TEST
-    @PostMapping()
+    @PostMapping("/purchase")
     public boolean purchaseService(@RequestParam("id") Long servicId, HttpServletRequest header){
         // 헤더에서 JWT를 받아온다.
         String userToken = jwtTokenProvider.resolveToken(header);
