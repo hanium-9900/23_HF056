@@ -1,6 +1,6 @@
 package hanium.apiplatform.entity;
 
-import hanium.apiplatform.dto.PurchaseDto;
+import hanium.apiplatform.dto.UserServiceKeyDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Purchase {
+public class UserServiceKey {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,14 +29,14 @@ public class Purchase {
     @Column
     private String key;
 
-    public static Purchase toEntity(PurchaseDto purchaseDto){
-        Purchase purchase = new Purchase();
+    public static UserServiceKey toEntity(UserServiceKeyDto userServiceKeyDto){
+        UserServiceKey userServiceKey = new UserServiceKey();
 
-        purchase.setId(purchaseDto.getId());
-        purchase.setService(purchaseDto.getService());
-        purchase.setUser(purchaseDto.getUser());
-        purchase.setKey(purchase.getKey());
+        userServiceKey.setId(userServiceKeyDto.getId());
+        userServiceKey.setService(userServiceKeyDto.getService());
+        userServiceKey.setUser(userServiceKeyDto.getUser());
+        userServiceKey.setKey(userServiceKey.getKey());
 
-        return purchase;
+        return userServiceKey;
     }
 }
