@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 export default function Header() {
-  const links = [{ name: '서비스 등록', href: '/api/register' }];
+  const links = [{ name: '서비스 등록', href: '/services/register' }];
 
   return (
     <header className="border-b">
