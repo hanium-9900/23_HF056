@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { ApiInfo, ServiceInfo } from '../types';
 import ApiSpecificationInput from './ApiSpecificationInput';
+import axios from 'axios';
 
 export default function ServiceRegisterForm() {
   const [info, setInfo] = useState<ServiceInfo>({
@@ -52,7 +53,7 @@ export default function ServiceRegisterForm() {
 
     // [TODO] 서버쪽 required 가 int라서 bool -> int 매핑 과정이 필요.
     // 추후 서버쪽 required 타입 변경 검토.
-    const data = {
+    const serviceData = {
       ...info,
       apis: apiList.map(api => ({
         ...api,
@@ -71,19 +72,16 @@ export default function ServiceRegisterForm() {
       })),
     };
 
-    console.log(data);
+    console.log(serviceData);
 
     try {
-      const response = await fetch('http://localhost:8080/services', {
-        method: 'POST',
-        body: JSON.stringify(data),
+      const { data } = await axios.post('http://localhost:8080/services', serviceData, {
         headers: {
-          'Content-Type': 'application/json',
           'X-AUTH-TOKEN': localStorage.getItem('temp_token')!,
         },
       });
 
-      alert(`전송 완료!\n${response.status}\n${response.json()}`);
+      alert(`전송 완료!\n${data}`);
     } catch (e) {
       console.error(e);
       alert(e);
