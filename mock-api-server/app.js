@@ -4,7 +4,6 @@ const app = express();
 
 const weatherData = {
   date: '2023-06-23',
-  time: '15:00',
   temperature: 25,
   humidity: 60,
   condition: '맑음',
