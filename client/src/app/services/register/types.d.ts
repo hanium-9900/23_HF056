@@ -37,6 +37,10 @@ export interface ResponseParameter {
 }
 
 export interface ErrorCode {
-  key: string;
+  statusCode: string;
   description: string;
+}
+
+export interface Service extends ServiceInfo {
+  apis: ApiInfo[];
 }

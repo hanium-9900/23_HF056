@@ -8,15 +8,15 @@ export default function ApiErrorCodesInput({ onChange }: { onChange: (errorCodes
    * add new error code input
    */
   function addErrorCode() {
-    for (const { key } of errorCodes) {
-      if (key.trim() === '') {
+    for (const { statusCode } of errorCodes) {
+      if (statusCode.trim() === '') {
         alert('먼저 코드를 모두 입력해주세요');
         return;
       }
     }
 
     const updatedErrorCodes = [...errorCodes];
-    updatedErrorCodes.push({ key: '', description: '' });
+    updatedErrorCodes.push({ statusCode: '', description: '' });
 
     setErrorCodes(updatedErrorCodes);
   }
@@ -44,9 +44,9 @@ export default function ApiErrorCodesInput({ onChange }: { onChange: (errorCodes
               type="text"
               placeholder="상태 코드 (ex: 404)"
               onChange={e => {
-                updateErrorCode(idx, { key: e.target.value });
+                updateErrorCode(idx, { statusCode: e.target.value });
               }}
-              value={code.key}
+              value={code.statusCode}
             />
             <input
               type="text"
