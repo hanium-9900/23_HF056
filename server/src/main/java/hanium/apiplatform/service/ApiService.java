@@ -1,6 +1,9 @@
 package hanium.apiplatform.service;
 
 import hanium.apiplatform.dto.ApiDto;
+import hanium.apiplatform.dto.ServiceDto;
+import hanium.apiplatform.dto.UserDto;
+import hanium.apiplatform.entity.User;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,8 +14,4 @@ public class ApiService {
 
         return true;
     }
-
-    // TODO: Proxy service key 생성
-    
-    // TODO: Proxy service key 검증
 }

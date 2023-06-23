@@ -3,6 +3,7 @@ package hanium.apiplatform.dto;
 import hanium.apiplatform.entity.UserServiceKey;
 import hanium.apiplatform.entity.Service;
 import hanium.apiplatform.entity.User;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserServiceKeyDto {
     private Long id;
     private Service service;
