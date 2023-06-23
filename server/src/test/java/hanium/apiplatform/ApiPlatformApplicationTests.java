@@ -41,7 +41,7 @@ class ApiPlatformApplicationTests {
 	}
 
 	@Test
-	@Rollback(value = true)
+	@Rollback(value = false)
 	void serviceKeyTest(){
 		// 1
 		ServiceDto serviceDto1 = new ServiceDto();

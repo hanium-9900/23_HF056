@@ -8,15 +8,13 @@ import hanium.apiplatform.dto.UserServiceKeyDto;
 import hanium.apiplatform.entity.Service;
 import hanium.apiplatform.entity.User;
 import hanium.apiplatform.entity.UserServiceKey;
-import hanium.apiplatform.exception.DuplicateServiceKeyException;
-import hanium.apiplatform.exception.NotValidException;
-import hanium.apiplatform.exception.ServiceNotFoundException;
-import hanium.apiplatform.exception.UserNotFoundException;
+import hanium.apiplatform.exception.*;
 import hanium.apiplatform.repository.ServiceRepository;
 import hanium.apiplatform.repository.UserRepository;
 import hanium.apiplatform.repository.UserServiceKeyRepository;
 import hanium.apiplatform.service.ApiService;
 import java.util.ArrayList;
+import java.util.List;
 
 import hanium.apiplatform.service.KeyIssueService;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +57,6 @@ public class ServiceController {
     }
 
     // 구매 요청 처리
-    // TODO: TEST
     @PostMapping("/purchase")
     public boolean purchaseService(@RequestParam("id") Long servicId, HttpServletRequest header){
         // 헤더에서 JWT를 받아온다.
@@ -80,6 +77,38 @@ public class ServiceController {
                 String userServiceKey = keyIssueService.issueServiceKey(ServiceDto.toDto(service), UserDto.toDto(user));
                 userServiceKeyRepository.save(UserServiceKey.toEntity(new UserServiceKeyDto(null, service, user, userServiceKey)));
                 return true;
+            }
+        }
+        else{
+            throw new NotValidException();
+        }
+    }
+
+    // proxy service key 요청 처리
+    // TODO: TEST
+    @GetMapping("/key")
+    public String getProxyServiceKey(@RequestParam("id") Long servicId, HttpServletRequest header){
+        // 헤더에서 JWT를 받아온다.
+        String userToken = jwtTokenProvider.resolveToken(header);
+        // 유효한 토큰인지 확인한다.
+        if(userToken != null && jwtTokenProvider.validateToken(userToken)){
+            // 유효한 토큰이면 user data 추출
+            User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(() -> new UserNotFoundException());
+            // request param에서 service id 추출
+            Service service = serviceRepository.findById(servicId).orElseThrow(() -> new ServiceNotFoundException());
+
+            // user와 service를 이용해 key 탐색
+            List<UserServiceKey> serviceKeys = userServiceKeyRepository.findByServiceAndUser(service, user);
+            if(serviceKeys.size() == 0){
+                throw new KeyNotFoundException();
+            }
+            // key가 2개 이상인 경우
+            else if(serviceKeys.size() > 1){
+                throw new DuplicateServiceKeyException();
+            }
+            // 정상적으로 1개의 key가 발견되면 client로 반환
+            else{
+                return serviceKeys.get(0).getKey();
             }
         }
         else{
