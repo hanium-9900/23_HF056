@@ -30,7 +30,7 @@ public class ErrorCode {
     private String description;
 
     @Column
-    private String key;
+    private int statusCode;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "api_id")

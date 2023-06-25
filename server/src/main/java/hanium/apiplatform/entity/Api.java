@@ -103,7 +103,7 @@ public class Api {
         for (ErrorCodeDto errorCodeDto : apiDto.getErrorCodes()) {
             ErrorCode errorCode = new ErrorCode();
             errorCode.setDescription(errorCodeDto.getDescription());
-            errorCode.setKey(errorCodeDto.getKey());
+            errorCode.setStatusCode(errorCodeDto.getStatusCode());
 
             api.addErrorCode(errorCode);
         }

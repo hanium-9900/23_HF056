@@ -7,6 +7,7 @@ import hanium.apiplatform.exception.NotValidException;
 import hanium.apiplatform.exception.ServiceNotFoundException;
 import hanium.apiplatform.repository.ServiceRepository;
 import hanium.apiplatform.service.ApiService;
+import java.io.IOException;
 import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -33,11 +34,11 @@ public class ServiceController {
     }
 
     @PostMapping()
-    public ServiceDto addService(@RequestBody ServiceDto serviceDto) {
+    public ServiceDto addService(@RequestBody ServiceDto serviceDto) throws IOException {
         ArrayList<ApiDto> apiDtos = serviceDto.getApis();
 
         for (ApiDto apiDto : apiDtos) {
-            if (!apiService.verifyApi(apiDto)) {
+            if (!apiService.verifyApi(apiDto, serviceDto.getKey())) {
                 throw new NotValidException();
             }
         }
