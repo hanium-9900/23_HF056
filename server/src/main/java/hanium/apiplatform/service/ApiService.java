@@ -102,15 +102,11 @@ public class ApiService {
 
         if (responseCode >= 200 && responseCode < 300) {
             for (ResponseParameterDto responseParameter : responseParameters) {
-
                 Iterator<String> itr = jsonObject.keys();
-
                 boolean match = false;
-
                 while (itr.hasNext()) {
                     String key = itr.next();
                     Object value = jsonObject.get(key);
-
                     if (value instanceof Number) {
                         if (responseParameter.getKey().equals(key) && responseParameter.getType().equals("number")) {
                             match = true;
@@ -123,13 +119,11 @@ public class ApiService {
                         }
                     }
                 }
-
                 if (!match) {
                     return false;
                 }
             }
         }
-
         return true;
     }
 }
