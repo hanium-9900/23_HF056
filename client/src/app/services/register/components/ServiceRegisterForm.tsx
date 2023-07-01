@@ -75,7 +75,7 @@ export default function ServiceRegisterForm() {
     console.log(serviceData);
 
     try {
-      const { data } = await axios.post('http://localhost:8080/services', serviceData, {
+      const { data } = await axios.post('http://3.34.215.14:8080/services', serviceData, {
         headers: {
           'X-AUTH-TOKEN': localStorage.getItem('temp_token')!,
         },
