@@ -14,13 +14,13 @@ public class ErrorCodeDto {
 
     private Long id;
     private String description;
-    private String key;
+    private int statusCode;
 
     public static ErrorCodeDto toDto(ErrorCode errorCode) {
         ErrorCodeDto errorCodeDto = new ErrorCodeDto();
         errorCodeDto.setId(errorCode.getId());
         errorCodeDto.setDescription(errorCode.getDescription());
-        errorCodeDto.setKey(errorCode.getKey());
+        errorCodeDto.setStatusCode(errorCode.getStatusCode());
 
         return errorCodeDto;
     }
