@@ -3,6 +3,7 @@
 import './page.css';
 import Link from 'next/link';
 import { FormEvent, useRef } from 'react';
+import axios from 'axios';
 
 export default function Register() {
   const emailRef = useRef<HTMLInputElement>(null);
@@ -26,15 +27,9 @@ export default function Register() {
 
     alert(JSON.stringify(credentials, undefined, 2));
 
-    const response = await fetch('http://localhost:8080/users/login', {
-      method: 'POST',
-      body: JSON.stringify(credentials),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const { data } = await axios.post('http://3.34.215.14:8080/users/login', credentials);
 
-    alert(await response.text());
+    alert(data);
   }
 
   return (
