@@ -27,7 +27,7 @@ import java.util.Collections;
 @AutoConfigureMockMvc
 class ApiPlatformApplicationTests {
 
-    @Autowired
+	@Autowired
 	ServiceRepository serviceRepository;
 	@Autowired
 	UserRepository userRepository;
@@ -54,8 +54,7 @@ class ApiPlatformApplicationTests {
 
 		UserDto userDto1 = UserDto.toDto(userRepository.save(User.builder()
 				.email("test@mail.com")
-
-        .password(passwordEncoder.encode("1q2w3e4r"))
+				.password(passwordEncoder.encode("1q2w3e4r"))
 				.roles(Collections.singletonList("ROLE_USER")) // 최초 가입시 USER로 설정
 				.build()));
 
@@ -73,7 +72,7 @@ class ApiPlatformApplicationTests {
 		serviceDto2.setKey("1q2w3e4r");
 
 		serviceDto2 = ServiceDto.toDto(serviceRepository.save(Service.toEntity(serviceDto2)));
-        
+
 		UserDto userDto2 = UserDto.toDto(userRepository.save(User.builder()
 				.email("test2@mail.com")
 				.password(passwordEncoder.encode("1q2w3e4r"))
@@ -86,4 +85,5 @@ class ApiPlatformApplicationTests {
 		hashResult = keyIssueService.issueServiceKey(serviceDto2, userDto2);
 		System.out.println("hash result string => " + hashResult);
 	}
+
 }
