@@ -69,19 +69,6 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
         return ServiceDto.toDto(found);
     }
 
-    @PostMapping()
-    public ServiceDto addService(@RequestBody ServiceDto serviceDto) {
-        ArrayList<ApiDto> apiDtos = serviceDto.getApis();
-
-        for (ApiDto apiDto : apiDtos) {
-            if (!apiService.verifyApi(apiDto)) {
-                throw new NotValidException();
-            }
-        }
-
-        return ServiceDto.toDto(serviceRepository.save(Service.toEntity(serviceDto)));
-    }
-
     // 구매 요청 처리
     @PostMapping("/purchase")
     public boolean purchaseService(@RequestParam("id") Long servicId, HttpServletRequest header){
