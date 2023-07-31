@@ -1,6 +1,10 @@
+'use client';
+
+import { signIn, signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 
 export default function Header() {
+  const { data: session } = useSession();
   const links = [{ name: '서비스 등록', href: '/services/register' }];
 
   return (
@@ -18,12 +22,22 @@ export default function Header() {
         </nav>
         <span className="inline-block w-px h-7 bg-gray-300 mx-5"></span>
         <nav>
-          <Link href="/auth/login" className="bg-blue-500 text-white text-sm font-bold rounded-full py-3 px-5">
-            로그인
-          </Link>
-          <Link href="/auth/register" className="bg-white text-blue-500 text-sm rounded-full py-3 px-5">
-            회원가입
-          </Link>
+          {session && session.user ? (
+            <>
+              <button onClick={() => signOut()} className="bg-blue-500 text-white text-sm font-bold rounded-full py-3 px-5">
+                로그아웃
+              </button>
+            </>
+          ) : (
+            <>
+              <button onClick={() => signIn()} className="bg-blue-500 text-white text-sm font-bold rounded-full py-3 px-5">
+                로그인
+              </button>
+              <Link href="/auth/register" className="bg-white text-blue-500 text-sm rounded-full py-3 px-5">
+                회원가입
+              </Link>
+            </>
+          )}
         </nav>
       </div>
     </header>
