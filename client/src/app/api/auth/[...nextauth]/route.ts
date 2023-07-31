@@ -3,7 +3,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import axios from 'axios';
 import { api } from '@/api';
 
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   // Configure one or more authentication providers
   providers: [
     CredentialsProvider({
@@ -38,6 +38,9 @@ const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  session: {
+    maxAge: 60 * 30, // 30 minutes
+  },
   pages: {
     signIn: '/auth/login',
   },

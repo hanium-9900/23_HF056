@@ -34,7 +34,7 @@ export default function ApiSpecificationInput({
         <span className="rounded bg-blue-500 text-white shrink-0 py-2 px-4 mr-5">{no + 1}번</span>
         <div className="flex items-center grow mr-3">
           <div className="font-bold mr-3">Host</div>
-          <input type="text" placeholder="https://example.com" onChange={e => updateSpecification({ host: e.target.value })} />
+          <input type="text" placeholder="https://example.com" onChange={e => updateSpecification({ host: e.target.value })} required />
         </div>
         <button className="rounded bg-red-500 text-white shrink-0 py-2 px-4" onClick={e => removeApi(no)}>
           삭제
@@ -42,14 +42,14 @@ export default function ApiSpecificationInput({
       </label>
       {/* API Endpoint */}
       <div className="flex items-center mb-6">
-        <select className="mr-3" onChange={e => updateSpecification({ method: e.target.value })}>
+        <select className="mr-3" onChange={e => updateSpecification({ method: e.target.value })} required>
           <option value="GET">GET</option>
           <option value="POST">POST</option>
           <option value="PUT">PUT</option>
           <option value="PATCH">PATCH</option>
           <option value="DELETE">DELETE</option>
         </select>
-        <input type="text" placeholder="/example/api/path" onChange={e => updateSpecification({ path: e.target.value })} />
+        <input type="text" placeholder="/example/api/path" onChange={e => updateSpecification({ path: e.target.value })} required />
       </div>
       {/* Description */}
       <label className="block mb-6">
