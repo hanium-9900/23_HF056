@@ -5,6 +5,7 @@ import hanium.apiplatform.dto.ApiDto;
 import hanium.apiplatform.dto.HeaderDto;
 import hanium.apiplatform.dto.RequestParameterDto;
 import hanium.apiplatform.dto.ResponseParameterDto;
+import hanium.apiplatform.exception.ConnectionRefusedException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -26,59 +27,63 @@ public class ApiService {
         String response = null;
 
         StringBuilder requestUrlBuilder = new StringBuilder("http://" + host + path);
-        
-        switch (method) {
-            case "GET":
-                if (!headers.isEmpty()) {
-                    // TODO
-                }
 
-                if (!requestParameters.isEmpty()) {
-                    requestUrlBuilder.append("?");
-
-                    for (RequestParameterDto requestParameter : requestParameters) {
-                        requestUrlBuilder.append(requestParameter.getKey());
-                        requestUrlBuilder.append('=');
-
-                        if (requestParameter.getType().equals("number")) {
-                            requestUrlBuilder.append(50);
-                        } else if (requestParameter.getType().equals("string")) {
-                            // TODO
-                        }
-
-                        requestUrlBuilder.append('&');
+        try {
+            switch (method) {
+                case "GET":
+                    if (!headers.isEmpty()) {
+                        // TODO
                     }
 
-                    requestUrlBuilder.deleteCharAt(requestUrlBuilder.length() - 1);
-                }
+                    if (!requestParameters.isEmpty()) {
+                        requestUrlBuilder.append("?");
 
-                String requestUrl = requestUrlBuilder.toString();
+                        for (RequestParameterDto requestParameter : requestParameters) {
+                            requestUrlBuilder.append(requestParameter.getKey());
+                            requestUrlBuilder.append('=');
 
-                URL url = new URL(requestUrl);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                            if (requestParameter.getType().equals("number")) {
+                                requestUrlBuilder.append(50);
+                            } else if (requestParameter.getType().equals("string")) {
+                                // TODO
+                            }
 
-                connection.setRequestMethod(method);
-                connection.setRequestProperty("X-API-KEY", apiKey);
+                            requestUrlBuilder.append('&');
+                        }
 
-                responseCode = connection.getResponseCode();
+                        requestUrlBuilder.deleteCharAt(requestUrlBuilder.length() - 1);
+                    }
 
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                StringBuilder stringBuffer = new StringBuilder();
-                String inputLine;
+                    String requestUrl = requestUrlBuilder.toString();
 
-                while ((inputLine = bufferedReader.readLine()) != null) {
-                    stringBuffer.append(inputLine);
-                }
-                bufferedReader.close();
+                    URL url = new URL(requestUrl);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-                response = stringBuffer.toString();
+                    connection.setRequestMethod(method);
+                    connection.setRequestProperty("X-API-KEY", apiKey);
 
-                break;
+                    responseCode = connection.getResponseCode();
 
-            case "POST":
-                // TODO
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    StringBuilder stringBuffer = new StringBuilder();
+                    String inputLine;
 
-                break;
+                    while ((inputLine = bufferedReader.readLine()) != null) {
+                        stringBuffer.append(inputLine);
+                    }
+                    bufferedReader.close();
+
+                    response = stringBuffer.toString();
+
+                    break;
+
+                case "POST":
+                    // TODO
+
+                    break;
+            }
+        } catch (Exception exception) {
+            throw new ConnectionRefusedException();
         }
 
         return new Pair<>(responseCode, response);
