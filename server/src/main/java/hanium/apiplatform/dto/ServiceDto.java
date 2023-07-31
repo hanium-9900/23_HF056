@@ -3,8 +3,6 @@ package hanium.apiplatform.dto;
 import hanium.apiplatform.entity.Api;
 import hanium.apiplatform.entity.Service;
 import java.util.ArrayList;
-
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,6 +18,7 @@ public class ServiceDto {
     private int price;
     private String key;
     private ArrayList<ApiDto> apis = new ArrayList<>();
+    private UserDto user;
 
     public static ServiceDto toDto(Service service) {
         ServiceDto serviceDto = new ServiceDto();
@@ -28,6 +27,7 @@ public class ServiceDto {
         serviceDto.setDescription(service.getDescription());
         serviceDto.setPrice(service.getPrice());
         serviceDto.setKey(service.getKey());
+        serviceDto.setUser(UserDto.toDto(service.getUser()));
 
         for (Api api : service.getApis()) {
             serviceDto.apis.add(ApiDto.toDto(api));
