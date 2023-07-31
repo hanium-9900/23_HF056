@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { ApiInfo, ServiceInfo } from '../types';
 import ApiSpecificationInput from './ApiSpecificationInput';
 import axios from 'axios';
+import { api } from '@/api';
 
 export default function ServiceRegisterForm() {
   const [info, setInfo] = useState<ServiceInfo>({
@@ -72,14 +73,8 @@ export default function ServiceRegisterForm() {
       })),
     };
 
-    console.log(serviceData);
-
     try {
-      const { data } = await axios.post('http://3.34.215.14:8080/services', serviceData, {
-        headers: {
-          'X-AUTH-TOKEN': localStorage.getItem('temp_token')!,
-        },
-      });
+      const { data } = await api.services.register(serviceData);
 
       alert(`전송 완료!\n${data}`);
     } catch (e) {
