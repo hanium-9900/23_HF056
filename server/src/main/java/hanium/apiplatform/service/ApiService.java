@@ -2,12 +2,6 @@ package hanium.apiplatform.service;
 
 import com.mysql.cj.conf.ConnectionUrlParser.Pair;
 import hanium.apiplatform.dto.ApiDto;
-import hanium.apiplatform.dto.ServiceDto;
-import hanium.apiplatform.dto.UserDto;
-import hanium.apiplatform.entity.User;
-import hanium.apiplatform.dto.ServiceDto;
-import hanium.apiplatform.dto.UserDto;
-import hanium.apiplatform.entity.User;
 import hanium.apiplatform.dto.HeaderDto;
 import hanium.apiplatform.dto.RequestParameterDto;
 import hanium.apiplatform.dto.ResponseParameterDto;
@@ -32,7 +26,7 @@ public class ApiService {
         String response = null;
 
         StringBuilder requestUrlBuilder = new StringBuilder("http://" + host + path);
-
+        
         switch (method) {
             case "GET":
                 if (!headers.isEmpty()) {

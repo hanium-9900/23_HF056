@@ -43,11 +43,12 @@ public class SecurityConfig {
             .antMatchers("/users/join").permitAll()
             .antMatchers("/users/login").permitAll()
             .antMatchers("/services/**").hasRole("USER")
+            .antMatchers("/users/me").hasRole("USER")
             .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .and()
             .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
         // JwtAuthenticationFilter를 UsernamePasswordAuthenticationFilter 전에 넣는다
-
+        
         return http.build();
     }
 

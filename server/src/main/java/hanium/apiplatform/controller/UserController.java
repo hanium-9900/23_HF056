@@ -9,9 +9,11 @@ import hanium.apiplatform.exception.WrongPasswordException;
 import hanium.apiplatform.repository.UserRepository;
 import java.util.Collections;
 import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +32,7 @@ public class UserController {
     @PostMapping("/join")
     public UserDto join(@RequestBody UserDto userDto) {
         Optional<User> found = userRepository.findByEmail(userDto.getEmail());
-        
+
         if (found.isPresent()) {
             throw new DuplicateEmailException();
         }
@@ -50,5 +52,16 @@ public class UserController {
             throw new WrongPasswordException();
         }
         return jwtTokenProvider.createToken(found.getUsername(), found.getRoles());
+    }
+
+    @GetMapping("/me")
+    public UserDto join(HttpServletRequest header) {
+        String userToken = jwtTokenProvider.resolveToken(header);
+        if (userToken != null && jwtTokenProvider.validateToken(userToken)) {
+            // 유효한 토큰이면 user data 추출
+            User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(() -> new UserNotFoundException());
+            return UserDto.toDto(user);
+        }
+        return null;
     }
 }
