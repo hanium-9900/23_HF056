@@ -4,6 +4,7 @@ import './page.css';
 import Link from 'next/link';
 import { FormEvent, useRef } from 'react';
 import axios from 'axios';
+import { api } from '@/api';
 
 export default function Register() {
   const emailRef = useRef<HTMLInputElement>(null);
@@ -31,11 +32,19 @@ export default function Register() {
       password,
     };
 
-    alert(JSON.stringify(credentials, undefined, 2));
+    try {
+      const { data } = await api.auth.register(credentials);
 
-    const { data } = await axios.post('http://3.34.215.14:8080/users/join', credentials);
-
-    alert(data);
+      alert(data);
+    } catch (e) {
+      if (axios.isAxiosError<{ message: string }>(e)) {
+        if (e.response?.data.message === 'Duplicate Email') {
+          alert('이미 존재하는 이메일입니다!');
+        } else {
+          alert('알 수 없는 오류가 발생했습니다!');
+        }
+      }
+    }
   }
 
   return (

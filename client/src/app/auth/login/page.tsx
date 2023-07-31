@@ -3,9 +3,14 @@
 import './page.css';
 import Link from 'next/link';
 import { FormEvent, useRef } from 'react';
-import axios from 'axios';
+import { signIn } from 'next-auth/react';
+import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
-export default function Register() {
+export default function Login() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
 
@@ -20,16 +25,22 @@ export default function Register() {
       return;
     }
 
-    const credentials = {
-      email,
-      password,
-    };
-
-    alert(JSON.stringify(credentials, undefined, 2));
-
-    const { data } = await axios.post('http://3.34.215.14:8080/users/login', credentials);
-
-    alert(data);
+    const result = await signIn('credentials', {
+      email: emailRef.current.value,
+      password: passwordRef.current.value,
+      redirect: false,
+    });
+    if (result?.error) {
+      if (result.error === 'User Not Found') {
+        alert('존재하지 않는 이메일입니다!');
+      } else if (result.error === 'Wrong Password') {
+        alert('비밀번호가 틀렸습니다!');
+      } else {
+        alert('알 수 없는 오류가 발생했습니다!');
+      }
+    } else {
+      router.replace(searchParams.get('callbackUrl') || '/');
+    }
   }
 
   return (
