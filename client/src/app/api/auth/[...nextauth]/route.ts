@@ -28,7 +28,6 @@ const authOptions: NextAuthOptions = {
 
           return { ...user, token: token };
         } catch (e) {
-          console.log(e.message);
           if (axios.isAxiosError(e)) {
             if (e.response?.data.message) {
               throw new Error(e.response?.data.message);
