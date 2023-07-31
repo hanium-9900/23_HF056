@@ -22,9 +22,11 @@ dependencies {
     implementation 'org.json:json:20200518'
     compileOnly 'org.projectlombok:lombok:1.18.20'
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
+
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+    testImplementation 'com.h2database:h2'
 }
 
 tasks.named('test') {

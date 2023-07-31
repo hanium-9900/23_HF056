@@ -6,6 +6,8 @@ import hanium.apiplatform.entity.Header;
 import hanium.apiplatform.entity.RequestParameter;
 import hanium.apiplatform.entity.ResponseParameter;
 import java.util.ArrayList;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -26,7 +26,7 @@ public class ApiService {
         String response = null;
 
         StringBuilder requestUrlBuilder = new StringBuilder("http://" + host + path);
-
+        
         switch (method) {
             case "GET":
                 if (!headers.isEmpty()) {

@@ -3,6 +3,8 @@ package hanium.apiplatform.dto;
 import hanium.apiplatform.entity.Api;
 import hanium.apiplatform.entity.Service;
 import java.util.ArrayList;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
