@@ -15,6 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ko">
       <body className={notoSansKR.className}>
         <AuthProvider>
+          {/* @ts-expect-error Async Server Component */}
           <Header></Header>
           {children}
         </AuthProvider>
