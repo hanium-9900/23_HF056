@@ -5,8 +5,11 @@ import { ApiInfo, ServiceInfo } from '../types';
 import ApiSpecificationInput from './ApiSpecificationInput';
 import axios from 'axios';
 import { api } from '@/api';
+import { useRouter } from 'next/navigation';
 
 export default function ServiceRegisterForm() {
+  const router = useRouter();
+
   const [info, setInfo] = useState<ServiceInfo>({
     title: '',
     description: '',
@@ -73,13 +76,35 @@ export default function ServiceRegisterForm() {
       })),
     };
 
+    if (serviceData.title.trim() === '' || serviceData.price === -1 || serviceData.key.trim() === '') {
+      alert('서비스 기본 정보(제목, 가격, Key)를 모두 입력해주세요!');
+      return;
+    }
+    for (const api of serviceData.apis) {
+      if (api.host.trim() === '' || api.path.trim() === '') {
+        alert('API 기본 정보(Host, Path)를 모두 입력해주세요!');
+        return;
+      }
+    }
+
     try {
       const { data } = await api.services.register(serviceData);
 
-      alert(`전송 완료!\n${data}`);
+      alert(`서비스 등록이 완료되었습니다!`);
+
+      router.replace(`/services/${data.id}`);
     } catch (e) {
-      console.error(e);
-      alert(e);
+      if (axios.isAxiosError(e)) {
+        if (e.response?.status === 400) {
+          alert('명세와 실제 API가 일치하지 않습니다!');
+        } else if (e.response?.status === 500) {
+          alert('서버 오류가 발생했습니다!\n(status: 500)');
+        } else {
+          alert('알 수 없는 Axios 오류가 발생했습니다!');
+        }
+      } else {
+        alert('알 수 없는 오류가 발생했습니다!');
+      }
     }
   };
 
@@ -92,22 +117,22 @@ export default function ServiceRegisterForm() {
       {/* 서비스 명세 */}
       <label className="block mb-6">
         <div className="font-bold mb-2">서비스 이름</div>
-        <input type="text" placeholder="서비스 이름을 입력하세요" onChange={e => updateInfo({ title: e.target.value })} />
+        <input type="text" placeholder="서비스 이름을 입력하세요" onChange={e => updateInfo({ title: e.target.value })} required />
       </label>
       <label className="block mb-6">
         <div className="font-bold mb-2">서비스 설명</div>
-        <textarea rows={5} placeholder="서비스 설명을 입력하세요" onChange={e => updateInfo({ description: e.target.value })}></textarea>
+        <textarea rows={5} placeholder="서비스 설명을 입력하세요" onChange={e => updateInfo({ description: e.target.value })} required></textarea>
       </label>
       <label className="block mb-6">
         <div className="font-bold mb-2">서비스 가격</div>
         <div className="flex items-center">
-          <input type="number" placeholder="30000" onChange={e => updateInfo({ price: Number.parseInt(e.target.value) })} />
+          <input type="number" placeholder="30000" onChange={e => updateInfo({ price: Number.parseInt(e.target.value) })} required />
           <span className="ml-3">원</span>
         </div>
       </label>
       <label className="block mb-6">
         <div className="font-bold mb-2">API 키</div>
-        <input type="password" onChange={e => updateInfo({ key: e.target.value })} />
+        <input type="password" onChange={e => updateInfo({ key: e.target.value })} required />
         <div className="text-xs text-blue-500 mt-1">API 키는 요청 시 X-API-KEY 헤더에 담아 보내집니다.</div>
       </label>
       {/* API 명세 */}

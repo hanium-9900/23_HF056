@@ -38,6 +38,9 @@ const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  session: {
+    maxAge: 60 * 30, // 30 minutes
+  },
   pages: {
     signIn: '/auth/login',
   },
