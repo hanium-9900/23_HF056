@@ -1,4 +1,13 @@
+import { Service } from '@/app/services/register/types';
 import axios from './axios';
+
+interface ServiceListItemResponse {
+  id: number;
+  title: string;
+  description: string;
+  price: number;
+  [key: string]: any;
+}
 
 export const api = {
   /**
@@ -58,7 +67,7 @@ export const api = {
      * 서비스 목록 조회
      */
     list() {
-      return axios.get('/services');
+      return axios.get<ServiceListItemResponse[]>('/services');
     },
     /**
      * 서비스 상세 조회
