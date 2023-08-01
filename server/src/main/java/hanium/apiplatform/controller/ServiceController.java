@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,8 +68,9 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
         return ServiceDto.toDto(serviceRepository.save(service));
     }
 
-    @GetMapping()
-    public ServiceDto getServiceById(@RequestParam Long id) {
+    // 전체 서비스 조회 및 id로 조회
+    @GetMapping("/{id}")
+    public ServiceDto getServices(@PathVariable("id") Long id) {
         Service found = serviceRepository.findById(id).orElseThrow(() -> new ServiceNotFoundException());
         return ServiceDto.toDto(found);
     }
