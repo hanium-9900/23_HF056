@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
 main.welcome {
   color: rgb(255, 255, 255);
   background: linear-gradient(to bottom, transparent, rgb(0, 0, 0)) rgb(0, 0, 0);
