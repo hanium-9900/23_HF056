@@ -63,6 +63,18 @@ public class Service {
         return service;
     }
 
+    // TODO
+//    public void update(ServiceDto serviceDto) {
+//        this.title = serviceDto.getTitle();
+//        this.description = serviceDto.getDescription();
+//        this.price = serviceDto.getPrice();
+//        this.key = serviceDto.getKey();
+//
+//        for (Api api : this.apis) {
+//            api.
+//        }
+//    }
+
     public void addApi(Api api) {
         this.apis.add(api);
         api.updateService(this);

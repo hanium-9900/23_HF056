@@ -24,6 +24,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -85,6 +86,20 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
             result.add(ServiceDto.toDto(service));
         }
         return result;
+    }
+
+    // TODO
+//    @PutMapping("/{id}")
+//    public ServiceDto updateServiceById(@PathVariable("id") Long id, @RequestBody ServiceDto serviceDto, HttpServletRequest header) {
+//        String userToken = jwtTokenProvider.resolveToken(header);
+//        User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(() -> new UserNotFoundException());
+//
+//    }
+
+    @DeleteMapping("/{id}")
+    public Long deleteServiceById(@PathVariable("id") Long id) {
+        serviceRepository.deleteById(id);
+        return id;
     }
 
     // 구매 요청 처리
