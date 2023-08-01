@@ -15,11 +15,8 @@ instance.interceptors.request.use(async request => {
     session = await getSession();
   }
 
-  console.log('calling?', session);
-
   if (session) {
     request.headers['X-AUTH-TOKEN'] = session.user.token;
-    console.log('in axios interceptor: ', request.headers);
   }
 
   return request;
