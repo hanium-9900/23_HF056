@@ -68,11 +68,23 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
         return ServiceDto.toDto(serviceRepository.save(service));
     }
 
-    // 전체 서비스 조회 및 id로 조회
+    // 서비스 id로 조회
     @GetMapping("/{id}")
-    public ServiceDto getServices(@PathVariable("id") Long id) {
-        Service found = serviceRepository.findById(id).orElseThrow(() -> new ServiceNotFoundException());
-        return ServiceDto.toDto(found);
+    public ServiceDto getServiceById(@PathVariable("id") Long id) {
+        Service service = serviceRepository.findById(id).orElseThrow(() -> new ServiceNotFoundException());
+        return ServiceDto.toDto(service);
+    }
+
+    // 전체 서비스 조회
+    @GetMapping()
+    public List<ServiceDto> getServices() {
+        List<Service> services = serviceRepository.findAll();
+        ArrayList<ServiceDto> result = new ArrayList<>();
+
+        for (Service service : services) {
+            result.add(ServiceDto.toDto(service));
+        }
+        return result;
     }
 
     // 구매 요청 처리
