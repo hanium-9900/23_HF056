@@ -5,7 +5,10 @@ import { getServerSession } from 'next-auth';
 
 export default async function Header() {
   const session = await getServerSession();
-  const links = [{ name: '서비스 등록', href: '/services/register' }];
+  const links = [
+    { name: '서비스 등록', href: '/services/register' },
+    { name: '서비스 목록', href: '/services' },
+  ];
 
   return (
     <header className="border-b">

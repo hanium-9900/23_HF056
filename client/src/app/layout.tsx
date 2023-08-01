@@ -13,7 +13,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
-      <body className={notoSansKR.className}>
+      <body>
         <AuthProvider>
           {/* @ts-expect-error Async Server Component */}
           <Header></Header>
