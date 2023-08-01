@@ -42,13 +42,14 @@ public class SecurityConfig {
             .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
             .antMatchers("/users/join").permitAll()
             .antMatchers("/users/login").permitAll()
-            .antMatchers("/services/**").hasRole("USER")
+            .antMatchers("/services").permitAll()
+            .antMatchers("/services/**").permitAll()
             .antMatchers("/users/me").hasRole("USER")
             .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .and()
             .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
         // JwtAuthenticationFilter를 UsernamePasswordAuthenticationFilter 전에 넣는다
-        
+
         return http.build();
     }
 
