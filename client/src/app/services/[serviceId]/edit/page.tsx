@@ -7,7 +7,7 @@ export default async function Register({ params }: { params: { serviceId: string
 
   return (
     <main className="max-w-3xl mx-auto py-14">
-      <h1 className="text-3xl font-bold text-center mb-7">서비스 등록</h1>
+      <h1 className="text-3xl font-bold text-center mb-7">서비스 수정</h1>
       <ServiceRegisterForm service={service} />
     </main>
   );
