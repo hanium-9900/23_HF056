@@ -28,12 +28,12 @@ select {
 
 /* buttons */
 .btn {
-  @apply rounded py-3 px-6;
+  @apply rounded py-3 px-6 border-2;
   @apply transition-colors;
 }
 
 .btn.btn-form {
-  @apply bg-blue-500 text-white;
+  @apply bg-blue-500 border-blue-500 text-white;
   @apply hover:bg-blue-600;
 }
 
@@ -43,13 +43,23 @@ select {
 }
 
 .btn.btn-secondary {
-  @apply bg-slate-500 text-white;
+  @apply bg-slate-500 border-slate-500 text-white;
   @apply hover:bg-slate-600;
 }
 
 .btn.btn-secondary-outline {
   @apply border-2 border-slate-500 bg-white text-slate-500;
   @apply hover:bg-slate-500 hover:text-white;
+}
+
+.btn.btn-danger {
+  @apply bg-red-500 border-red-500 text-white;
+  @apply hover:bg-red-600;
+}
+
+.btn.btn-danger-outline {
+  @apply border-2 border-red-500 bg-white text-red-500;
+  @apply hover:bg-red-500 hover:text-white;
 }
 
 /* default table */
