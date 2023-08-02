@@ -70,7 +70,7 @@ export default function ApiResponseParametersInput({ responseParameters, onChang
           </div>
         ))}
         <div className="flex justify-end">
-          <button className="btn btn-form-outline" onClick={() => addParameter()}>
+          <button type="button" className="btn btn-form-outline" onClick={() => addParameter()}>
             파라미터 추가
           </button>
         </div>

@@ -59,7 +59,7 @@ export default function ApiHeadersInput({ headers, onChange }: { headers: Header
           </div>
         ))}
         <div className="flex justify-end">
-          <button className="btn btn-form-outline" onClick={() => addHeader()}>
+          <button type="button" className="btn btn-form-outline" onClick={() => addHeader()}>
             헤더 추가
           </button>
         </div>

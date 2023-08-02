@@ -36,7 +36,7 @@ export default function ApiSpecificationInput({
           <div className="font-bold mr-3">Host</div>
           <input type="text" placeholder="https://example.com" onChange={e => updateSpecification({ host: e.target.value })} value={api.host} required />
         </div>
-        <button className="rounded bg-red-500 text-white shrink-0 py-2 px-4" onClick={e => removeApi(no)}>
+        <button type="button" className="rounded bg-red-500 text-white shrink-0 py-2 px-4" onClick={e => removeApi(no)}>
           삭제
         </button>
       </label>
