@@ -112,7 +112,7 @@ export default function ApiSpecification({ api }: { api: ApiInfo }) {
           <tbody>
             {api.errorCodes.map((errorCode, idx) => (
               <tr key={idx}>
-                <td>{errorCode.key}</td>
+                <td>{errorCode.statusCode}</td>
                 <td>{errorCode.description}</td>
               </tr>
             ))}
