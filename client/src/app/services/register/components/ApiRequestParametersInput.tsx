@@ -1,34 +1,34 @@
 import { useState } from 'react';
 import { RequestParameter } from '../types';
 
-export default function ApiRequestParametersInput({ onChange }: { onChange: (requestParameters: RequestParameter[]) => void }) {
-  const [requestParameters, setRequestParameters] = useState<RequestParameter[]>([]);
+export default function ApiRequestParametersInput({ requestParameters, onChange }: { requestParameters: RequestParameter[], onChange: (requestParameters: RequestParameter[]) => void }) {
+  const [value, setValue] = useState<RequestParameter[]>(requestParameters);
 
   /**
    * add new request parameter input
    */
   function addParameter() {
-    for (const { key } of requestParameters) {
+    for (const { key } of value) {
       if (key.trim() === '') {
         alert('먼저 파라미터명을 모두 입력해주세요');
         return;
       }
     }
 
-    const updatedRequestParameters = [...requestParameters];
+    const updatedRequestParameters = [...value];
     updatedRequestParameters.push({ key: '', type: 'string', description: '', required: false });
 
-    setRequestParameters(updatedRequestParameters);
+    setValue(updatedRequestParameters);
   }
 
   /**
    * update request parameter by index
    */
   function updateParameter(idx: number, data: Partial<RequestParameter>) {
-    const updatedRequestParameters = [...requestParameters];
+    const updatedRequestParameters = [...value];
     updatedRequestParameters[idx] = { ...updatedRequestParameters[idx], ...data };
 
-    setRequestParameters(updatedRequestParameters);
+    setValue(updatedRequestParameters);
 
     onChange(updatedRequestParameters);
   }
@@ -37,7 +37,7 @@ export default function ApiRequestParametersInput({ onChange }: { onChange: (req
     <label className="block mb-6">
       <div className="font-bold mb-2">요청 파라미터</div>
       <div>
-        {requestParameters.map((parameter, idx) => (
+        {value.map((parameter, idx) => (
           <div key={idx} className="flex mb-4">
             <input
               className="mr-3"

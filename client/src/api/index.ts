@@ -1,12 +1,46 @@
 import { Service } from '@/app/services/register/types';
 import axios from './axios';
 
-interface ServiceListItemResponse {
+export interface ServiceResponse {
   id: number;
+  category: string | undefined; // [TODO] 카테고리 추가 시 undefined 제거
   title: string;
   description: string;
   price: number;
-  [key: string]: any;
+  key: string;
+  apis: {
+    id: number;
+    host: string;
+    description: string;
+    method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+    path: string;
+    headers: {
+      id: number;
+      required: 0 | 1;
+      key: string;
+      type: string; // [TODO] enum
+      description: string;
+    }[];
+    requestParameters: {
+      id: number;
+      required: 0 | 1;
+      key: string;
+      type: string; // [TODO] enum
+      description: string;
+    }[];
+    responseParameters: {
+      id: number;
+      required: 0 | 1;
+      key: string;
+      type: string; // [TODO] enum
+      description: string;
+    }[];
+    errorCodes: {
+      id: number;
+      statusCode: number;
+      description: string;
+    }[];
+  }[];
 }
 
 export const api = {
@@ -60,20 +94,23 @@ export const api = {
     /**
      * 서비스 수정
      */
-    update(service: any) {
-      // 수정
+    update(serviceId: number, service: any) {
+      return new Promise((res, rej) => {
+        alert('서비스 수정 API가 구현되지 않았습니다.');
+        rej(null);
+      });
     },
     /**
      * 서비스 목록 조회
      */
     list() {
-      return axios.get<ServiceListItemResponse[]>('/services');
+      return axios.get<ServiceResponse[]>('/services');
     },
     /**
      * 서비스 상세 조회
      */
     show(serviceId: number) {
-      return axios.get(`/services/${serviceId}`);
+      return axios.get<ServiceResponse>(`/services/${serviceId}`);
     },
     /**
      * 서비스 신고

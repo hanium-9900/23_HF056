@@ -1,34 +1,34 @@
 import { useState } from 'react';
 import { Header } from '../types';
 
-export default function ApiHeadersInput({ onChange }: { onChange: (headers: Header[]) => void }) {
-  const [headers, setHeaders] = useState<Header[]>([]);
+export default function ApiHeadersInput({ headers, onChange }: { headers: Header[], onChange: (headers: Header[]) => void }) {
+  const [value, setValue] = useState<Header[]>(headers);
 
   /**
    * add new header input
    */
   function addHeader() {
-    for (const { key } of headers) {
+    for (const { key } of value) {
       if (key.trim() === '') {
         alert('먼저 헤더명을 모두 입력해주세요');
         return;
       }
     }
 
-    const updatedHeaders = [...headers];
+    const updatedHeaders = [...value];
     updatedHeaders.push({ key: '', description: '', required: false });
 
-    setHeaders(updatedHeaders);
+    setValue(updatedHeaders);
   }
 
   /**
    * update header by index
    */
   function updateHeader(idx: number, data: Partial<Header>) {
-    const updatedHeaders = [...headers];
+    const updatedHeaders = [...value];
     updatedHeaders[idx] = { ...updatedHeaders[idx], ...data };
 
-    setHeaders(updatedHeaders);
+    setValue(updatedHeaders);
 
     onChange(updatedHeaders);
   }
@@ -37,7 +37,7 @@ export default function ApiHeadersInput({ onChange }: { onChange: (headers: Head
     <label className="block mb-6">
       <div className="font-bold mb-2">헤더</div>
       <div>
-        {headers.map((parameter, idx) => (
+        {value.map((parameter, idx) => (
           <div key={idx} className="flex mb-4">
             <input
               className="mr-3"

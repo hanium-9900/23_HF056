@@ -1,34 +1,34 @@
 import { useState } from 'react';
 import { ErrorCode } from '../types';
 
-export default function ApiErrorCodesInput({ onChange }: { onChange: (errorCodes: ErrorCode[]) => void }) {
-  const [errorCodes, setErrorCodes] = useState<ErrorCode[]>([]);
+export default function ApiErrorCodesInput({ errorCodes, onChange }: { errorCodes: ErrorCode[], onChange: (errorCodes: ErrorCode[]) => void }) {
+  const [value, setValue] = useState<ErrorCode[]>(errorCodes);
 
   /**
    * add new error code input
    */
   function addErrorCode() {
-    for (const { key } of errorCodes) {
-      if (key.trim() === '') {
+    for (const { statusCode } of value) {
+      if (statusCode === -1) {
         alert('먼저 코드를 모두 입력해주세요');
         return;
       }
     }
 
-    const updatedErrorCodes = [...errorCodes];
-    updatedErrorCodes.push({ key: '', description: '' });
+    const updatedErrorCodes = [...value];
+    updatedErrorCodes.push({ statusCode: -1, description: '' });
 
-    setErrorCodes(updatedErrorCodes);
+    setValue(updatedErrorCodes);
   }
 
   /**
    * update error code by index
    */
   function updateErrorCode(idx: number, data: Partial<ErrorCode>) {
-    const updatedErrorCodes = [...errorCodes];
+    const updatedErrorCodes = [...value];
     updatedErrorCodes[idx] = { ...updatedErrorCodes[idx], ...data };
 
-    setErrorCodes(updatedErrorCodes);
+    setValue(updatedErrorCodes);
 
     onChange(updatedErrorCodes);
   }
@@ -37,16 +37,16 @@ export default function ApiErrorCodesInput({ onChange }: { onChange: (errorCodes
     <label className="block mb-6">
       <div className="font-bold mb-2">에러 코드</div>
       <div>
-        {errorCodes.map((code, idx) => (
+        {value.map((code, idx) => (
           <div key={idx} className="flex mb-4">
             <input
               className="mr-3"
               type="text"
               placeholder="상태 코드 (ex: 404)"
               onChange={e => {
-                updateErrorCode(idx, { key: e.target.value });
+                updateErrorCode(idx, { statusCode: Number.parseInt(e.target.value) });
               }}
-              value={code.key}
+              value={code.statusCode.toString()}
             />
             <input
               type="text"

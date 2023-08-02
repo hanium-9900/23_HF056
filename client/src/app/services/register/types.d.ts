@@ -37,7 +37,7 @@ export interface ResponseParameter {
 }
 
 export interface ErrorCode {
-  key: string;
+  statusCode: number;
   description: string;
 }
 
