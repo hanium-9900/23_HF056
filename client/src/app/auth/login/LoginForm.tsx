@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { FormEvent, useRef } from 'react';
 import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
@@ -18,10 +19,11 @@ export default function LoginForm() {
     const password = passwordRef.current?.value;
 
     if (!email || !password) {
-      alert('이메일과 비밀번호를 입력해주세요');
+      toast.error('이메일과 비밀번호를 입력해주세요');
       return;
     }
 
+    const loadingToastId = toast.loading('로그인 중입니다..',)
     const result = await signIn('credentials', {
       email: emailRef.current.value,
       password: passwordRef.current.value,
@@ -29,11 +31,11 @@ export default function LoginForm() {
     });
     if (result?.error) {
       if (result.error === 'User Not Found') {
-        alert('존재하지 않는 이메일입니다!');
+        toast.update(loadingToastId, { render: "존재하지 않는 이메일입니다!", type: "error", autoClose: 3000, isLoading: false });
       } else if (result.error === 'Wrong Password') {
-        alert('비밀번호가 틀렸습니다!');
+        toast.update(loadingToastId, { render: "비밀번호가 틀렸습니다!", type: "error", autoClose: 3000, isLoading: false });
       } else {
-        alert('알 수 없는 오류가 발생했습니다!');
+        toast.update(loadingToastId, { render: "알 수 없는 오류가 발생했습니다!", type: "error", autoClose: 3000, isLoading: false });
       }
     } else {
       // update();

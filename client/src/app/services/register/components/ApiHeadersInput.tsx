@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Header } from '../types';
+import { toast } from 'react-toastify';
 
 export default function ApiHeadersInput({ headers, onChange }: { headers: Header[]; onChange: (headers: Header[]) => void }) {
   const [value, setValue] = useState<Header[]>(headers);
@@ -10,7 +11,7 @@ export default function ApiHeadersInput({ headers, onChange }: { headers: Header
   function addHeader() {
     for (const { key } of value) {
       if (key.trim() === '') {
-        alert('먼저 헤더명을 모두 입력해주세요');
+        toast.error('먼저 헤더명을 모두 입력해주세요');
         return;
       }
     }
