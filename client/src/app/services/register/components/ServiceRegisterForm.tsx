@@ -6,6 +6,7 @@ import ApiSpecificationInput from './ApiSpecificationInput';
 import axios from 'axios';
 import { api, ServiceResponse } from '@/api';
 import { useRouter } from 'next/navigation';
+import Modal from '@/app/components/Modal';
 
 interface ServiceRegisterFormProps {
   service?: ServiceResponse;
@@ -14,6 +15,7 @@ interface ServiceRegisterFormProps {
 export default function ServiceRegisterForm({ service }: ServiceRegisterFormProps) {
   const router = useRouter();
 
+  const [modalOpened, setModalOpened] = useState(false);
   const [info, setInfo] = useState<ServiceInfo>({
     title: service?.title || '',
     description: service?.description || '',
@@ -82,6 +84,25 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
     setApiList(updatedApiList);
   }
 
+  const openSubmitModal = () => {
+    if (info.title.trim() === '' || info.price === -1 || info.key.trim() === '') {
+      alert('서비스 기본 정보(제목, 가격, Key)를 모두 입력해주세요!');
+      return;
+    }
+    if (apiList.length === 0) {
+      alert('API를 최소 1개 이상 등록해주세요!');
+      return;
+    }
+    for (const api of apiList) {
+      if (api.host.trim() === '' || api.path.trim() === '') {
+        alert('API 기본 정보(Host, Path)를 모두 입력해주세요!');
+        return;
+      }
+    }
+
+    setModalOpened(() => true);
+  }
+
   const submitForm = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
 
@@ -105,17 +126,6 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
         })),
       })),
     };
-
-    if (serviceData.title.trim() === '' || serviceData.price === -1 || serviceData.key.trim() === '') {
-      alert('서비스 기본 정보(제목, 가격, Key)를 모두 입력해주세요!');
-      return;
-    }
-    for (const api of serviceData.apis) {
-      if (api.host.trim() === '' || api.path.trim() === '') {
-        alert('API 기본 정보(Host, Path)를 모두 입력해주세요!');
-        return;
-      }
-    }
 
     if (!service) {
       try {
@@ -169,53 +179,69 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
   }, []);
 
   return (
-    <form className="rounded border border-slate-300 p-7" onSubmit={e => e.preventDefault()}>
-      {/* 서비스 명세 */}
-      <label className="block mb-6">
-        <div className="font-bold mb-2">서비스 이름</div>
-        <input type="text" placeholder="서비스 이름을 입력하세요" onChange={e => updateInfo({ title: e.target.value })} value={info.title} required />
-      </label>
-      <label className="block mb-6">
-        <div className="font-bold mb-2">서비스 설명</div>
-        <textarea rows={5} placeholder="서비스 설명을 입력하세요" onChange={e => updateInfo({ description: e.target.value })} value={info.description} required></textarea>
-      </label>
-      <label className="block mb-6">
-        <div className="font-bold mb-2">서비스 가격</div>
-        <div className="flex items-center">
-          <input type="number" placeholder="30000" onChange={e => updateInfo({ price: Number.parseInt(e.target.value) })} value={info.price} required />
-          <span className="ml-3">원</span>
+    <>
+      <form className="rounded border border-slate-300 p-7" onSubmit={e => { e.preventDefault(); openSubmitModal() }}>
+        {/* 서비스 명세 */}
+        <label className="block mb-6">
+          <div className="font-bold mb-2">서비스 이름</div>
+          <input type="text" placeholder="서비스 이름을 입력하세요" onChange={e => updateInfo({ title: e.target.value })} value={info.title} required />
+        </label>
+        <label className="block mb-6">
+          <div className="font-bold mb-2">서비스 설명</div>
+          <textarea rows={5} placeholder="서비스 설명을 입력하세요" onChange={e => updateInfo({ description: e.target.value })} value={info.description} required></textarea>
+        </label>
+        <label className="block mb-6">
+          <div className="font-bold mb-2">서비스 가격</div>
+          <div className="flex items-center">
+            <input type="number" placeholder="30000" onChange={e => updateInfo({ price: Number.parseInt(e.target.value) })} value={info.price} required />
+            <span className="ml-3">원</span>
+          </div>
+        </label>
+        <label className="block mb-6">
+          <div className="font-bold mb-2">API 키</div>
+          <input type="password" onChange={e => updateInfo({ key: e.target.value })} value={info.key} required />
+          <div className="text-xs text-blue-500 mt-1">API 키는 요청 시 X-API-KEY 헤더에 담아 보내집니다.</div>
+        </label>
+        {/* API 명세 */}
+        <div className="block mb-6">
+          <div className="font-bold mb-12">API 명세</div>
+
+          <hr className="mb-12" />
+
+          {/* API 목록 */}
+          {apiList.map((api, idx) => (
+            <ApiSpecificationInput key={idx} no={idx} api={api} removeApi={removeApi} onChange={updatedApi => updateApi(idx, updatedApi)} />
+          ))}
         </div>
-      </label>
-      <label className="block mb-6">
-        <div className="font-bold mb-2">API 키</div>
-        <input type="password" onChange={e => updateInfo({ key: e.target.value })} value={info.key} required />
-        <div className="text-xs text-blue-500 mt-1">API 키는 요청 시 X-API-KEY 헤더에 담아 보내집니다.</div>
-      </label>
-      {/* API 명세 */}
-      <div className="block mb-6">
-        <div className="font-bold mb-12">API 명세</div>
+
+        <div className="flex justify-end mb-12">
+          <button type="button" className="btn btn-form" onClick={addApi}>
+            API 추가
+          </button>
+        </div>
 
         <hr className="mb-12" />
 
-        {/* API 목록 */}
-        {apiList.map((api, idx) => (
-          <ApiSpecificationInput key={idx} no={idx} api={api} removeApi={removeApi} onChange={updatedApi => updateApi(idx, updatedApi)} />
-        ))}
-      </div>
-
-      <div className="flex justify-end mb-12">
-        <button className="btn btn-form" onClick={addApi}>
-          API 추가
-        </button>
-      </div>
-
-      <hr className="mb-12" />
-
-      <div className="flex justify-end">
-        <button className="btn btn-form" onClick={submitForm}>
-          서비스 등록
-        </button>
-      </div>
-    </form>
+        <div className="flex justify-end">
+          <button type='submit' className="btn btn-form">
+            서비스 {service ? '수정' : '등록'}
+          </button>
+        </div>
+      </form >
+      <Modal opened={modalOpened} setOpened={setModalOpened}>
+        <div className='font-bold text-3xl text-center mb-6'>
+          <div>서비스 {service ? '수정' : '등록'}</div>
+        </div>
+        <div className='text-center mb-4'>
+          <div className='font-bold text-xl mb-2'>“{info.title}”</div>
+          <div className='font-bold text-blue-500 font-xl mb-2'>{Intl.NumberFormat('ko-KR').format(info.price)}원</div>
+          <div className='font-light'><span className='text-blue-500 font-bold'>{apiList.length}</span>개의 API 포함</div>
+        </div>
+        <div className='flex justify-center items-center gap-6'>
+          <button type="button" className='btn btn-secondary-outline' onClick={() => { setModalOpened(false) }}>취소</button>
+          <button type="button" className='btn btn-form' onClick={e => { submitForm(e); setModalOpened(false) }}>{service ? '수정' : '등록'}</button>
+        </div>
+      </Modal>
+    </>
   );
 }

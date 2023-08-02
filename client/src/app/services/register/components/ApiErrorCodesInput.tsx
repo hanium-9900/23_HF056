@@ -59,7 +59,7 @@ export default function ApiErrorCodesInput({ errorCodes, onChange }: { errorCode
           </div>
         ))}
         <div className="flex justify-end">
-          <button className="btn btn-form-outline" onClick={() => addErrorCode()}>
+          <button type="button" className="btn btn-form-outline" onClick={() => addErrorCode()}>
             에러 코드 추가
           </button>
         </div>
