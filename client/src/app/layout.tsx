@@ -2,6 +2,7 @@ import './globals.css';
 import { Noto_Sans_KR } from 'next/font/google';
 import AuthProvider from './components/AuthProvider';
 import Header from './components/Header';
+import ToastProvider from './components/ToastProvider';
 
 const notoSansKR = Noto_Sans_KR({ weight: ['100', '300', '400', '500', '700', '900'], subsets: ['latin'] });
 
@@ -15,9 +16,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ko">
       <body>
         <AuthProvider>
-          {/* @ts-expect-error Async Server Component */}
-          <Header></Header>
-          {children}
+          <ToastProvider>
+            {/* @ts-expect-error Async Server Component */}
+            <Header></Header>
+            {children}
+          </ToastProvider>
         </AuthProvider>
       </body>
     </html>

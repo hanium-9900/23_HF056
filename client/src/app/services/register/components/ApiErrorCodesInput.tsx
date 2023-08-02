@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ErrorCode } from '../types';
+import { toast } from 'react-toastify';
 
 export default function ApiErrorCodesInput({ errorCodes, onChange }: { errorCodes: ErrorCode[]; onChange: (errorCodes: ErrorCode[]) => void }) {
   const [value, setValue] = useState<ErrorCode[]>(errorCodes);
@@ -10,7 +11,7 @@ export default function ApiErrorCodesInput({ errorCodes, onChange }: { errorCode
   function addErrorCode() {
     for (const { statusCode } of value) {
       if (statusCode === -1) {
-        alert('먼저 코드를 모두 입력해주세요');
+        toast.error('먼저 코드를 모두 입력해주세요!');
         return;
       }
     }

@@ -7,6 +7,7 @@ import axios from 'axios';
 import { api, ServiceResponse } from '@/api';
 import { useRouter } from 'next/navigation';
 import Modal from '@/app/components/Modal';
+import { toast } from 'react-toastify';
 
 interface ServiceRegisterFormProps {
   service?: ServiceResponse;
@@ -92,16 +93,16 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
 
   const openSubmitModal = () => {
     if (info.title.trim() === '' || info.price === -1 || info.key.trim() === '') {
-      alert('서비스 기본 정보(제목, 가격, Key)를 모두 입력해주세요!');
+      toast.error('서비스 기본 정보(제목, 가격, Key)를 모두 입력해주세요!');
       return;
     }
     if (apiList.length === 0) {
-      alert('API를 최소 1개 이상 등록해주세요!');
+      toast.error('API를 최소 1개 이상 등록해주세요!');
       return;
     }
     for (const api of apiList) {
       if (api.host.trim() === '' || api.path.trim() === '') {
-        alert('API 기본 정보(Host, Path)를 모두 입력해주세요!');
+        toast.error('API 기본 정보(Host, Path)를 모두 입력해주세요!');
         return;
       }
     }
@@ -137,40 +138,40 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
       try {
         const { data } = await api.services.register(serviceData);
 
-        alert(`서비스 등록이 완료되었습니다!`);
+        toast.success(`서비스 등록이 완료되었습니다!`);
 
         router.replace(`/services/${data.id}`);
       } catch (e) {
         if (axios.isAxiosError(e)) {
           if (e.response?.status === 400) {
-            alert('명세와 실제 API가 일치하지 않습니다!');
+            toast.error('명세와 실제 API가 일치하지 않습니다!');
           } else if (e.response?.status === 500) {
-            alert('서버 오류가 발생했습니다!\n(status: 500)');
+            toast.error('서버 오류가 발생했습니다!\n(status: 500)');
           } else {
-            alert('알 수 없는 Axios 오류가 발생했습니다!');
+            toast.error('알 수 없는 Axios 오류가 발생했습니다!');
           }
         } else {
-          alert('알 수 없는 오류가 발생했습니다!');
+          toast.error('알 수 없는 오류가 발생했습니다!');
         }
       }
     } else {
       try {
         await api.services.update(service.id, serviceData);
 
-        alert('서비스 수정이 완료되었습니다!');
+        toast.success('서비스 수정이 완료되었습니다!');
 
         router.replace(`/services/${service.id}`);
       } catch (e) {
         if (axios.isAxiosError(e)) {
           if (e.response?.status === 400) {
-            alert('명세와 실제 API가 일치하지 않습니다!');
+            toast.error('명세와 실제 API가 일치하지 않습니다!');
           } else if (e.response?.status === 500) {
-            alert('서버 오류가 발생했습니다!\n(status: 500)');
+            toast.error('서버 오류가 발생했습니다!\n(status: 500)');
           } else {
-            alert('알 수 없는 Axios 오류가 발생했습니다!');
+            toast.error('알 수 없는 Axios 오류가 발생했습니다!');
           }
         } else {
-          alert('알 수 없는 오류가 발생했습니다!');
+          toast.error('알 수 없는 오류가 발생했습니다!');
         }
       }
     }

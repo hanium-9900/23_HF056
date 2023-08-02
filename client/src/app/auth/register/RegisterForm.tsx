@@ -5,6 +5,7 @@ import { FormEvent, useRef, useState } from 'react';
 import axios from 'axios';
 import { api } from '@/api';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -25,11 +26,11 @@ export default function RegisterForm() {
     const passwordConfirm = passwordConfirmRef.current?.value;
 
     if (!email || !password) {
-      alert('이메일과 비밀번호를 입력해주세요');
+      toast.error('이메일과 비밀번호를 입력해주세요!');
       return;
     }
     if (password !== passwordConfirm) {
-      alert('비밀번호가 일치하지 않습니다');
+      toast.error('비밀번호가 일치하지 않습니다!');
       return;
     }
 
@@ -38,19 +39,22 @@ export default function RegisterForm() {
       password,
     };
 
+    const loadingToastId = toast.loading('회원가입 중입니다..',)
     try {
       setLoading(() => true);
       await api.auth.register(credentials);
 
-      alert('회원가입이 완료되었습니다!');
+      toast.update(loadingToastId, { render: "회원가입이 완료되었습니다!", type: "success", autoClose: 3000, isLoading: false });
       router.replace('/auth/login');
     } catch (e) {
       if (axios.isAxiosError<{ message: string }>(e)) {
         if (e.response?.data.message === 'Duplicate Email') {
-          alert('이미 존재하는 이메일입니다!');
+          toast.update(loadingToastId, { render: "이미 존재하는 이메일입니다!", type: "error", autoClose: 3000, isLoading: false });
         } else {
-          alert('알 수 없는 오류가 발생했습니다!');
+          toast.update(loadingToastId, { render: "알 수 없는 오류가 발생했습니다!", type: "error", autoClose: 3000, isLoading: false });
         }
+      } else {
+        toast.update(loadingToastId, { render: "알 수 없는 오류가 발생했습니다!", type: "error", autoClose: 3000, isLoading: false });
       }
     } finally {
       setLoading(() => false);

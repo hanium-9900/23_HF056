@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { RequestParameter } from '../types';
+import { toast } from 'react-toastify';
 
 export default function ApiRequestParametersInput({
   requestParameters,
@@ -16,7 +17,7 @@ export default function ApiRequestParametersInput({
   function addParameter() {
     for (const { key } of value) {
       if (key.trim() === '') {
-        alert('먼저 파라미터명을 모두 입력해주세요');
+        toast.error('먼저 파라미터명을 모두 입력해주세요!');
         return;
       }
     }
