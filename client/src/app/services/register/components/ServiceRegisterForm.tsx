@@ -4,19 +4,49 @@ import { useEffect, useState } from 'react';
 import { ApiInfo, ServiceInfo } from '../types';
 import ApiSpecificationInput from './ApiSpecificationInput';
 import axios from 'axios';
-import { api } from '@/api';
+import { api, ServiceResponse } from '@/api';
 import { useRouter } from 'next/navigation';
 
-export default function ServiceRegisterForm() {
+interface ServiceRegisterFormProps {
+  service?: ServiceResponse;
+}
+
+export default function ServiceRegisterForm({ service }: ServiceRegisterFormProps) {
   const router = useRouter();
 
   const [info, setInfo] = useState<ServiceInfo>({
-    title: '',
-    description: '',
-    price: -1,
-    key: '',
+    title: service?.title || '',
+    description: service?.description || '',
+    price: service?.price || -1,
+    key: service?.key || '',
   });
-  const [apiList, setApiList] = useState<ApiInfo[]>([]);
+  const [apiList, setApiList] = useState<ApiInfo[]>(service?.apis?.map(api => ({
+    host: api.host || '',
+    method: api.method || 'GET',
+    path: api.path || '',
+    description: api.description || '',
+    headers: api.headers?.map(h => ({
+      key: h.key,
+      description: h.description,
+      required: h.required === 1,
+    })) || [],
+    requestParameters: api.requestParameters?.map(rq => ({
+      key: rq.key,
+      type: rq.type,
+      description: rq.description,
+      required: rq.required === 1,
+    })) || [],
+    responseParameters: api.responseParameters?.map(rp => ({
+      key: rp.key,
+      type: rp.type,
+      description: rp.description,
+      required: rp.required === 1,
+    })) || [],
+    errorCodes: api.errorCodes?.map(ec => ({
+      statusCode: ec.statusCode,
+      description: ec.description,
+    })) || [],
+  })) || []);
 
   function updateInfo(data: Partial<ServiceInfo>) {
     setInfo({ ...info, ...data });
@@ -87,29 +117,55 @@ export default function ServiceRegisterForm() {
       }
     }
 
-    try {
-      const { data } = await api.services.register(serviceData);
+    if (!service) {
+      try {
+        const { data } = await api.services.register(serviceData);
 
-      alert(`서비스 등록이 완료되었습니다!`);
+        alert(`서비스 등록이 완료되었습니다!`);
 
-      router.replace(`/services/${data.id}`);
-    } catch (e) {
-      if (axios.isAxiosError(e)) {
-        if (e.response?.status === 400) {
-          alert('명세와 실제 API가 일치하지 않습니다!');
-        } else if (e.response?.status === 500) {
-          alert('서버 오류가 발생했습니다!\n(status: 500)');
+        router.replace(`/services/${data.id}`);
+      } catch (e) {
+        if (axios.isAxiosError(e)) {
+          if (e.response?.status === 400) {
+            alert('명세와 실제 API가 일치하지 않습니다!');
+          } else if (e.response?.status === 500) {
+            alert('서버 오류가 발생했습니다!\n(status: 500)');
+          } else {
+            alert('알 수 없는 Axios 오류가 발생했습니다!');
+          }
         } else {
-          alert('알 수 없는 Axios 오류가 발생했습니다!');
+          alert('알 수 없는 오류가 발생했습니다!');
         }
-      } else {
-        alert('알 수 없는 오류가 발생했습니다!');
+      }
+    } else {
+      try {
+        const { data } = await api.services.update(service.id, serviceData);
+
+        alert("서비스 수정이 완료되었습니다!");
+
+        router.replace(`/services/${data.id}`);
+      }
+      catch (e) {
+        if (axios.isAxiosError(e)) {
+          if (e.response?.status === 400) {
+            alert('명세와 실제 API가 일치하지 않습니다!');
+          } else if (e.response?.status === 500) {
+            alert('서버 오류가 발생했습니다!\n(status: 500)');
+          } else {
+            alert('알 수 없는 Axios 오류가 발생했습니다!');
+          }
+        } else {
+          alert('알 수 없는 오류가 발생했습니다!');
+        }
       }
     }
+
   };
 
   useEffect(() => {
-    addApi();
+    if (!service) {
+      addApi();
+    }
   }, []);
 
   return (
@@ -117,22 +173,22 @@ export default function ServiceRegisterForm() {
       {/* 서비스 명세 */}
       <label className="block mb-6">
         <div className="font-bold mb-2">서비스 이름</div>
-        <input type="text" placeholder="서비스 이름을 입력하세요" onChange={e => updateInfo({ title: e.target.value })} required />
+        <input type="text" placeholder="서비스 이름을 입력하세요" onChange={e => updateInfo({ title: e.target.value })} value={info.title} required />
       </label>
       <label className="block mb-6">
         <div className="font-bold mb-2">서비스 설명</div>
-        <textarea rows={5} placeholder="서비스 설명을 입력하세요" onChange={e => updateInfo({ description: e.target.value })} required></textarea>
+        <textarea rows={5} placeholder="서비스 설명을 입력하세요" onChange={e => updateInfo({ description: e.target.value })} value={info.description} required></textarea>
       </label>
       <label className="block mb-6">
         <div className="font-bold mb-2">서비스 가격</div>
         <div className="flex items-center">
-          <input type="number" placeholder="30000" onChange={e => updateInfo({ price: Number.parseInt(e.target.value) })} required />
+          <input type="number" placeholder="30000" onChange={e => updateInfo({ price: Number.parseInt(e.target.value) })} value={info.price} required />
           <span className="ml-3">원</span>
         </div>
       </label>
       <label className="block mb-6">
         <div className="font-bold mb-2">API 키</div>
-        <input type="password" onChange={e => updateInfo({ key: e.target.value })} required />
+        <input type="password" onChange={e => updateInfo({ key: e.target.value })} value={info.key} required />
         <div className="text-xs text-blue-500 mt-1">API 키는 요청 시 X-API-KEY 헤더에 담아 보내집니다.</div>
       </label>
       {/* API 명세 */}

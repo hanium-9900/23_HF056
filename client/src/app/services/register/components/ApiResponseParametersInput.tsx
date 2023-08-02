@@ -1,34 +1,34 @@
 import { useState } from 'react';
 import { ResponseParameter } from '../types';
 
-export default function ApiResponseParametersInput({ onChange }: { onChange: (responseParameters: ResponseParameter[]) => void }) {
-  const [responseParameters, setResponseParameters] = useState<ResponseParameter[]>([]);
+export default function ApiResponseParametersInput({ responseParameters, onChange }: { responseParameters: ResponseParameter[], onChange: (responseParameters: ResponseParameter[]) => void }) {
+  const [value, setValue] = useState<ResponseParameter[]>(responseParameters);
 
   /**
    * add new response parameter input
    */
   function addParameter() {
-    for (const { key } of responseParameters) {
+    for (const { key } of value) {
       if (key.trim() === '') {
         alert('먼저 파라미터명을 모두 입력해주세요');
         return;
       }
     }
 
-    const updatedResponseParameters = [...responseParameters];
+    const updatedResponseParameters = [...value];
     updatedResponseParameters.push({ key: '', type: 'string', description: '', required: false });
 
-    setResponseParameters(updatedResponseParameters);
+    setValue(updatedResponseParameters);
   }
 
   /**
    * update request parameter by index
    */
   function updateParameter(idx: number, data: Partial<ResponseParameter>) {
-    const updatedResponseParameters = [...responseParameters];
+    const updatedResponseParameters = [...value];
     updatedResponseParameters[idx] = { ...updatedResponseParameters[idx], ...data };
 
-    setResponseParameters(updatedResponseParameters);
+    setValue(updatedResponseParameters);
 
     onChange(updatedResponseParameters);
   }
@@ -37,7 +37,7 @@ export default function ApiResponseParametersInput({ onChange }: { onChange: (re
     <label className="block mb-6">
       <div className="font-bold mb-2">응답 파라미터</div>
       <div>
-        {responseParameters.map((parameter, idx) => (
+        {value.map((parameter, idx) => (
           <div key={idx} className="flex mb-4">
             <input
               className="mr-3"
