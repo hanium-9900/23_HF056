@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ErrorCode } from '../types';
 
-export default function ApiErrorCodesInput({ errorCodes, onChange }: { errorCodes: ErrorCode[], onChange: (errorCodes: ErrorCode[]) => void }) {
+export default function ApiErrorCodesInput({ errorCodes, onChange }: { errorCodes: ErrorCode[]; onChange: (errorCodes: ErrorCode[]) => void }) {
   const [value, setValue] = useState<ErrorCode[]>(errorCodes);
 
   /**

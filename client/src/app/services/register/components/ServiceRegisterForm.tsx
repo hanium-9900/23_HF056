@@ -22,33 +22,39 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
     price: service?.price || -1,
     key: service?.key || '',
   });
-  const [apiList, setApiList] = useState<ApiInfo[]>(service?.apis?.map(api => ({
-    host: api.host || '',
-    method: api.method || 'GET',
-    path: api.path || '',
-    description: api.description || '',
-    headers: api.headers?.map(h => ({
-      key: h.key,
-      description: h.description,
-      required: h.required === 1,
-    })) || [],
-    requestParameters: api.requestParameters?.map(rq => ({
-      key: rq.key,
-      type: rq.type,
-      description: rq.description,
-      required: rq.required === 1,
-    })) || [],
-    responseParameters: api.responseParameters?.map(rp => ({
-      key: rp.key,
-      type: rp.type,
-      description: rp.description,
-      required: rp.required === 1,
-    })) || [],
-    errorCodes: api.errorCodes?.map(ec => ({
-      statusCode: ec.statusCode,
-      description: ec.description,
-    })) || [],
-  })) || []);
+  const [apiList, setApiList] = useState<ApiInfo[]>(
+    service?.apis?.map(api => ({
+      host: api.host || '',
+      method: api.method || 'GET',
+      path: api.path || '',
+      description: api.description || '',
+      headers:
+        api.headers?.map(h => ({
+          key: h.key,
+          description: h.description,
+          required: h.required === 1,
+        })) || [],
+      requestParameters:
+        api.requestParameters?.map(rq => ({
+          key: rq.key,
+          type: rq.type,
+          description: rq.description,
+          required: rq.required === 1,
+        })) || [],
+      responseParameters:
+        api.responseParameters?.map(rp => ({
+          key: rp.key,
+          type: rp.type,
+          description: rp.description,
+          required: rp.required === 1,
+        })) || [],
+      errorCodes:
+        api.errorCodes?.map(ec => ({
+          statusCode: ec.statusCode,
+          description: ec.description,
+        })) || [],
+    })) || []
+  );
 
   function updateInfo(data: Partial<ServiceInfo>) {
     setInfo({ ...info, ...data });
@@ -101,7 +107,7 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
     }
 
     setModalOpened(() => true);
-  }
+  };
 
   const submitForm = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
@@ -151,11 +157,10 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
       try {
         await api.services.update(service.id, serviceData);
 
-        alert("서비스 수정이 완료되었습니다!");
+        alert('서비스 수정이 완료되었습니다!');
 
         router.replace(`/services/${service.id}`);
-      }
-      catch (e) {
+      } catch (e) {
         if (axios.isAxiosError(e)) {
           if (e.response?.status === 400) {
             alert('명세와 실제 API가 일치하지 않습니다!');
@@ -169,7 +174,6 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
         }
       }
     }
-
   };
 
   useEffect(() => {
@@ -180,7 +184,13 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
 
   return (
     <>
-      <form className="rounded border border-slate-300 p-7" onSubmit={e => { e.preventDefault(); openSubmitModal() }}>
+      <form
+        className="rounded border border-slate-300 p-7"
+        onSubmit={e => {
+          e.preventDefault();
+          openSubmitModal();
+        }}
+      >
         {/* 서비스 명세 */}
         <label className="block mb-6">
           <div className="font-bold mb-2">서비스 이름</div>
@@ -188,7 +198,13 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
         </label>
         <label className="block mb-6">
           <div className="font-bold mb-2">서비스 설명</div>
-          <textarea rows={5} placeholder="서비스 설명을 입력하세요" onChange={e => updateInfo({ description: e.target.value })} value={info.description} required></textarea>
+          <textarea
+            rows={5}
+            placeholder="서비스 설명을 입력하세요"
+            onChange={e => updateInfo({ description: e.target.value })}
+            value={info.description}
+            required
+          ></textarea>
         </label>
         <label className="block mb-6">
           <div className="font-bold mb-2">서비스 가격</div>
@@ -223,23 +239,42 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
         <hr className="mb-12" />
 
         <div className="flex justify-end">
-          <button type='submit' className="btn btn-form">
+          <button type="submit" className="btn btn-form">
             서비스 {service ? '수정' : '등록'}
           </button>
         </div>
-      </form >
+      </form>
       <Modal opened={modalOpened} setOpened={setModalOpened}>
-        <div className='font-bold text-3xl text-center mb-6'>
+        <div className="font-bold text-3xl text-center mb-6">
           <div>서비스 {service ? '수정' : '등록'}</div>
         </div>
-        <div className='text-center mb-4'>
-          <div className='font-bold text-xl mb-2'>“{info.title}”</div>
-          <div className='font-bold text-blue-500 font-xl mb-2'>{Intl.NumberFormat('ko-KR').format(info.price)}원</div>
-          <div className='font-light'><span className='text-blue-500 font-bold'>{apiList.length}</span>개의 API 포함</div>
+        <div className="text-center mb-4">
+          <div className="font-bold text-xl mb-2">“{info.title}”</div>
+          <div className="font-bold text-blue-500 font-xl mb-2">{Intl.NumberFormat('ko-KR').format(info.price)}원</div>
+          <div className="font-light">
+            <span className="text-blue-500 font-bold">{apiList.length}</span>개의 API 포함
+          </div>
         </div>
-        <div className='flex justify-center items-center gap-6'>
-          <button type="button" className='btn btn-secondary-outline' onClick={() => { setModalOpened(false) }}>취소</button>
-          <button type="button" className='btn btn-form' onClick={e => { submitForm(e); setModalOpened(false) }}>{service ? '수정' : '등록'}</button>
+        <div className="flex justify-center items-center gap-6">
+          <button
+            type="button"
+            className="btn btn-secondary-outline"
+            onClick={() => {
+              setModalOpened(false);
+            }}
+          >
+            취소
+          </button>
+          <button
+            type="button"
+            className="btn btn-form"
+            onClick={e => {
+              submitForm(e);
+              setModalOpened(false);
+            }}
+          >
+            {service ? '수정' : '등록'}
+          </button>
         </div>
       </Modal>
     </>

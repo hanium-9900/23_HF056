@@ -1,7 +1,13 @@
 import { useState } from 'react';
 import { RequestParameter } from '../types';
 
-export default function ApiRequestParametersInput({ requestParameters, onChange }: { requestParameters: RequestParameter[], onChange: (requestParameters: RequestParameter[]) => void }) {
+export default function ApiRequestParametersInput({
+  requestParameters,
+  onChange,
+}: {
+  requestParameters: RequestParameter[];
+  onChange: (requestParameters: RequestParameter[]) => void;
+}) {
   const [value, setValue] = useState<RequestParameter[]>(requestParameters);
 
   /**

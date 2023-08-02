@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Header } from '../types';
 
-export default function ApiHeadersInput({ headers, onChange }: { headers: Header[], onChange: (headers: Header[]) => void }) {
+export default function ApiHeadersInput({ headers, onChange }: { headers: Header[]; onChange: (headers: Header[]) => void }) {
   const [value, setValue] = useState<Header[]>(headers);
 
   /**

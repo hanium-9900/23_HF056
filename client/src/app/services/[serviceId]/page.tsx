@@ -71,9 +71,13 @@ export default function ServiceInfoPage({ params }: { params: { serviceId: strin
         </div>
       </div>
       {/* 서비스 관리 버튼 */}
-      <div className='flex items-center gap-3 mb-16'>
-        <Link href={`/services/${params.serviceId}/edit`} className='py-2 px-7 rounded-full border-2 border-blue-500 text-blue-500 font-bold'>수정</Link>
-        <button onClick={() => alert('미구현')} className='py-2 px-7 rounded-full border-2 border-red-500 text-red-500 font-bold'>삭제</button>
+      <div className="flex items-center gap-3 mb-16">
+        <Link href={`/services/${params.serviceId}/edit`} className="py-2 px-7 rounded-full border-2 border-blue-500 text-blue-500 font-bold">
+          수정
+        </Link>
+        <button onClick={() => alert('미구현')} className="py-2 px-7 rounded-full border-2 border-red-500 text-red-500 font-bold">
+          삭제
+        </button>
       </div>
       {/* API 선택 */}
       <div className="flex items-center mb-6">
