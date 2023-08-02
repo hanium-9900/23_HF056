@@ -54,7 +54,7 @@ export default function ApiSpecificationInput({
       {/* Description */}
       <label className="block mb-6">
         <div className="font-bold mb-2">API 설명</div>
-        <textarea rows={5} placeholder="API 설명을 입력하세요" onChange={e => updateSpecification({ description: e.target.value })}>{api.description}</textarea>
+        <textarea rows={5} placeholder="API 설명을 입력하세요" onChange={e => updateSpecification({ description: e.target.value })} value={api.description}></textarea>
       </label>
       {/* Headers */}
       <ApiHeadersInput headers={api.headers} onChange={headers => updateSpecification({ headers })} />

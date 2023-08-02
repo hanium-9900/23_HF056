@@ -139,11 +139,11 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
       }
     } else {
       try {
-        const { data } = await api.services.update(service.id, serviceData);
+        await api.services.update(service.id, serviceData);
 
         alert("서비스 수정이 완료되었습니다!");
 
-        router.replace(`/services/${data.id}`);
+        router.replace(`/services/${service.id}`);
       }
       catch (e) {
         if (axios.isAxiosError(e)) {
