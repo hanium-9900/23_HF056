@@ -2,6 +2,7 @@ import LogoutButton from './LogoutButton';
 import LoginButton from './LoginButton';
 import Link from 'next/link';
 import { getServerSession } from 'next-auth';
+import Image from 'next/image';
 
 export default async function Header() {
   const session = await getServerSession();
@@ -13,7 +14,8 @@ export default async function Header() {
   return (
     <header className="border-b">
       <div className="container mx-auto flex items-center py-2">
-        <Link href="/" className="text-lg font-bold py-2 px-3 mr-auto">
+        <Link href="/" className="inline-flex items-center text-lg font-bold py-2 px-3 mr-auto">
+          <Image className='mr-2' src="/logo.svg" width={28} height={28} alt='데이터 유통 API 플랫폼' />
           데이터 유통 API 플랫폼
         </Link>
         <nav>
