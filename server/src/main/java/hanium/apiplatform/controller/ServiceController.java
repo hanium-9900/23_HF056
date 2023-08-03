@@ -101,7 +101,7 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
     }
 
     // 구매 요청 처리
-    @PostMapping("/purchase")
+    @PostMapping("/{id}/purchase")
     public boolean purchaseService(@RequestParam("id") Long servicId, HttpServletRequest header) {
         // 헤더에서 JWT를 받아온다.
         String userToken = jwtTokenProvider.resolveToken(header);
@@ -129,7 +129,7 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
 
     // proxy service key 요청 처리
     // TODO: TEST
-    @GetMapping("/key")
+    @GetMapping("/{id}/key")
     public String getProxyServiceKey(@RequestParam("id") Long servicId, HttpServletRequest header) {
         // 헤더에서 JWT를 받아온다.
         String userToken = jwtTokenProvider.resolveToken(header);
@@ -166,7 +166,7 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
             @PathVariable("apiiD") long apiId,
             @RequestParam HashMap<String, String> paramMap) throws IOException {
 
-        String apiKey = paramMap.get("key").toString();
+        String apiKey = paramMap.get("key");
 
         // Search 'UserServiceKey' by service key from user request
         List<UserServiceKey> serviceKeys = userServiceKeyRepository.findByKey(apiKey);
