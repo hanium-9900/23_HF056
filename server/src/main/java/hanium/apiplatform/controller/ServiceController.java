@@ -1,18 +1,13 @@
 package hanium.apiplatform.controller;
 
 import hanium.apiplatform.config.JwtTokenProvider;
-import hanium.apiplatform.dto.ApiDto;
-import hanium.apiplatform.dto.ServiceDto;
-import hanium.apiplatform.dto.UserDto;
-import hanium.apiplatform.dto.UserServiceKeyDto;
+import hanium.apiplatform.dto.*;
+import hanium.apiplatform.entity.ApiUsage;
 import hanium.apiplatform.entity.Service;
 import hanium.apiplatform.entity.User;
 import hanium.apiplatform.entity.UserServiceKey;
-import hanium.apiplatform.exception.DuplicateServiceKeyException;
-import hanium.apiplatform.exception.KeyNotFoundException;
-import hanium.apiplatform.exception.NotValidException;
-import hanium.apiplatform.exception.ServiceNotFoundException;
-import hanium.apiplatform.exception.UserNotFoundException;
+import hanium.apiplatform.exception.*;
+import hanium.apiplatform.repository.ApiUsageRepository;
 import hanium.apiplatform.repository.ServiceRepository;
 import hanium.apiplatform.repository.UserRepository;
 import hanium.apiplatform.repository.UserServiceKeyRepository;
@@ -20,9 +15,11 @@ import hanium.apiplatform.service.ApiService;
 import hanium.apiplatform.service.KeyIssueService;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import com.mysql.cj.conf.ConnectionUrlParser.Pair;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,6 +41,7 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
 
     private final ServiceRepository serviceRepository;
     private final UserServiceKeyRepository userServiceKeyRepository;
+    private final ApiUsageRepository apiUsageRepository;
 
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
@@ -120,7 +118,8 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
             } else {
                 // user와 service를 이용해 user를 위한 service key 생성
                 String userServiceKey = keyIssueService.issueServiceKey(ServiceDto.toDto(service), UserDto.toDto(user));
-                userServiceKeyRepository.save(UserServiceKey.toEntity(new UserServiceKeyDto(null, service, user, userServiceKey)));
+                userServiceKeyRepository.save(UserServiceKey.toEntity(new UserServiceKeyDto
+                        (null, ServiceDto.toDto(service), UserDto.toDto(user), userServiceKey)));
                 return true;
             }
         } else {
@@ -156,6 +155,58 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
             }
         } else {
             throw new NotValidException();
+        }
+    }
+
+    // proxy api 요청 처리
+    // TODO test
+    @GetMapping("/{serviceiD}/{apiiD}")
+    public String getDataThroughProxyApi(
+            @PathVariable("serviceiD") long serviceId,
+            @PathVariable("apiiD") long apiId,
+            @RequestParam HashMap<String, String> paramMap) throws IOException {
+
+        String apiKey = paramMap.get("key").toString();
+
+        // Search 'UserServiceKey' by service key from user request
+        List<UserServiceKey> serviceKeys = userServiceKeyRepository.findByKey(apiKey);
+        // key가 존재하지 않는 경우
+        if (serviceKeys.size() == 0) {
+            throw new KeyNotFoundException();
+        }
+        // key가 2개 이상인 경우
+        else if (serviceKeys.size() > 1) {
+            throw new DuplicateServiceKeyException();
+        }
+        // 정상적으로 1개의 key가 발견되면 proxy api를 통해 응답 요청
+        else {
+            UserServiceKeyDto userServiceKeyDto = UserServiceKeyDto.toDto(serviceKeys.get(0));
+
+            // key에 연결된 servie, api 경로가 올바른지 검증
+            Pair<Boolean, ApiDto> pathVerificationResult = apiService.verifyPath(userServiceKeyDto, "GET", serviceId, apiId);
+            boolean isPathAndKeyVarified =pathVerificationResult.left;
+            ApiDto verifiedApiDto = pathVerificationResult.right;
+            if(!isPathAndKeyVarified){
+                throw new ConnectionRefusedException();
+            }
+
+            // send request to original api
+            Pair<Integer, String> requestResult = apiService.requestFromProxyApi
+                    (verifiedApiDto.getMethod().toUpperCase(), verifiedApiDto.getHost(), verifiedApiDto.getPath(), paramMap, apiKey);
+
+            int responseCode = requestResult.left;
+            String response = requestResult.right;
+            if (responseCode >= 200 && responseCode < 300){
+                return response;
+            }
+
+            ApiUsageDto apiUsageDto = new ApiUsageDto();
+            apiUsageDto.setUser(userServiceKeyDto.getUser());
+            apiUsageDto.setApi(verifiedApiDto);
+            apiUsageDto.setResponseCode(responseCode);
+            apiUsageRepository.save(ApiUsage.toEntity(apiUsageDto));
+
+            return Integer.toString(responseCode);
         }
     }
 }

@@ -1,8 +1,6 @@
 package hanium.apiplatform.dto;
 
 import hanium.apiplatform.entity.UserServiceKey;
-import hanium.apiplatform.entity.Service;
-import hanium.apiplatform.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,15 +12,15 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserServiceKeyDto {
     private Long id;
-    private Service service;
-    private User user;
+    private ServiceDto service;
+    private UserDto user;
     private String key;
 
     public static UserServiceKeyDto toDto(UserServiceKey userServiceKey){
         UserServiceKeyDto userServiceKeyDto = new UserServiceKeyDto();
         userServiceKeyDto.setId(userServiceKey.getId());
-        userServiceKeyDto.setService(userServiceKey.getService());
-        userServiceKeyDto.setUser(userServiceKey.getUser());
+        userServiceKeyDto.setService(ServiceDto.toDto(userServiceKey.getService()));
+        userServiceKeyDto.setUser(UserDto.toDto(userServiceKey.getUser()));
         userServiceKeyDto.setKey(userServiceKey.getKey());
 
         return userServiceKeyDto;
