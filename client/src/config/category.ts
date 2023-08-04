@@ -15,4 +15,4 @@ export const categories = [
   '재난안전',
   '재정금융',
   '환경기상',
-];
+] as const;
