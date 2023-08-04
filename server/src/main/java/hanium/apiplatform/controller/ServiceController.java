@@ -210,6 +210,7 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
 
             if (responseCode >= 200 && responseCode < 300){
                 return response;
+                //return new String(response.getBytes("euc-kr"));
             }
 
             return Integer.toString(responseCode);
