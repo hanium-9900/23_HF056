@@ -2,10 +2,7 @@ package hanium.apiplatform.controller;
 
 import hanium.apiplatform.config.JwtTokenProvider;
 import hanium.apiplatform.dto.*;
-import hanium.apiplatform.entity.ApiUsage;
-import hanium.apiplatform.entity.Service;
-import hanium.apiplatform.entity.User;
-import hanium.apiplatform.entity.UserServiceKey;
+import hanium.apiplatform.entity.*;
 import hanium.apiplatform.exception.*;
 import hanium.apiplatform.repository.ApiUsageRepository;
 import hanium.apiplatform.repository.ServiceRepository;
@@ -14,6 +11,7 @@ import hanium.apiplatform.repository.UserServiceKeyRepository;
 import hanium.apiplatform.service.ApiService;
 import hanium.apiplatform.service.KeyIssueService;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -102,7 +100,7 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
 
     // 구매 요청 처리
     @PostMapping("/{id}/purchase")
-    public boolean purchaseService(@RequestParam("id") Long servicId, HttpServletRequest header) {
+    public boolean purchaseService(@PathVariable("id") Long servicId, HttpServletRequest header) {
         // 헤더에서 JWT를 받아온다.
         String userToken = jwtTokenProvider.resolveToken(header);
         // 유효한 토큰인지 확인한다.
@@ -113,13 +111,13 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
             Service service = serviceRepository.findById(servicId).orElseThrow(() -> new ServiceNotFoundException());
 
             // user와 service를 이용해 key가 이미 존재하는지 검증
-            if (userServiceKeyRepository.findByServiceAndUser(service, user).size() > 0) {
+            if (userServiceKeyRepository.findByService_IdAndUser_Id(ServiceDto.toDto(service).getId(), UserDto.toDto(user).getId()).size() > 0) {
                 throw new DuplicateServiceKeyException();
             } else {
                 // user와 service를 이용해 user를 위한 service key 생성
                 String userServiceKey = keyIssueService.issueServiceKey(ServiceDto.toDto(service), UserDto.toDto(user));
-                userServiceKeyRepository.save(UserServiceKey.toEntity(new UserServiceKeyDto
-                        (null, ServiceDto.toDto(service), UserDto.toDto(user), userServiceKey)));
+
+                userServiceKeyRepository.save(new UserServiceKey(null, service, user, userServiceKey));
                 return true;
             }
         } else {
@@ -130,18 +128,18 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
     // proxy service key 요청 처리
     // TODO: TEST
     @GetMapping("/{id}/key")
-    public String getProxyServiceKey(@RequestParam("id") Long servicId, HttpServletRequest header) {
+    public String getProxyServiceKey(@PathVariable("id") Long servicId, HttpServletRequest header) {
         // 헤더에서 JWT를 받아온다.
         String userToken = jwtTokenProvider.resolveToken(header);
         // 유효한 토큰인지 확인한다.
         if (userToken != null && jwtTokenProvider.validateToken(userToken)) {
             // 유효한 토큰이면 user data 추출
-            User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(() -> new UserNotFoundException());
+            UserDto userDto = UserDto.toDto(userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(() -> new UserNotFoundException()));
             // request param에서 service id 추출
-            Service service = serviceRepository.findById(servicId).orElseThrow(() -> new ServiceNotFoundException());
+            ServiceDto serviceDto = ServiceDto.toDto(serviceRepository.findById(servicId).orElseThrow(() -> new ServiceNotFoundException()));
 
             // user와 service를 이용해 key 탐색
-            List<UserServiceKey> serviceKeys = userServiceKeyRepository.findByServiceAndUser(service, user);
+            List<UserServiceKey> serviceKeys = userServiceKeyRepository.findByService_IdAndUser_Id(serviceDto.getId(), userDto.getId());
             if (serviceKeys.size() == 0) {
                 throw new KeyNotFoundException();
             }
@@ -191,20 +189,28 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
             }
 
             // send request to original api
+            HashMap<String, String> requestParamMap = paramMap;
+            requestParamMap.remove("key");
             Pair<Integer, String> requestResult = apiService.requestFromProxyApi
-                    (verifiedApiDto.getMethod().toUpperCase(), verifiedApiDto.getHost(), verifiedApiDto.getPath(), paramMap, apiKey);
+                    (verifiedApiDto.getMethod().toUpperCase(), verifiedApiDto.getHost(), verifiedApiDto.getPath(), requestParamMap,
+                            userServiceKeyDto.getService().getKey());
 
             int responseCode = requestResult.left;
             String response = requestResult.right;
+
+            ApiUsage apiUsage = new ApiUsage();
+            apiUsage.setUser(serviceKeys.get(0).getUser());
+            for(Api api : serviceKeys.get(0).getService().getApis()){
+                if(api.getId().equals(verifiedApiDto.getId())){
+                    apiUsage.setApi(api);
+                }
+            }
+            apiUsage.setResponseCode(responseCode);
+            apiUsageRepository.save(apiUsage);
+
             if (responseCode >= 200 && responseCode < 300){
                 return response;
             }
-
-            ApiUsageDto apiUsageDto = new ApiUsageDto();
-            apiUsageDto.setUser(userServiceKeyDto.getUser());
-            apiUsageDto.setApi(verifiedApiDto);
-            apiUsageDto.setResponseCode(responseCode);
-            apiUsageRepository.save(ApiUsage.toEntity(apiUsageDto));
 
             return Integer.toString(responseCode);
         }

@@ -202,6 +202,7 @@ public class ApiService {
 
                     String requestUrl = requestUrlBuilder.toString();
 
+
                     URL url = new URL(requestUrl);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
