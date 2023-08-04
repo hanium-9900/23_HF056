@@ -2,6 +2,7 @@ package hanium.apiplatform.service;
 
 import com.mysql.cj.conf.ConnectionUrlParser.Pair;
 import hanium.apiplatform.dto.*;
+import hanium.apiplatform.entity.Api;
 import hanium.apiplatform.exception.ConnectionRefusedException;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,12 +14,42 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
+
 @Service
+@RequiredArgsConstructor
+@Transactional
 public class ApiService {
+
+    /*private final EntityManager em;
+
+    public Api updateApiInfo(ApiDto apiDto){
+        Api api = em.find(Api.class, apiDto.getId());
+
+        api.setHost(api.getHost());
+        api.setDescription(api.getDescription());
+        api.setMethod(api.getMethod());
+        api.setPath(api.getPath());
+
+        return api;
+    }
+
+    public ArrayList<Api> updateApiInfo(ApiDto apiDto){
+        Api api = em.find(Api.class, apiDto.getId());
+
+        api.setHost(api.getHost());
+        api.setDescription(api.getDescription());
+        api.setMethod(api.getMethod());
+        api.setPath(api.getPath());
+
+        return api;
+    }*/
 
     private Pair<Integer, String> requestApi(String method, String host, String path, ArrayList<HeaderDto> headers,
         ArrayList<RequestParameterDto> requestParameters, String apiKey) throws IOException {
@@ -135,7 +166,7 @@ public class ApiService {
     public Pair<Boolean, ApiDto> verifyPath(UserServiceKeyDto userServiceKeyDto,
                               String method,
                               long serviceId,
-                              long apiId){
+                              String apiName){
         // 접근한 경로가 올바른지 Service.id와 serviceId 비교
         ServiceDto serviceDto = userServiceKeyDto.getService();
         if(!serviceDto.getId().equals(serviceId)){
@@ -147,7 +178,7 @@ public class ApiService {
         ApiDto verifiedApiDto = new ApiDto();
         boolean isApiExist = false;
         for (ApiDto apiDto : apiDtos) {
-            if(apiDto.getId().equals(apiId)
+            if(apiDto.getPath().equals("/" + apiName)
                 && apiDto.getMethod().equals(method.toUpperCase())) {
                 isApiExist = true;
                 verifiedApiDto = apiDto;

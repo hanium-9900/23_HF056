@@ -11,22 +11,13 @@ import hanium.apiplatform.repository.UserServiceKeyRepository;
 import hanium.apiplatform.service.ApiService;
 import hanium.apiplatform.service.KeyIssueService;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import com.mysql.cj.conf.ConnectionUrlParser.Pair;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin()
@@ -85,12 +76,12 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
     }
 
     // TODO
-//    @PutMapping("/{id}")
-//    public ServiceDto updateServiceById(@PathVariable("id") Long id, @RequestBody ServiceDto serviceDto, HttpServletRequest header) {
-//        String userToken = jwtTokenProvider.resolveToken(header);
-//        User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(() -> new UserNotFoundException());
-//
-//    }
+    /*@PutMapping("/{id}")
+    public ServiceDto updateServiceById(@PathVariable("id") Long id, @RequestBody ServiceDto serviceDto, HttpServletRequest header) {
+        String userToken = jwtTokenProvider.resolveToken(header);
+        User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(() -> new UserNotFoundException());
+
+    }*/
 
     @DeleteMapping("/{id}")
     public Long deleteServiceById(@PathVariable("id") Long id) {
@@ -158,10 +149,10 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
 
     // proxy api 요청 처리
     // TODO test
-    @GetMapping("/{serviceiD}/{apiiD}")
+    @GetMapping("/{serviceiD}/{apiName}")
     public String getDataThroughProxyApi(
             @PathVariable("serviceiD") long serviceId,
-            @PathVariable("apiiD") long apiId,
+            @PathVariable("apiName") String apiName,
             @RequestParam HashMap<String, String> paramMap) throws IOException {
 
         String apiKey = paramMap.get("key");
@@ -181,7 +172,7 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
             UserServiceKeyDto userServiceKeyDto = UserServiceKeyDto.toDto(serviceKeys.get(0));
 
             // key에 연결된 servie, api 경로가 올바른지 검증
-            Pair<Boolean, ApiDto> pathVerificationResult = apiService.verifyPath(userServiceKeyDto, "GET", serviceId, apiId);
+            Pair<Boolean, ApiDto> pathVerificationResult = apiService.verifyPath(userServiceKeyDto, "GET", serviceId, apiName);
             boolean isPathAndKeyVarified =pathVerificationResult.left;
             ApiDto verifiedApiDto = pathVerificationResult.right;
             if(!isPathAndKeyVarified){
@@ -210,7 +201,7 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
 
             if (responseCode >= 200 && responseCode < 300){
                 return response;
-                //return new String(response.getBytes("euc-kr"));
+                //return new String(response.getBytes(), "euc-kr");
             }
 
             return Integer.toString(responseCode);
