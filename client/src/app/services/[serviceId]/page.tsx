@@ -10,6 +10,7 @@ import Link from 'next/link';
 export default function ServiceInfoPage({ params }: { params: { serviceId: string } }) {
   // [TEMP] 임시 데이터
   const [service, setService] = useState<Service>({
+    category: '기타',
     title: '대구광역시 행정동별 유동인구',
     price: 30000000,
     description:
