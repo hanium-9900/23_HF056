@@ -118,6 +118,12 @@ export const api = {
     claim(serviceId: number, content: string) {
       // 신고
     },
+    /**
+     * 서비스 삭제
+     */
+    delete(serviceId: number) {
+      return axios.delete(`/services/${serviceId}`);
+    },
   },
   /**
    * 사용량

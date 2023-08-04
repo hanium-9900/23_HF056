@@ -6,8 +6,30 @@ import { Service } from '../register/types';
 import ApiSpecification from './components/ApiSpecification';
 import ApiPurchaseButton from './components/ApiPurchaseButton';
 import Link from 'next/link';
+import { api } from '@/api';
+import { useRouter } from 'next/navigation';
 
 export default function ServiceInfoPage({ params }: { params: { serviceId: string } }) {
+  const router = useRouter();
+
+  async function deleteService() {
+    if (confirm('정말 삭제하시겠습니까?')) { // [TODO] 컨펌 Modal로 대체
+      const id = Number.parseInt(params.serviceId);
+      if (Number.isNaN(id)) return;
+
+      try {
+        await api.services.delete(id);
+
+        alert('삭제되었습니다.');
+        router.replace('/services');
+      } catch (e) {
+        alert('삭제에 실패했습니다.');
+
+        console.error(e);
+      }
+    }
+  }
+
   // [TEMP] 임시 데이터
   const [service, setService] = useState<Service>({
     title: '대구광역시 행정동별 유동인구',
@@ -75,7 +97,7 @@ export default function ServiceInfoPage({ params }: { params: { serviceId: strin
         <Link href={`/services/${params.serviceId}/edit`} className="py-2 px-7 rounded-full border-2 border-blue-500 text-blue-500 font-bold">
           수정
         </Link>
-        <button onClick={() => alert('미구현')} className="py-2 px-7 rounded-full border-2 border-red-500 text-red-500 font-bold">
+        <button onClick={() => deleteService()} className="py-2 px-7 rounded-full border-2 border-red-500 text-red-500 font-bold">
           삭제
         </button>
       </div>
