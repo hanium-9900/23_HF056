@@ -1,4 +1,5 @@
 export interface ServiceInfo {
+  category: string;
   title: string;
   description: string;
   price: number;
