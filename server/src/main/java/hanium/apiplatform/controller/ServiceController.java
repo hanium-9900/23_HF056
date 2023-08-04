@@ -17,6 +17,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import com.mysql.cj.conf.ConnectionUrlParser.Pair;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -150,10 +153,15 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
     // proxy api 요청 처리
     // TODO test
     @GetMapping("/{serviceiD}/{apiName}")
-    public String getDataThroughProxyApi(
+    public ResponseEntity getDataThroughProxyApi(
             @PathVariable("serviceiD") long serviceId,
             @PathVariable("apiName") String apiName,
             @RequestParam HashMap<String, String> paramMap) throws IOException {
+
+        // 헤더에 json 정보 추가
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "application/json; utf-8");
+        headers.set("Accept", "application/json");
 
         String apiKey = paramMap.get("key");
 
@@ -200,11 +208,11 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
             apiUsageRepository.save(apiUsage);
 
             if (responseCode >= 200 && responseCode < 300){
-                return response;
+                return new ResponseEntity<>(response, headers, HttpStatus.ACCEPTED);
                 //return new String(response.getBytes(), "euc-kr");
             }
 
-            return Integer.toString(responseCode);
+            return new ResponseEntity<>(Integer.toString(responseCode), headers, HttpStatus.BAD_REQUEST);
         }
     }
 }

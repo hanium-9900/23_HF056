@@ -90,6 +90,9 @@ public class ApiService {
                     URL url = new URL(requestUrl);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
+                    connection.setRequestProperty("Content-Type", "application/json; utf-8");
+                    connection.setRequestProperty("Accept", "application/json");
+
                     connection.setRequestMethod(method);
                     connection.setRequestProperty("X-API-KEY", apiKey);
 
@@ -236,6 +239,10 @@ public class ApiService {
 
                     URL url = new URL(requestUrl);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                    connection.setRequestProperty("Content-Type", "application/json; utf-8");
+                    connection.setRequestProperty("Accept", "application/json");
+                    connection.setDoOutput(true);
 
                     connection.setRequestMethod(method);
                     connection.setRequestProperty("X-API-KEY", apiKey);
