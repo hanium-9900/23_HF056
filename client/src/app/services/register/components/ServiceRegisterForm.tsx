@@ -149,6 +149,7 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
         toast.success(`서비스 등록이 완료되었습니다!`);
 
         router.replace(`/services/${data.id}`);
+        router.refresh();
       } catch (e) {
         if (axios.isAxiosError(e)) {
           if (e.response?.status === 400) {
@@ -169,6 +170,7 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
         toast.success('서비스 수정이 완료되었습니다!');
 
         router.replace(`/services/${service.id}`);
+        router.refresh();
       } catch (e) {
         if (axios.isAxiosError(e)) {
           if (e.response?.status === 400) {
