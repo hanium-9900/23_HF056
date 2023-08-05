@@ -259,7 +259,7 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
         return (List<Statistics>) query.getResultList();
     }
 
-    @GetMapping("/{id}/usage_rate")
+    @GetMapping("/{id}/usage-rate")
     public List<UsageRate> getUsageRates(@PathVariable("id") Long id, @RequestParam int month, @RequestParam int day) {
         String sql = "select api.id, api.method, api.path, (count(*) /(api.limitation * (select count(distinct user.email) from user " +
             "join api_usage on user.id = api_usage.user_id where month(creation_timestamp) = :month and day(creation_timestamp) = :day))) as usage_rate, limitation from service join api on service.id = api.service_id "
