@@ -37,6 +37,9 @@ public class Service {
     private String description;
 
     @Column
+    private String category;
+
+    @Column
     private int price;
 
     @Column
@@ -55,6 +58,7 @@ public class Service {
         service.setDescription(serviceDto.getDescription());
         service.setPrice(serviceDto.getPrice());
         service.setKey(serviceDto.getKey());
+        service.setCategory(serviceDto.getCategory());
 
         for (ApiDto apiDto : serviceDto.getApis()) {
             service.addApi(Api.toEntity(apiDto));

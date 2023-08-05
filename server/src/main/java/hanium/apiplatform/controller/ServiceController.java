@@ -92,10 +92,17 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
         return ServiceDto.toDto(service);
     }
 
-    // 전체 서비스 조회
+    // 전체 서비스 조회 or 카테고리별 조회
     @GetMapping()
-    public List<ServiceDto> getServices() {
-        List<Service> services = serviceRepository.findAll();
+    public List<ServiceDto> getServices(@RequestParam(required = false) String category) {
+        List<Service> services;
+        if (category == null) {
+            services = serviceRepository.findAll();
+
+        } else {
+            services = serviceRepository.findByCategory(category);
+        }
+
         ArrayList<ServiceDto> result = new ArrayList<>();
 
         for (Service service : services) {
