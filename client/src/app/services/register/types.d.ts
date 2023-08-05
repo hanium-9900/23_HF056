@@ -1,4 +1,5 @@
 export interface ServiceInfo {
+  category: string;
   title: string;
   description: string;
   price: number;
@@ -10,6 +11,7 @@ export interface ApiInfo {
   method: string;
   path: string;
   description: string;
+  limitation: number;
   headers: Header[];
   requestParameters: RequestParameter[];
   responseParameters: ResponseParameter[];
