@@ -21,7 +21,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
@@ -62,6 +61,12 @@ public class Api {
     @JoinColumn(name = "service_id")
     private Service service;
 
+    @OneToMany(mappedBy = "api", cascade = CascadeType.ALL)
+    private List<ApiUsage> apiUsages = new ArrayList<>();
+
+    @Column
+    private int limitation;
+
     public static Api toEntity(ApiDto apiDto) {
         Api api = new Api();
 
@@ -69,6 +74,7 @@ public class Api {
         api.setDescription(apiDto.getDescription());
         api.setMethod(apiDto.getMethod());
         api.setPath(apiDto.getPath());
+        api.setLimitation((apiDto.getLimitation()));
 
         for (HeaderDto headerDto : apiDto.getHeaders()) {
             Header header = new Header();

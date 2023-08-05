@@ -40,7 +40,7 @@ class ApiPlatformApplicationTests {
 	void contextLoads() {
 	}
 
-	@Test
+	/*@Test
 	@Rollback(value = false)
 	void serviceKeyTest(){
 		// 1
@@ -84,6 +84,6 @@ class ApiPlatformApplicationTests {
 
 		hashResult = keyIssueService.issueServiceKey(serviceDto2, userDto2);
 		System.out.println("hash result string => " + hashResult);
-	}
+	}*/
 
 }

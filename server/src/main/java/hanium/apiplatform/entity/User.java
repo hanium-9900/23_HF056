@@ -13,14 +13,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import hanium.apiplatform.dto.UserDto;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+@Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,6 +39,7 @@ public class User implements UserDetails {
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<Service> services = new ArrayList<>();
     
     @ElementCollection(fetch = FetchType.EAGER)
@@ -80,5 +81,13 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public static User toEntity(UserDto userDto){
+        User user = new User(userDto.getEmail(), userDto.getPassword());
+
+        user.setId(user.getId());
+
+        return user;
     }
 }

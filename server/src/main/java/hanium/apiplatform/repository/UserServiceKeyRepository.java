@@ -8,5 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface UserServiceKeyRepository extends JpaRepository<UserServiceKey, Long> {
-    List<UserServiceKey> findByServiceAndUser(Service service, User user);
+    List<UserServiceKey> findByService_IdAndUser_Id(long serviceId, long userId);
+    List<UserServiceKey> findByKey(String key);
 }

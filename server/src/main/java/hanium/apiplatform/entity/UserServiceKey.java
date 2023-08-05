@@ -33,8 +33,8 @@ public class UserServiceKey {
         UserServiceKey userServiceKey = new UserServiceKey();
 
         userServiceKey.setId(userServiceKeyDto.getId());
-        userServiceKey.setService(userServiceKeyDto.getService());
-        userServiceKey.setUser(userServiceKeyDto.getUser());
+        userServiceKey.setService(Service.toEntity(userServiceKeyDto.getService()));
+        userServiceKey.setUser(User.toEntity(userServiceKeyDto.getUser()));
         userServiceKey.setKey(userServiceKey.getKey());
 
         return userServiceKey;

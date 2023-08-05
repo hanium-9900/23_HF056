@@ -1,18 +1,26 @@
 package hanium.apiplatform.controller;
 
+import com.mysql.cj.conf.ConnectionUrlParser.Pair;
 import hanium.apiplatform.config.JwtTokenProvider;
 import hanium.apiplatform.dto.ApiDto;
 import hanium.apiplatform.dto.ServiceDto;
 import hanium.apiplatform.dto.UserDto;
 import hanium.apiplatform.dto.UserServiceKeyDto;
+import hanium.apiplatform.entity.Api;
+import hanium.apiplatform.entity.ApiUsage;
+import hanium.apiplatform.entity.ErrorLog;
 import hanium.apiplatform.entity.Service;
+import hanium.apiplatform.entity.Statistics;
+import hanium.apiplatform.entity.UsageRate;
 import hanium.apiplatform.entity.User;
 import hanium.apiplatform.entity.UserServiceKey;
+import hanium.apiplatform.exception.ConnectionRefusedException;
 import hanium.apiplatform.exception.DuplicateServiceKeyException;
 import hanium.apiplatform.exception.KeyNotFoundException;
 import hanium.apiplatform.exception.NotValidException;
 import hanium.apiplatform.exception.ServiceNotFoundException;
 import hanium.apiplatform.exception.UserNotFoundException;
+import hanium.apiplatform.repository.ApiUsageRepository;
 import hanium.apiplatform.repository.ServiceRepository;
 import hanium.apiplatform.repository.UserRepository;
 import hanium.apiplatform.repository.UserServiceKeyRepository;
@@ -20,9 +28,15 @@ import hanium.apiplatform.service.ApiService;
 import hanium.apiplatform.service.KeyIssueService;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,9 +58,12 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
 
     private final ServiceRepository serviceRepository;
     private final UserServiceKeyRepository userServiceKeyRepository;
+    private final ApiUsageRepository apiUsageRepository;
 
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
+
+    private final EntityManager entityManager;
 
     // 데이터 판매자가 API를 등록할 시 호출되는 메소드
     @PostMapping()
@@ -89,12 +106,12 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
     }
 
     // TODO
-//    @PutMapping("/{id}")
-//    public ServiceDto updateServiceById(@PathVariable("id") Long id, @RequestBody ServiceDto serviceDto, HttpServletRequest header) {
-//        String userToken = jwtTokenProvider.resolveToken(header);
-//        User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(() -> new UserNotFoundException());
-//
-//    }
+    /*@PutMapping("/{id}")
+    public ServiceDto updateServiceById(@PathVariable("id") Long id, @RequestBody ServiceDto serviceDto, HttpServletRequest header) {
+        String userToken = jwtTokenProvider.resolveToken(header);
+        User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(() -> new UserNotFoundException());
+
+    }*/
 
     @DeleteMapping("/{id}")
     public Long deleteServiceById(@PathVariable("id") Long id) {
@@ -103,8 +120,8 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
     }
 
     // 구매 요청 처리
-    @PostMapping("/purchase")
-    public boolean purchaseService(@RequestParam("id") Long servicId, HttpServletRequest header) {
+    @PostMapping("/{id}/purchase")
+    public boolean purchaseService(@PathVariable("id") Long servicId, HttpServletRequest header) {
         // 헤더에서 JWT를 받아온다.
         String userToken = jwtTokenProvider.resolveToken(header);
         // 유효한 토큰인지 확인한다.
@@ -115,12 +132,14 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
             Service service = serviceRepository.findById(servicId).orElseThrow(() -> new ServiceNotFoundException());
 
             // user와 service를 이용해 key가 이미 존재하는지 검증
-            if (userServiceKeyRepository.findByServiceAndUser(service, user).size() > 0) {
+            if (userServiceKeyRepository.findByService_IdAndUser_Id(ServiceDto.toDto(service).getId(), UserDto.toDto(user).getId()).size()
+                > 0) {
                 throw new DuplicateServiceKeyException();
             } else {
                 // user와 service를 이용해 user를 위한 service key 생성
                 String userServiceKey = keyIssueService.issueServiceKey(ServiceDto.toDto(service), UserDto.toDto(user));
-                userServiceKeyRepository.save(UserServiceKey.toEntity(new UserServiceKeyDto(null, service, user, userServiceKey)));
+
+                userServiceKeyRepository.save(new UserServiceKey(null, service, user, userServiceKey));
                 return true;
             }
         } else {
@@ -130,19 +149,21 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
 
     // proxy service key 요청 처리
     // TODO: TEST
-    @GetMapping("/key")
-    public String getProxyServiceKey(@RequestParam("id") Long servicId, HttpServletRequest header) {
+    @GetMapping("/{id}/key")
+    public String getProxyServiceKey(@PathVariable("id") Long servicId, HttpServletRequest header) {
         // 헤더에서 JWT를 받아온다.
         String userToken = jwtTokenProvider.resolveToken(header);
         // 유효한 토큰인지 확인한다.
         if (userToken != null && jwtTokenProvider.validateToken(userToken)) {
             // 유효한 토큰이면 user data 추출
-            User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(() -> new UserNotFoundException());
+            UserDto userDto = UserDto.toDto(
+                userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(() -> new UserNotFoundException()));
             // request param에서 service id 추출
-            Service service = serviceRepository.findById(servicId).orElseThrow(() -> new ServiceNotFoundException());
+            ServiceDto serviceDto = ServiceDto.toDto(
+                serviceRepository.findById(servicId).orElseThrow(() -> new ServiceNotFoundException()));
 
             // user와 service를 이용해 key 탐색
-            List<UserServiceKey> serviceKeys = userServiceKeyRepository.findByServiceAndUser(service, user);
+            List<UserServiceKey> serviceKeys = userServiceKeyRepository.findByService_IdAndUser_Id(serviceDto.getId(), userDto.getId());
             if (serviceKeys.size() == 0) {
                 throw new KeyNotFoundException();
             }
@@ -157,5 +178,109 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
         } else {
             throw new NotValidException();
         }
+    }
+
+    // proxy api 요청 처리
+    // TODO test
+    @GetMapping("/{serviceiD}/{apiName}")
+    public ResponseEntity getDataThroughProxyApi(
+        @PathVariable("serviceiD") long serviceId,
+        @PathVariable("apiName") String apiName,
+        @RequestParam HashMap<String, String> paramMap) throws IOException {
+
+        // 헤더에 json 정보 추가
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "application/json; utf-8");
+        headers.set("Accept", "application/json");
+
+        String apiKey = paramMap.get("key");
+
+        // Search 'UserServiceKey' by service key from user request
+        List<UserServiceKey> serviceKeys = userServiceKeyRepository.findByKey(apiKey);
+        // key가 존재하지 않는 경우
+        if (serviceKeys.size() == 0) {
+            throw new KeyNotFoundException();
+        }
+        // key가 2개 이상인 경우
+        else if (serviceKeys.size() > 1) {
+            throw new DuplicateServiceKeyException();
+        }
+        // 정상적으로 1개의 key가 발견되면 proxy api를 통해 응답 요청
+        else {
+            UserServiceKeyDto userServiceKeyDto = UserServiceKeyDto.toDto(serviceKeys.get(0));
+
+            // key에 연결된 servie, api 경로가 올바른지 검증
+            Pair<Boolean, ApiDto> pathVerificationResult = apiService.verifyPath(userServiceKeyDto, "GET", serviceId, apiName);
+            boolean isPathAndKeyVarified = pathVerificationResult.left;
+            ApiDto verifiedApiDto = pathVerificationResult.right;
+            if (!isPathAndKeyVarified) {
+                throw new ConnectionRefusedException();
+            }
+
+            // send request to original api
+            HashMap<String, String> requestParamMap = paramMap;
+            requestParamMap.remove("key");
+            Pair<Integer, String> requestResult = apiService.requestFromProxyApi
+                (verifiedApiDto.getMethod().toUpperCase(), verifiedApiDto.getHost(), verifiedApiDto.getPath(), requestParamMap,
+                    userServiceKeyDto.getService().getKey());
+
+            int responseCode = requestResult.left;
+            String response = requestResult.right;
+
+            ApiUsage apiUsage = new ApiUsage();
+            apiUsage.setUser(serviceKeys.get(0).getUser());
+            for (Api api : serviceKeys.get(0).getService().getApis()) {
+                if (api.getId().equals(verifiedApiDto.getId())) {
+                    apiUsage.setApi(api);
+                }
+            }
+            apiUsage.setResponseCode(responseCode);
+            apiUsageRepository.save(apiUsage);
+
+            if (responseCode >= 200 && responseCode < 300) {
+                return new ResponseEntity<>(response, headers, HttpStatus.ACCEPTED);
+                //return new String(response.getBytes(), "euc-kr");
+            }
+
+            return new ResponseEntity<>(Integer.toString(responseCode), headers, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    // 서비스 월별 통계 조회
+    @GetMapping("/{id}/statistics")
+    public List<Statistics> getStatisticsByIdAndMonth(@PathVariable("id") Long id, @RequestParam int month) {
+        String sql = "select api_id, api.method, api.path, month(creation_timestamp) as month, day(creation_timestamp) as day, " +
+            "response_code, count(*) as count from (service join api on service.id = api.service_id) " +
+            "join api_usage on api.id = api_usage.api_id where service_id = :id group by api_id, month(creation_timestamp), day(creation_timestamp) having month = :month ;";
+        Query query = entityManager.createNativeQuery(sql, Statistics.class);
+        query.setParameter("id", id);
+        query.setParameter("month", month);
+
+        return (List<Statistics>) query.getResultList();
+    }
+
+    @GetMapping("/{id}/usage-rate")
+    public List<UsageRate> getUsageRates(@PathVariable("id") Long id, @RequestParam int month, @RequestParam int day) {
+        String sql = "select api.id, api.method, api.path, (count(*) /(api.limitation * (select count(distinct user.email) from user " +
+            "join api_usage on user.id = api_usage.user_id where month(creation_timestamp) = :month and day(creation_timestamp) = :day))) as usage_rate, limitation from service join api on service.id = api.service_id "
+            + "join api_usage on api.id = api_usage.api_id where service.id = :id and month(creation_timestamp) = :month and day(creation_timestamp) = :day group by api.id;";
+        Query query = entityManager.createNativeQuery(sql, UsageRate.class);
+        query.setParameter("id", id);
+        query.setParameter("month", month);
+        query.setParameter("day", day);
+
+        return (List<UsageRate>) query.getResultList();
+    }
+
+    @GetMapping("/{id}/error-log")
+    public List<ErrorLog> getErrorLogs(@PathVariable("id") Long id, @RequestParam int limit) {
+        String sql = "select api.id, api.method, api.path, api_usage.response_code, api_usage.creation_timestamp from service " +
+            "join api on service.id = api.service_id join api_usage on api.id = api_usage.api_id where service.id = :id and response_code >= 400 order by creation_timestamp desc limit :limit ;";
+
+        Query query = entityManager.createNativeQuery(sql, ErrorLog.class);
+        query.setParameter("id", id);
+        query.setParameter("limit", limit);
+
+        return (List<ErrorLog>) query.getResultList();
     }
 }

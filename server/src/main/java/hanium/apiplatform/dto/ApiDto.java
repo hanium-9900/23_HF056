@@ -6,8 +6,6 @@ import hanium.apiplatform.entity.Header;
 import hanium.apiplatform.entity.RequestParameter;
 import hanium.apiplatform.entity.ResponseParameter;
 import java.util.ArrayList;
-
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,6 +18,7 @@ public class ApiDto {
     private String description;
     private String method;
     private String path;
+    private int limitation;
     private ArrayList<HeaderDto> headers = new ArrayList<>();
     private ArrayList<RequestParameterDto> requestParameters = new ArrayList<>();
     private ArrayList<ResponseParameterDto> responseParameters = new ArrayList<>();
@@ -32,6 +31,7 @@ public class ApiDto {
         apiDto.setDescription(api.getDescription());
         apiDto.setMethod(api.getMethod());
         apiDto.setPath(api.getPath());
+        apiDto.setLimitation((api.getLimitation()));
 
         for (Header header : api.getHeaders()) {
             apiDto.headers.add(HeaderDto.toDto(header));
@@ -50,5 +50,39 @@ public class ApiDto {
         }
 
         return apiDto;
+    }
+
+    public static ArrayList<ApiDto> toDto(ArrayList<Api> apis) {
+        ArrayList<ApiDto> apiDtos = new ArrayList<>(apis.size());
+
+        for (Api api :
+            apis) {
+            ApiDto apiDto = new ApiDto();
+            apiDto.setId(api.getId());
+            apiDto.setHost(api.getHost());
+            apiDto.setDescription(api.getDescription());
+            apiDto.setMethod(api.getMethod());
+            apiDto.setPath(api.getPath());
+
+            for (Header header : api.getHeaders()) {
+                apiDto.headers.add(HeaderDto.toDto(header));
+            }
+
+            for (RequestParameter requestParameter : api.getRequestParameters()) {
+                apiDto.requestParameters.add(RequestParameterDto.toDto(requestParameter));
+            }
+
+            for (ResponseParameter responseParameter : api.getResponseParameters()) {
+                apiDto.responseParameters.add(ResponseParameterDto.toDto(responseParameter));
+            }
+
+            for (ErrorCode errorCode : api.getErrorCodes()) {
+                apiDto.errorCodes.add(ErrorCodeDto.toDto(errorCode));
+            }
+
+            apiDtos.add(apiDto);
+        }
+
+        return apiDtos;
     }
 }

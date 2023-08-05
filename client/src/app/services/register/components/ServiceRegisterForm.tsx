@@ -8,6 +8,7 @@ import { api, ServiceResponse } from '@/api';
 import { useRouter } from 'next/navigation';
 import Modal from '@/app/components/Modal';
 import { toast } from 'react-toastify';
+import { categories } from '@/config/category';
 
 interface ServiceRegisterFormProps {
   service?: ServiceResponse;
@@ -18,6 +19,7 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
 
   const [modalOpened, setModalOpened] = useState(false);
   const [info, setInfo] = useState<ServiceInfo>({
+    category: service?.category || '기타',
     title: service?.title || '',
     description: service?.description || '',
     price: service?.price || -1,
@@ -29,6 +31,7 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
       method: api.method || 'GET',
       path: api.path || '',
       description: api.description || '',
+      limitation: -1,
       headers:
         api.headers?.map(h => ({
           key: h.key,
@@ -69,6 +72,7 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
         method: 'GET',
         path: '',
         description: '',
+        limitation: -1,
         headers: [],
         requestParameters: [],
         responseParameters: [],
@@ -103,6 +107,10 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
     for (const api of apiList) {
       if (api.host.trim() === '' || api.path.trim() === '') {
         toast.error('API 기본 정보(Host, Path)를 모두 입력해주세요!');
+        return;
+      }
+      if (api.limitation === -1) {
+        toast.error('API 일일 호출 제한 횟수를 입력해주세요!');
         return;
       }
     }
@@ -193,6 +201,14 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
         }}
       >
         {/* 서비스 명세 */}
+        <label className="block mb-6">
+          <div className="font-bold mb-2">서비스 이름</div>
+          <select onChange={e => updateInfo({ category: e.target.value })} value={info.category} required>
+            {categories.map(category => (
+              <option key={category} value={category}>{category}</option>
+            ))}
+          </select>
+        </label>
         <label className="block mb-6">
           <div className="font-bold mb-2">서비스 이름</div>
           <input type="text" placeholder="서비스 이름을 입력하세요" onChange={e => updateInfo({ title: e.target.value })} value={info.title} required />
