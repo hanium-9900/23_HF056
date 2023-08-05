@@ -134,8 +134,8 @@ export const api = {
     /**
      * 서비스 목록 조회
      */
-    list() {
-      return axios.get<ServiceResponse[]>('/services');
+    list(category?: string) {
+      return axios.get<ServiceResponse[]>(`/services${category ? `?category=${category}` : ''}`);
     },
     /**
      * 서비스 상세 조회
