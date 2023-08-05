@@ -14,6 +14,7 @@ export interface ServiceResponse {
     description: string;
     method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
     path: string;
+    limitation: number;
     headers: {
       id: number;
       required: 0 | 1;
@@ -63,6 +64,14 @@ export interface ServiceUsageResponse {
   path: string;
   usage_rate: number;
   limitation: number;
+}
+
+export interface ErrorLogResponse {
+  id: number;
+  method: string;
+  path: string;
+  response_code: number;
+  creation_times: string;
 }
 
 export const api = {
@@ -143,26 +152,28 @@ export const api = {
     /**
      * 서비스 사용량 통계
      */
-    statistics(serviceId: number, month?: number) {
+    statistics(serviceId: number, year?: number, month?: number) {
+      const calculatedYear = year || new Date().getFullYear() + 1;
       const calculatedMonth = month || new Date().getMonth() + 1;
 
-      return axios.get<ServiceStatisticsResponse[]>(`/services/${serviceId}/statistics?month=${calculatedMonth}`);
+      return axios.get<ServiceStatisticsResponse[]>(`/services/${serviceId}/statistics?year=${calculatedYear}&month=${calculatedMonth}`);
     },
     /**
      * 평균 사용량 퍼센트
      */
     usage(serviceId: number) {
       const now = new Date();
+      const year = now.getFullYear();
       const month = now.getMonth() + 1;
-      const day = now.getDate() - 1;
+      const day = now.getDate();
 
-      return axios.get<ServiceUsageResponse[]>(`/services/${serviceId}/usage-rate?month=${month}&day=${day}`);
+      return axios.get<ServiceUsageResponse[]>(`/services/${serviceId}/usage-rate?year=${year}&month=${month}&day=${day}`);
     },
     /**
      * 에러 로그
      */
     errorLogs(serviceId: number, limit: number = 10) {
-      return axios.get(`/services/${serviceId}/error-log?limit=${limit}`);
+      return axios.get<ErrorLogResponse[]>(`/services/${serviceId}/error-log?limit=${limit}`);
     },
   },
   /**

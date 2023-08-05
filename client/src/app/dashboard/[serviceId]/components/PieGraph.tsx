@@ -22,66 +22,65 @@ export default function PieGraph({ statistics /* see data tab */ }: { statistics
 
   return (
     <>
-      <div style={{ height: 490 }}>
-        <ResponsivePie
-          data={data}
-          margin={{ top: 40, right: 40, bottom: 80, left: 40 }}
-          sortByValue={true}
-          innerRadius={0.6}
-          padAngle={2}
-          cornerRadius={3}
-          activeOuterRadiusOffset={8}
-          colors={{ scheme: 'set1' }}
-          borderColor={{
-            from: 'color',
-            modifiers: [
-              [
-                'darker',
-                0.2
-              ]
+      <ResponsivePie
+        data={data}
+        margin={{ top: 40, right: 40, bottom: 80, left: 40 }}
+        sortByValue={true}
+        innerRadius={0.6}
+        padAngle={2}
+        cornerRadius={3}
+        activeOuterRadiusOffset={8}
+        // colors={['#3b82f6', '#ef4444']}
+        colors={{ scheme: 'set1' }}
+        borderColor={{
+          from: 'color',
+          modifiers: [
+            [
+              'darker',
+              0.2
             ]
-          }}
-          arcLinkLabelsSkipAngle={10}
-          arcLinkLabelsTextColor={{ theme: 'labels.text.fill' }}
-          arcLinkLabelsThickness={2}
-          arcLinkLabelsColor={{ from: 'color', modifiers: [] }}
-          arcLabelsSkipAngle={10}
-          arcLabelsTextColor={{
-            from: 'color',
-            modifiers: [
-              [
-                'darker',
-                2
-              ]
+          ]
+        }}
+        arcLinkLabelsSkipAngle={10}
+        arcLinkLabelsTextColor={{ theme: 'labels.text.fill' }}
+        arcLinkLabelsThickness={2}
+        arcLinkLabelsColor={{ from: 'color', modifiers: [] }}
+        arcLabelsSkipAngle={10}
+        arcLabelsTextColor={{
+          from: 'color',
+          modifiers: [
+            [
+              'darker',
+              2
             ]
-          }}
-          legends={[
-            {
-              anchor: 'bottom',
-              direction: 'row',
-              justify: false,
-              translateX: 0,
-              translateY: 56,
-              itemsSpacing: 0,
-              itemWidth: 100,
-              itemHeight: 18,
-              itemTextColor: '#999',
-              itemDirection: 'left-to-right',
-              itemOpacity: 1,
-              symbolSize: 18,
-              symbolShape: 'circle',
-              effects: [
-                {
-                  on: 'hover',
-                  style: {
-                    itemTextColor: '#000'
-                  }
+          ]
+        }}
+        legends={[
+          {
+            anchor: 'bottom',
+            direction: 'row',
+            justify: false,
+            translateX: 0,
+            translateY: 56,
+            itemsSpacing: 0,
+            itemWidth: 100,
+            itemHeight: 18,
+            itemTextColor: '#999',
+            itemDirection: 'left-to-right',
+            itemOpacity: 1,
+            symbolSize: 18,
+            symbolShape: 'circle',
+            effects: [
+              {
+                on: 'hover',
+                style: {
+                  itemTextColor: '#000'
                 }
-              ]
-            }
-          ]}
-        />
-      </div>
+              }
+            ]
+          }
+        ]}
+      />
     </>
   );
 }
