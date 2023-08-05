@@ -10,6 +10,7 @@ import hanium.apiplatform.entity.Api;
 import hanium.apiplatform.entity.ApiUsage;
 import hanium.apiplatform.entity.Service;
 import hanium.apiplatform.entity.Statistics;
+import hanium.apiplatform.entity.UsageRate;
 import hanium.apiplatform.entity.User;
 import hanium.apiplatform.entity.UserServiceKey;
 import hanium.apiplatform.exception.ConnectionRefusedException;
@@ -249,11 +250,27 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
     public List<Statistics> getStatisticsByIdAndMonth(@PathVariable("id") Long id, @RequestParam int month) {
         String sql = "select api_id, api.method, api.path, month(creation_timestamp) as month, day(creation_timestamp) as day, " +
             "response_code, count(*) as count from (service join api on service.id = api.service_id) " +
-            "join api_usage on api.id = api_usage.api_id group by api_id, month(creation_timestamp), day(creation_timestamp) having month = :month ;";
+            "join api_usage on api.id = api_usage.api_id where service_id = :id group by api_id, month(creation_timestamp), day(creation_timestamp) having month = :month ;";
         Query query = entityManager.createNativeQuery(sql, Statistics.class);
+        query.setParameter("id", id);
         query.setParameter("month", month);
-        List<Statistics> results = query.getResultList();
 
-        return results;
+        return (List<Statistics>) query.getResultList();
+    }
+
+    @GetMapping("/{id}/usage_rate")
+    public List<UsageRate> getUsageRate(@PathVariable("id") Long id, @RequestParam int month, @RequestParam int day) {
+        System.out.println(id);
+        System.out.println(month);
+        System.out.println(day);
+        String sql = "select api.id, api.method, api.path, (count(*) /(api.limitation * (select count(distinct user.email) from user " +
+            "join api_usage on user.id = api_usage.user_id where month(creation_timestamp) = :month and day(creation_timestamp) = :day))) as usage_rate from service join api on service.id = api.service_id "
+            + "join api_usage on api.id = api_usage.api_id where service.id = :id and month(creation_timestamp) = :month and day(creation_timestamp) = :day group by api.id;";
+        Query query = entityManager.createNativeQuery(sql, UsageRate.class);
+        query.setParameter("id", id);
+        query.setParameter("month", month);
+        query.setParameter("day", day);
+
+        return (List<UsageRate>) query.getResultList();
     }
 }
