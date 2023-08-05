@@ -1,15 +1,12 @@
 package hanium.apiplatform.entity;
 
+import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 @Entity
-public class UsageRate {
+public class ErrorLog {
 
     @Id
     @Column
@@ -22,8 +19,8 @@ public class UsageRate {
     private String path;
 
     @Column
-    private double usage_rate;
+    private int response_code;
 
     @Column
-    private int limitation;
+    private Timestamp creation_timestamp;
 }

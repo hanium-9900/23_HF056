@@ -8,6 +8,7 @@ import hanium.apiplatform.dto.UserDto;
 import hanium.apiplatform.dto.UserServiceKeyDto;
 import hanium.apiplatform.entity.Api;
 import hanium.apiplatform.entity.ApiUsage;
+import hanium.apiplatform.entity.ErrorLog;
 import hanium.apiplatform.entity.Service;
 import hanium.apiplatform.entity.Statistics;
 import hanium.apiplatform.entity.UsageRate;
@@ -259,12 +260,9 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
     }
 
     @GetMapping("/{id}/usage_rate")
-    public List<UsageRate> getUsageRate(@PathVariable("id") Long id, @RequestParam int month, @RequestParam int day) {
-        System.out.println(id);
-        System.out.println(month);
-        System.out.println(day);
+    public List<UsageRate> getUsageRates(@PathVariable("id") Long id, @RequestParam int month, @RequestParam int day) {
         String sql = "select api.id, api.method, api.path, (count(*) /(api.limitation * (select count(distinct user.email) from user " +
-            "join api_usage on user.id = api_usage.user_id where month(creation_timestamp) = :month and day(creation_timestamp) = :day))) as usage_rate from service join api on service.id = api.service_id "
+            "join api_usage on user.id = api_usage.user_id where month(creation_timestamp) = :month and day(creation_timestamp) = :day))) as usage_rate, limitation from service join api on service.id = api.service_id "
             + "join api_usage on api.id = api_usage.api_id where service.id = :id and month(creation_timestamp) = :month and day(creation_timestamp) = :day group by api.id;";
         Query query = entityManager.createNativeQuery(sql, UsageRate.class);
         query.setParameter("id", id);
@@ -272,5 +270,17 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
         query.setParameter("day", day);
 
         return (List<UsageRate>) query.getResultList();
+    }
+
+    @GetMapping("/{id}/error-log")
+    public List<ErrorLog> getErrorLogs(@PathVariable("id") Long id, @RequestParam int limit) {
+        String sql = "select api.id, api.method, api.path, api_usage.response_code, api_usage.creation_timestamp from service " +
+            "join api on service.id = api.service_id join api_usage on api.id = api_usage.api_id where service.id = :id and response_code >= 400 order by creation_timestamp desc limit :limit ;";
+
+        Query query = entityManager.createNativeQuery(sql, ErrorLog.class);
+        query.setParameter("id", id);
+        query.setParameter("limit", limit);
+
+        return (List<ErrorLog>) query.getResultList();
     }
 }
