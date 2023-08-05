@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -252,35 +251,34 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
         String sql = "select api_id, api.method, api.path, month(creation_timestamp) as month, day(creation_timestamp) as day, " +
             "response_code, count(*) as count from (service join api on service.id = api.service_id) " +
             "join api_usage on api.id = api_usage.api_id where service_id = :id group by api_id, month(creation_timestamp), day(creation_timestamp) having month = :month ;";
-        Query query = entityManager.createNativeQuery(sql, Statistics.class);
-        query.setParameter("id", id);
-        query.setParameter("month", month);
-
-        return (List<Statistics>) query.getResultList();
+        return (List<Statistics>) entityManager.createNativeQuery(sql, Statistics.class)
+            .setParameter("id", id)
+            .setParameter("month", month)
+            .getResultList();
     }
 
+    // 서비스 사용률 조회
     @GetMapping("/{id}/usage-rate")
     public List<UsageRate> getUsageRates(@PathVariable("id") Long id, @RequestParam int month, @RequestParam int day) {
         String sql = "select api.id, api.method, api.path, (count(*) /(api.limitation * (select count(distinct user.email) from user " +
             "join api_usage on user.id = api_usage.user_id where month(creation_timestamp) = :month and day(creation_timestamp) = :day))) as usage_rate, limitation from service join api on service.id = api.service_id "
             + "join api_usage on api.id = api_usage.api_id where service.id = :id and month(creation_timestamp) = :month and day(creation_timestamp) = :day group by api.id;";
-        Query query = entityManager.createNativeQuery(sql, UsageRate.class);
-        query.setParameter("id", id);
-        query.setParameter("month", month);
-        query.setParameter("day", day);
+        return (List<UsageRate>) entityManager.createNativeQuery(sql, UsageRate.class)
+            .setParameter("id", id).setParameter("month", month)
+            .setParameter("day", day)
+            .getResultList();
 
-        return (List<UsageRate>) query.getResultList();
     }
 
+    // 서비스 에러 로그 조회
     @GetMapping("/{id}/error-log")
     public List<ErrorLog> getErrorLogs(@PathVariable("id") Long id, @RequestParam int limit) {
         String sql = "select api.id, api.method, api.path, api_usage.response_code, api_usage.creation_timestamp from service " +
             "join api on service.id = api.service_id join api_usage on api.id = api_usage.api_id where service.id = :id and response_code >= 400 order by creation_timestamp desc limit :limit ;";
 
-        Query query = entityManager.createNativeQuery(sql, ErrorLog.class);
-        query.setParameter("id", id);
-        query.setParameter("limit", limit);
-
-        return (List<ErrorLog>) query.getResultList();
+        return (List<ErrorLog>) entityManager.createNativeQuery(sql, ErrorLog.class)
+            .setParameter("id", id)
+            .setParameter("limit", limit)
+            .getResultList();
     }
 }
