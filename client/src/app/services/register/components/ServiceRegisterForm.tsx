@@ -29,6 +29,7 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
       method: api.method || 'GET',
       path: api.path || '',
       description: api.description || '',
+      limitation: -1,
       headers:
         api.headers?.map(h => ({
           key: h.key,
@@ -69,6 +70,7 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
         method: 'GET',
         path: '',
         description: '',
+        limitation: -1,
         headers: [],
         requestParameters: [],
         responseParameters: [],
@@ -103,6 +105,10 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
     for (const api of apiList) {
       if (api.host.trim() === '' || api.path.trim() === '') {
         toast.error('API 기본 정보(Host, Path)를 모두 입력해주세요!');
+        return;
+      }
+      if (api.limitation === -1) {
+        toast.error('API 일일 호출 제한 횟수를 입력해주세요!');
         return;
       }
     }

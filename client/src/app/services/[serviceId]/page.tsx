@@ -21,6 +21,7 @@ export default function ServiceInfoPage({ params }: { params: { serviceId: strin
         method: 'GET',
         description: '테스트 API 1번',
         path: '/example/api1',
+        limitation: 1000,
         headers: [
           {
             key: '테스트 헤더1',
@@ -37,6 +38,7 @@ export default function ServiceInfoPage({ params }: { params: { serviceId: strin
         method: 'GET',
         description: '테스트 API 2번',
         path: '/example/api2',
+        limitation: 2000,
         headers: [
           {
             key: '테스트 헤더2',
