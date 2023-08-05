@@ -10,6 +10,7 @@ export interface ApiInfo {
   method: string;
   path: string;
   description: string;
+  limitation: number;
   headers: Header[];
   requestParameters: RequestParameter[];
   responseParameters: ResponseParameter[];
