@@ -41,6 +41,28 @@ export interface ServiceResponse {
       description: string;
     }[];
   }[];
+  user: {
+    id: number;
+    email: string;
+  };
+}
+
+export interface ServiceStatisticsResponse {
+  api_id: number;
+  method: string;
+  path: string;
+  month: number;
+  day: number;
+  response_code: number;
+  count: number;
+}
+
+export interface ServiceUsageResponse {
+  id: number;
+  method: string;
+  path: string;
+  usage_rate: number;
+  limitation: number;
 }
 
 export const api = {
@@ -118,22 +140,29 @@ export const api = {
     claim(serviceId: number, content: string) {
       // 신고
     },
-  },
-  /**
-   * 사용량
-   */
-  limitations: {
     /**
-     * 사용량 조회
+     * 서비스 사용량 통계
      */
-    show(serviceId: number) {
-      // 조회
+    statistics(serviceId: number, month?: number) {
+      const calculatedMonth = month || new Date().getMonth() + 1;
+
+      return axios.get<ServiceStatisticsResponse[]>(`/services/${serviceId}/statistics?month=${calculatedMonth}`);
     },
     /**
-     * 사용량 제한 설정
+     * 평균 사용량 퍼센트
      */
-    update(serviceId: number, limitation: any) {
-      // 수정/설정
+    usage(serviceId: number) {
+      const now = new Date();
+      const month = now.getMonth() + 1;
+      const day = now.getDate() - 1;
+
+      return axios.get<ServiceUsageResponse[]>(`/services/${serviceId}/usage-rate?month=${month}&day=${day}`);
+    },
+    /**
+     * 에러 로그
+     */
+    errorLogs(serviceId: number, limit: number = 10) {
+      return axios.get(`/services/${serviceId}/error-log?limit=${limit}`);
     },
   },
   /**
