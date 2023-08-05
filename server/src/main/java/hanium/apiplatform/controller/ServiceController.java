@@ -157,6 +157,7 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
             // 유효한 토큰이면 user data 추출
             UserDto userDto = UserDto.toDto(
                 userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(() -> new UserNotFoundException()));
+
             // request param에서 service id 추출
             ServiceDto serviceDto = ServiceDto.toDto(
                 serviceRepository.findById(servicId).orElseThrow(() -> new ServiceNotFoundException()));
@@ -209,7 +210,7 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
             UserServiceKeyDto userServiceKeyDto = UserServiceKeyDto.toDto(serviceKeys.get(0));
 
             // key에 연결된 servie, api 경로가 올바른지 검증
-            Pair<Boolean, ApiDto> pathVerificationResult = apiService.verifyPath(userServiceKeyDto, "GET", serviceId, apiName);
+            Pair<Boolean, ApiDto> pathVerificationResult = apiService.verifyPathAndUsage(userServiceKeyDto, "GET", serviceId, apiName);
             boolean isPathAndKeyVarified = pathVerificationResult.left;
             ApiDto verifiedApiDto = pathVerificationResult.right;
             if (!isPathAndKeyVarified) {
