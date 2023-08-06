@@ -22,7 +22,7 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
     category: service?.category || '기타',
     title: service?.title || '',
     description: service?.description || '',
-    price: service?.price || -1,
+    price: service?.price === undefined ? -1 : service.price, // bugfix: price가 0일 경우 -1이 되는 문제 수정
     key: service?.key || '',
   });
   const [apiList, setApiList] = useState<ApiInfo[]>(
@@ -31,7 +31,7 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
       method: api.method || 'GET',
       path: api.path || '',
       description: api.description || '',
-      limitation: -1,
+      limitation: api.limitation === undefined ? -1 : api.limitation, // bugfix: limitation 0일 경우 -1이 되는 문제 수정
       headers:
         api.headers?.map(h => ({
           key: h.key,
