@@ -34,7 +34,7 @@ export default function ApiSpecificationInput({
         <span className="rounded bg-blue-500 text-white shrink-0 py-2 px-4 mr-5">{no + 1}번</span>
         <div className="flex items-center grow mr-3">
           <div className="font-bold mr-3">Host</div>
-          <input type="text" placeholder="https://example.com" onChange={e => updateSpecification({ host: e.target.value })} value={api.host} required />
+          <input type="text" placeholder="example.com" onChange={e => updateSpecification({ host: e.target.value })} value={api.host} required />
         </div>
         <button type="button" className="rounded bg-red-500 text-white shrink-0 py-2 px-4" onClick={e => removeApi(no)}>
           삭제
