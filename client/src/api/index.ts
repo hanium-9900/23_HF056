@@ -153,7 +153,7 @@ export const api = {
      * 서비스 사용량 통계
      */
     statistics(serviceId: number, year?: number, month?: number) {
-      const calculatedYear = year || new Date().getFullYear() + 1;
+      const calculatedYear = year || new Date().getFullYear();
       const calculatedMonth = month || new Date().getMonth() + 1;
 
       return axios.get<ServiceStatisticsResponse[]>(`/services/${serviceId}/statistics?year=${calculatedYear}&month=${calculatedMonth}`);
