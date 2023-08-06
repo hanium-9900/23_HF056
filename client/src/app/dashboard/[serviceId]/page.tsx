@@ -7,14 +7,17 @@ import PieGraph from './components/PieGraph';
 import LineGraph from "./components/LineGraph";
 
 async function getDatas(serviceId: number) {
+  const now = new Date();
+
   const p1 = api.services.show(serviceId).then(res => res.data);
   const p2 = api.services.errorLogs(serviceId).then(res => res.data);
-  const p3 = api.services.statistics(serviceId, new Date().getMonth() + 1).then(res => res.data);
+  const p3 = api.services.statistics(serviceId, now.getFullYear(), now.getMonth() + 1).then(res => res.data);
   const p4 = api.services.usage(serviceId).then(res => res.data);
 
-  let prevMonth = new Date().getMonth() - 1;
+  let prevMonth = now.getMonth() - 1;
+  const prevYear = prevMonth < 0 ? now.getFullYear() - 1 : now.getFullYear();
   prevMonth = prevMonth < 0 ? 12 : prevMonth + 1;
-  const p5 = api.services.statistics(serviceId, prevMonth).then(res => res.data);
+  const p5 = api.services.statistics(serviceId, prevYear, prevMonth).then(res => res.data);
 
   const [service, errorLogs, statistics, usage, prevStatistics] = await Promise.all([p1, p2, p3, p4, p5]);
 
