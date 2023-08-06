@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import ApiLimit from "./components/ApiLimit";
 import PieGraph from './components/PieGraph';
 import LineGraph from "./components/LineGraph";
+import Image from "next/image";
 
 async function getDatas(serviceId: number) {
   const now = new Date();
@@ -39,6 +40,15 @@ export default async function Page({ params }: { params: { serviceId: string } }
   const { service, errorLogs, statistics, usage, prevStatistics } = await getDatas(serviceId);
   const session = await getServerSession();
   if (session?.user?.email !== service.user.email) {
+    return (
+      <main className="mx-auto py-10 px-3">
+        <div className="text-center flex flex-col items-center">
+          <Image className="mb-5" width={128} height={128} src='/icon-danger.png' alt="경고" />
+          <div className="font-bold text-xl mb-2">접근 권한이 없습니다.</div>
+          <div className="font-light">자신이 등록한 서비스의 사용량만 열람할 수 있습니다.</div>
+        </div>
+      </main>
+    )
     redirect('/')
   }
 
