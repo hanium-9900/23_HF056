@@ -101,22 +101,27 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
     @PutMapping("/{id}")
     public ServiceDto updateServiceById(@PathVariable("id") Long id, @RequestBody ServiceDto serviceDto, HttpServletRequest header) {
         String userToken = jwtTokenProvider.resolveToken(header);
-        User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(() -> new UserNotFoundException());
+        User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(UserNotFoundException::new);
 
         // TODO
-        
+
         return null;
     }
 
     @DeleteMapping("/{id}")
-    public Long deleteServiceById(@PathVariable("id") Long id) {
+    public Long deleteServiceById(@PathVariable("id") Long id, HttpServletRequest request) {
+        String userToken = jwtTokenProvider.resolveToken(request);
+        User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(UserNotFoundException::new);
+
+        Service result = serviceRepository.findServiceByIdAndUserId(id, user.getId()).orElseThrow(NotAuthorizedException::new);
+
         serviceRepository.deleteById(id);
         return id;
     }
 
     // 구매 요청 처리
     @PostMapping("/{id}/purchase")
-    public boolean purchaseService(@PathVariable("id") Long servicId, HttpServletRequest header) {
+    public boolean purchaseService(@PathVariable("id") Long serviceId, HttpServletRequest header) {
         // 헤더에서 JWT를 받아온다.
         String userToken = jwtTokenProvider.resolveToken(header);
         // 유효한 토큰인지 확인한다.
@@ -124,7 +129,7 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
             // 유효한 토큰이면 user data 추출
             User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(UserNotFoundException::new);
             // request param에서 service id 추출
-            Service service = serviceRepository.findById(servicId).orElseThrow(ServiceNotFoundException::new);
+            Service service = serviceRepository.findById(serviceId).orElseThrow(ServiceNotFoundException::new);
 
             // user와 service를 이용해 key가 이미 존재하는지 검증
             if (userServiceKeyRepository.findByService_IdAndUser_Id(ServiceDto.toDto(service).getId(), UserDto.toDto(user).getId()).size()
