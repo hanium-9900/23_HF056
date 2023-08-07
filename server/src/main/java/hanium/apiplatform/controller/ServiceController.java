@@ -94,21 +94,19 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
             services = serviceRepository.findByCategory(category);
         }
 
-        ArrayList<ServiceDto> result = new ArrayList<>();
-
-        for (Service service : services) {
-            result.add(ServiceDto.toDto(service));
-        }
-        return result;
+        return services.stream().map(ServiceDto::toDto).collect(Collectors.toList());
     }
 
     // TODO
-    /*@PutMapping("/{id}")
+    @PutMapping("/{id}")
     public ServiceDto updateServiceById(@PathVariable("id") Long id, @RequestBody ServiceDto serviceDto, HttpServletRequest header) {
         String userToken = jwtTokenProvider.resolveToken(header);
         User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(() -> new UserNotFoundException());
 
-    }*/
+        // TODO
+        
+        return null;
+    }
 
     @DeleteMapping("/{id}")
     public Long deleteServiceById(@PathVariable("id") Long id) {
