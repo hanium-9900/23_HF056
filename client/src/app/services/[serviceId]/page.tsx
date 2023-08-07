@@ -2,14 +2,17 @@
 
 import { useEffect, useState } from 'react';
 import './page.css';
-import { Service } from '../register/types';
 import ApiSpecification from './components/ApiSpecification';
 import ApiPurchaseButton from './components/ApiPurchaseButton';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 import { api, ServiceResponse } from '@/api';
+import { toast } from 'react-toastify';
 
 export default function ServiceInfoPage({ params }: { params: { serviceId: string } }) {
+  const router = useRouter();
+
   const [service, setService] = useState<ServiceResponse | null>(null);
   const [selectedApi, setSelectedApi] = useState(0);
 
@@ -25,6 +28,25 @@ export default function ServiceInfoPage({ params }: { params: { serviceId: strin
 
   if (!service) {
     return <div>Loading...</div>;
+  }
+
+  async function deleteService() {
+    if (confirm('정말 삭제하시겠습니까?')) { // [TODO] 컨펌 Modal로 대체
+      const id = Number.parseInt(params.serviceId);
+      if (Number.isNaN(id)) return;
+
+      try {
+        await api.services.delete(id);
+
+        toast.success(`'${service?.title}' 서비스가 삭제되었습니다.`)
+        router.replace('/services');
+        router.refresh();
+      } catch (e) {
+        toast.success(`서비스 삭제 중 알 수 없는 오류가 발생했습니다!`)
+
+        console.error(e);
+      }
+    }
   }
 
   return (
@@ -48,7 +70,7 @@ export default function ServiceInfoPage({ params }: { params: { serviceId: strin
         <Link href={`/services/${params.serviceId}/edit`} className="py-2 px-7 rounded-full border-2 border-blue-500 text-blue-500 font-bold">
           수정
         </Link>
-        <button onClick={() => alert('미구현')} className="py-2 px-7 rounded-full border-2 border-red-500 text-red-500 font-bold">
+        <button onClick={() => deleteService()} className="py-2 px-7 rounded-full border-2 border-red-500 text-red-500 font-bold">
           삭제
         </button>
       </div>

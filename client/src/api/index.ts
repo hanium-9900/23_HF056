@@ -150,6 +150,12 @@ export const api = {
       // 신고
     },
     /**
+     * 서비스 삭제
+     */
+    delete(serviceId: number) {
+      return axios.delete(`/services/${serviceId}`);
+    },
+    /**
      * 서비스 사용량 통계
      */
     statistics(serviceId: number, year?: number, month?: number) {
