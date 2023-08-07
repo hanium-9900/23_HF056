@@ -3,6 +3,7 @@ package hanium.apiplatform.service;
 import com.mysql.cj.conf.ConnectionUrlParser.Pair;
 import hanium.apiplatform.dto.*;
 import hanium.apiplatform.entity.Api;
+import hanium.apiplatform.entity.RequestParameter;
 import hanium.apiplatform.exception.ApiNotFoundException;
 import hanium.apiplatform.exception.ConnectionRefusedException;
 import hanium.apiplatform.exception.OverLimitException;
@@ -33,10 +34,14 @@ public class ApiService {
 
     private final EntityManager entityManager;
     private final ApiRepository apiRepository;
+    private final HeaderService headerService;
+    private final RequestParameterService requestParameterService;
+    private final ResponseParameterService responseParameterService;
+    private final ErrorCodeService errorCodeService;
 
-    /*private final EntityManager em;
+    private final EntityManager em;
 
-    public Api updateApiInfo(ApiDto apiDto){
+    public ApiDto updateApiInfo(ApiDto apiDto){
         Api api = em.find(Api.class, apiDto.getId());
 
         api.setHost(api.getHost());
@@ -44,19 +49,48 @@ public class ApiService {
         api.setMethod(api.getMethod());
         api.setPath(api.getPath());
 
-        return api;
+        return ApiDto.toDto(api);
     }
 
-    public ArrayList<Api> updateApiInfo(ApiDto apiDto){
-        Api api = em.find(Api.class, apiDto.getId());
+    public ArrayList<ApiDto> updateApiInfos(ArrayList<ApiDto> apiDtos){
+        ArrayList<ApiDto> updatedApiDtos = new ArrayList<>();
 
-        api.setHost(api.getHost());
-        api.setDescription(api.getDescription());
-        api.setMethod(api.getMethod());
-        api.setPath(api.getPath());
+        for(ApiDto apiDto : apiDtos){
+            Api api = em.find(Api.class, apiDto.getId());
 
-        return api;
-    }*/
+            api.setHost(apiDto.getHost());
+            api.setDescription(apiDto.getDescription());
+            api.setMethod(apiDto.getMethod());
+            api.setPath(apiDto.getPath());
+
+            List<HeaderDto> updatedHeaderDtos = headerService.updateHeaderInfos(apiDto.getHeaders());
+            List<RequestParameterDto> updatedRequestParameterDtos =
+                    requestParameterService.updateRequestParameters
+                            (apiDto.getRequestParameters());
+            List<ResponseParameterDto> updatedResponseParameterDtos =
+                    responseParameterService.updateResponseParameters
+                            (apiDto.getResponseParameters());
+            List<ErrorCodeDto> updatedErrorCodeDtos =
+                    errorCodeService.updateErrorCodes(apiDto.getErrorCodes());
+
+            api.setLimitation(apiDto.getLimitation());
+
+            ApiDto updatedDto = new ApiDto();
+            updatedDto.setHost(api.getHost());
+            updatedDto.setDescription(api.getDescription());
+            updatedDto.setMethod(api.getMethod());
+            updatedDto.setPath(api.getPath());
+            updatedDto.setHeaders((ArrayList<HeaderDto>) updatedHeaderDtos);
+            updatedDto.setRequestParameters((ArrayList<RequestParameterDto>) updatedRequestParameterDtos);
+            updatedDto.setResponseParameters((ArrayList<ResponseParameterDto>) updatedResponseParameterDtos);
+            updatedDto.setErrorCodes((ArrayList<ErrorCodeDto>) updatedErrorCodeDtos);
+            updatedDto.setLimitation(api.getLimitation());
+
+            updatedApiDtos.add(ApiDto.toDto(api));
+        }
+
+        return updatedApiDtos;
+    }
 
     private Pair<Integer, String> requestApi(String method, String host, String path, ArrayList<HeaderDto> headers,
                                              ArrayList<RequestParameterDto> requestParameters, String apiKey) throws IOException {

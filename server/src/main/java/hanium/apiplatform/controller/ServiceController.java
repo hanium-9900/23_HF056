@@ -26,6 +26,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletRequest;
+
+import hanium.apiplatform.service.ServiceService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -36,6 +45,7 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
 
     private final ApiService apiService;
     private final KeyIssueService keyIssueService;
+    private final ServiceService serviceService;
 
     private final ServiceRepository serviceRepository;
     private final UserServiceKeyRepository userServiceKeyRepository;
@@ -97,15 +107,14 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
         return services.stream().map(ServiceDto::toDto).collect(Collectors.toList());
     }
 
-    // TODO
+    // 서비스 수정
     @PutMapping("/{id}")
     public ServiceDto updateServiceById(@PathVariable("id") Long id, @RequestBody ServiceDto serviceDto, HttpServletRequest header) {
         String userToken = jwtTokenProvider.resolveToken(header);
-        User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(() -> new UserNotFoundException());
+        serviceDto.setId(id);
 
-        // TODO
-
-        return null;
+        return ServiceDto.toDto(serviceService.updateServiceInfo(UserDto.toDto(user), serviceDto));
     }
 
     @DeleteMapping("/{id}")
