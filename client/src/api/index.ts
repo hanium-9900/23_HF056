@@ -14,6 +14,7 @@ export interface ServiceResponse {
     description: string;
     method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
     path: string;
+    limitation: number;
     headers: {
       id: number;
       required: 0 | 1;
@@ -41,6 +42,36 @@ export interface ServiceResponse {
       description: string;
     }[];
   }[];
+  user: {
+    id: number;
+    email: string;
+  };
+}
+
+export interface ServiceStatisticsResponse {
+  api_id: number;
+  method: string;
+  path: string;
+  month: number;
+  day: number;
+  response_code: number;
+  count: number;
+}
+
+export interface ServiceUsageResponse {
+  id: number;
+  method: string;
+  path: string;
+  usage_rate: number;
+  limitation: number;
+}
+
+export interface ErrorLogResponse {
+  id: number;
+  method: string;
+  path: string;
+  response_code: number;
+  creation_times: string;
 }
 
 export const api = {
@@ -103,14 +134,14 @@ export const api = {
     /**
      * 서비스 목록 조회
      */
-    list() {
-      return axios.get<ServiceResponse[]>('/services');
+    list(category?: string) {
+      return axios.get<ServiceResponse[]>(`/services${category ? `?category=${category}` : ''}`);
     },
     /**
      * 서비스 상세 조회
      */
     show(serviceId: number) {
-      return axios.get<ServiceResponse>(`/services/${serviceId}`);
+      return axios.get<Service>(`/services/${serviceId}`);
     },
     /**
      * 서비스 신고
@@ -118,22 +149,31 @@ export const api = {
     claim(serviceId: number, content: string) {
       // 신고
     },
-  },
-  /**
-   * 사용량
-   */
-  limitations: {
     /**
-     * 사용량 조회
+     * 서비스 사용량 통계
      */
-    show(serviceId: number) {
-      // 조회
+    statistics(serviceId: number, year?: number, month?: number) {
+      const calculatedYear = year || new Date().getFullYear();
+      const calculatedMonth = month || new Date().getMonth() + 1;
+
+      return axios.get<ServiceStatisticsResponse[]>(`/services/${serviceId}/statistics?year=${calculatedYear}&month=${calculatedMonth}`);
     },
     /**
-     * 사용량 제한 설정
+     * 평균 사용량 퍼센트
      */
-    update(serviceId: number, limitation: any) {
-      // 수정/설정
+    usage(serviceId: number) {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth() + 1;
+      const day = now.getDate();
+
+      return axios.get<ServiceUsageResponse[]>(`/services/${serviceId}/usage-rate?year=${year}&month=${month}&day=${day}`);
+    },
+    /**
+     * 에러 로그
+     */
+    errorLogs(serviceId: number, limit: number = 10) {
+      return axios.get<ErrorLogResponse[]>(`/services/${serviceId}/error-log?limit=${limit}`);
     },
   },
   /**

@@ -15,6 +15,7 @@ public class ServiceDto {
     private Long id;
     private String title;
     private String description;
+    private String category;
     private int price;
     private String key;
     private ArrayList<ApiDto> apis = new ArrayList<>();
@@ -28,6 +29,7 @@ public class ServiceDto {
         serviceDto.setPrice(service.getPrice());
         serviceDto.setKey(service.getKey());
         serviceDto.setUser(UserDto.toDto(service.getUser()));
+        serviceDto.setCategory(service.getCategory());
 
         for (Api api : service.getApis()) {
             serviceDto.apis.add(ApiDto.toDto(api));

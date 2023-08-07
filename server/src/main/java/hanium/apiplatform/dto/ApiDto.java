@@ -6,7 +6,6 @@ import hanium.apiplatform.entity.Header;
 import hanium.apiplatform.entity.RequestParameter;
 import hanium.apiplatform.entity.ResponseParameter;
 import java.util.ArrayList;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,6 +18,7 @@ public class ApiDto {
     private String description;
     private String method;
     private String path;
+    private int limitation;
     private ArrayList<HeaderDto> headers = new ArrayList<>();
     private ArrayList<RequestParameterDto> requestParameters = new ArrayList<>();
     private ArrayList<ResponseParameterDto> responseParameters = new ArrayList<>();
@@ -31,6 +31,7 @@ public class ApiDto {
         apiDto.setDescription(api.getDescription());
         apiDto.setMethod(api.getMethod());
         apiDto.setPath(api.getPath());
+        apiDto.setLimitation((api.getLimitation()));
 
         for (Header header : api.getHeaders()) {
             apiDto.headers.add(HeaderDto.toDto(header));
@@ -55,7 +56,7 @@ public class ApiDto {
         ArrayList<ApiDto> apiDtos = new ArrayList<>(apis.size());
 
         for (Api api :
-                apis) {
+            apis) {
             ApiDto apiDto = new ApiDto();
             apiDto.setId(api.getId());
             apiDto.setHost(api.getHost());

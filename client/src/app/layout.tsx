@@ -1,10 +1,10 @@
 import './globals.css';
-import { Noto_Sans_KR } from 'next/font/google';
+import { Noto_Sans_KR as NotoSansKR } from 'next/font/google';
 import AuthProvider from './components/AuthProvider';
 import Header from './components/Header';
 import ToastProvider from './components/ToastProvider';
 
-const notoSansKR = Noto_Sans_KR({ weight: ['100', '300', '400', '500', '700', '900'], subsets: ['latin'] });
+const notoSansKR = NotoSansKR({ weight: ['100', '300', '400', '500', '700', '900'], subsets: ['latin'], preload: false });
 
 export const metadata = {
   title: '데이터 유통 API 플랫폼',

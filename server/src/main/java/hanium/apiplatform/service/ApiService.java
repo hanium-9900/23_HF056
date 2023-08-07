@@ -1,31 +1,42 @@
 package hanium.apiplatform.service;
 
 import com.mysql.cj.conf.ConnectionUrlParser.Pair;
-import hanium.apiplatform.dto.*;
+import hanium.apiplatform.dto.ApiDto;
+import hanium.apiplatform.dto.HeaderDto;
+import hanium.apiplatform.dto.RequestParameterDto;
+import hanium.apiplatform.dto.ResponseParameterDto;
+import hanium.apiplatform.dto.ServiceDto;
+import hanium.apiplatform.dto.UserServiceKeyDto;
 import hanium.apiplatform.entity.Api;
+import hanium.apiplatform.exception.ApiNotFoundException;
 import hanium.apiplatform.exception.ConnectionRefusedException;
+import hanium.apiplatform.exception.OverLimitException;
+import hanium.apiplatform.repository.ApiRepository;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
-
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class ApiService {
+
+    private final EntityManager entityManager;
+    private final ApiRepository apiRepository;
 
     /*private final EntityManager em;
 
@@ -166,13 +177,10 @@ public class ApiService {
         return true;
     }
 
-    public Pair<Boolean, ApiDto> verifyPath(UserServiceKeyDto userServiceKeyDto,
-                              String method,
-                              long serviceId,
-                              String apiName){
+    public Pair<Boolean, ApiDto> verifyPathAndUsage(UserServiceKeyDto userServiceKeyDto, String method, long serviceId, String apiName) {
         // 접근한 경로가 올바른지 Service.id와 serviceId 비교
         ServiceDto serviceDto = userServiceKeyDto.getService();
-        if(!serviceDto.getId().equals(serviceId)){
+        if (!serviceDto.getId().equals(serviceId)) {
             throw new ConnectionRefusedException();
         }
 
@@ -181,13 +189,33 @@ public class ApiService {
         ApiDto verifiedApiDto = new ApiDto();
         boolean isApiExist = false;
         for (ApiDto apiDto : apiDtos) {
-            if(apiDto.getPath().equals("/" + apiName)
-                && apiDto.getMethod().equals(method.toUpperCase())) {
+            if (apiDto.getPath().equals("/" + apiName) && apiDto.getMethod().equals(method.toUpperCase())) {
                 isApiExist = true;
                 verifiedApiDto = apiDto;
+
+                // 사용량 제한 검증
+                LocalDate now = LocalDate.now();
+
+                String sql =
+                    "select count(*) as count from api_usage where api_id = :apiId and user_id = :userId and year(creation_timestamp) = :year "
+                        + "and month(creation_timestamp) = :month and day(creation_timestamp) = :day ;";
+
+                int usage = ((BigInteger) entityManager.createNativeQuery(sql)
+                    .setParameter("apiId", apiDto.getId())
+                    .setParameter("userId", userServiceKeyDto.getUser().getId())
+                    .setParameter("year", now.getYear())
+                    .setParameter("month", now.getMonthValue())
+                    .setParameter("day", now.getDayOfMonth())
+                    .getSingleResult()).intValue();
+
+                Api api = apiRepository.findById(apiDto.getId()).orElseThrow(() -> new ApiNotFoundException());
+
+                if (usage > api.getLimitation()) {
+                    throw new OverLimitException();
+                }
             }
         }
-        if(!isApiExist){
+        if (!isApiExist) {
             throw new ConnectionRefusedException();
         }
 
@@ -203,10 +231,8 @@ public class ApiService {
         return new Pair<>(true, verifiedApiDto);
     }
 
-    public Pair<Integer, String> requestFromProxyApi
-            (String method, String host, String path,
-             HashMap<String, String> paramMap, String apiKey)
-            throws IOException {
+    public Pair<Integer, String> requestFromProxyApi(String method, String host, String path, HashMap<String, String> paramMap,
+        String apiKey) throws IOException {
 
         int responseCode = 0;
         String response = null;
@@ -235,7 +261,6 @@ public class ApiService {
                     }
 
                     String requestUrl = requestUrlBuilder.toString();
-
 
                     URL url = new URL(requestUrl);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
