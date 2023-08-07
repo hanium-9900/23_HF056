@@ -2,13 +2,13 @@ import Link from "next/link";
 import Image from 'next/image'
 import { ServiceResponse } from "@/api";
 
-export default function ServiceListRenderer({ services }: { services: ServiceResponse[] }) {
+export default function ServiceListRenderer({ services, isDashboard = false }: { services: ServiceResponse[], isDashboard?: boolean }) {
   return (
     <>
       <div className="grid grid-cols-3 gap-5">
         {services.map((service, idx) => (
           <Link
-            href={'/services/' + service.id}
+            href={isDashboard ? `/dashboard/${service.id}` : `/services/${service.id}`}
             key={service.id}
             className="rounded border border-slate-400 p-6 group transition-all hover:border-slate-500 hover:scale-105 hover:shadow"
           >
@@ -20,6 +20,14 @@ export default function ServiceListRenderer({ services }: { services: ServiceRes
             <div className="text-right text-blue-500 font-bold text-xl">
               <span>{Intl.NumberFormat('ko-KR').format(service.price)}</span>원
             </div>
+            {isDashboard && (
+              <div className="flex justify-end items-center text-blue-500 font-bold">
+                사용량 조회
+                <span className="p-1 rounded-full bg-blue-500 ml-1">
+                  <Image width={16} height={16} src='arrow.svg' alt="Arrow" />
+                </span>
+              </div>
+            )}
           </Link>
         ))}
       </div>
