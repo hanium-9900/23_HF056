@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import ApiPurchaseModal from './ApiPurchaseModal';
-import { Service } from '../../register/types';
+import {ServiceResponse } from '@/api';
 
-export default function ApiPurchaseButton({ service }: { service: Service }) {
+export default function ApiPurchaseButton({ service }: { service: ServiceResponse }) {
   const [opened, setOpened] = useState(false);
 
   function purchase() {
