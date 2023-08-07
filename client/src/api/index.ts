@@ -175,6 +175,18 @@ export const api = {
     errorLogs(serviceId: number, limit: number = 10) {
       return axios.get<ErrorLogResponse[]>(`/services/${serviceId}/error-log?limit=${limit}`);
     },
+    /**
+     * 내가 등록한 서비스 목록 조회
+     */
+    registeredList() {
+      return axios.get<ServiceResponse[]>(`/services/registered`);
+    },
+    /**
+     * 내가 구매한 서비스 목록 조회
+     */
+    purchasedList() {
+      return axios.get<ServiceResponse[]>('/services/purchased');
+    },
   },
   /**
    * 에러 로그
