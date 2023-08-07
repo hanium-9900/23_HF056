@@ -1,6 +1,6 @@
-import { ApiInfo } from '../../register/types';
+import { ServiceResponse } from '@/api';
 
-export default function ApiSpecification({ api }: { api: ApiInfo }) {
+export default function ApiSpecification({ api }: { api: ServiceResponse['apis'][number] }) {
   return (
     <div>
       {/* API 헤더 정보 */}
