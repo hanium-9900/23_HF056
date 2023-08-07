@@ -1,14 +1,32 @@
 import { useState } from 'react';
 import ApiPurchaseModal from './ApiPurchaseModal';
 import { Service } from '../../register/types';
+import { api, purchase } from '@/api';
 
 export default function ApiPurchaseButton({ service }: { service: Service }) {
   const [opened, setOpened] = useState(false);
 
-  function purchase() {
-    // [TODO] 구매 요청 처리
-    alert('미구현');
-    setOpened(false);
+  async function purchase() {
+    try {
+      // [TODO] 구매 요청 처리
+      const request = await api.services.purchase();
+     
+      if(request){
+        const request = await api.services.key();
+        serviceId: serviceId,
+      }
+      else{
+        alert('구매에 실패했습니다. 다시 시도해주세요.');
+        setOpened(false);
+      }
+
+     
+    } catch (error) {
+     
+      alert('구매에 실패했습니다. 다시 시도해주세요.');
+      console.error(error);
+      setOpened(false);
+    }
   }
 
   function cancel() {
