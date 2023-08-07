@@ -106,7 +106,7 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
         return result;
     }
 
-    // TODO : 서비스 수정
+    // 서비스 수정
     @PutMapping("/{id}")
     public ServiceDto updateServiceById(@PathVariable("id") Long id, @RequestBody ServiceDto serviceDto, HttpServletRequest header) {
         String userToken = jwtTokenProvider.resolveToken(header);
