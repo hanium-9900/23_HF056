@@ -61,7 +61,7 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
         // API가 성공적으로 검수되면 등록된 서비스 객체를 브라우저에 전달한다.
         Service service = Service.toEntity(serviceDto);
         String userToken = jwtTokenProvider.resolveToken(header);
-        User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(() -> new UserNotFoundException());
+        User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(UserNotFoundException::new);
         service.setUser(user);
 
         return ServiceDto.toDto(serviceRepository.save(service));
@@ -70,7 +70,7 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
     @GetMapping("/registered")
     public List<ServiceDto> getRegisteredService(HttpServletRequest request) {
         String userToken = jwtTokenProvider.resolveToken(request);
-        User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(() -> new UserNotFoundException());
+        User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(UserNotFoundException::new);
         List<Service> services = serviceRepository.findServicesByUserId(user.getId());
 
         return services.stream().map(ServiceDto::toDto).collect(Collectors.toList());
@@ -79,7 +79,7 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
     // 서비스 id로 조회
     @GetMapping("/{id}")
     public ServiceDto getServiceById(@PathVariable("id") Long id) {
-        Service service = serviceRepository.findById(id).orElseThrow(() -> new ServiceNotFoundException());
+        Service service = serviceRepository.findById(id).orElseThrow(ServiceNotFoundException::new);
         return ServiceDto.toDto(service);
     }
 
@@ -124,9 +124,9 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
         // 유효한 토큰인지 확인한다.
         if (userToken != null && jwtTokenProvider.validateToken(userToken)) {
             // 유효한 토큰이면 user data 추출
-            User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(() -> new UserNotFoundException());
+            User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(UserNotFoundException::new);
             // request param에서 service id 추출
-            Service service = serviceRepository.findById(servicId).orElseThrow(() -> new ServiceNotFoundException());
+            Service service = serviceRepository.findById(servicId).orElseThrow(ServiceNotFoundException::new);
 
             // user와 service를 이용해 key가 이미 존재하는지 검증
             if (userServiceKeyRepository.findByService_IdAndUser_Id(ServiceDto.toDto(service).getId(), UserDto.toDto(user).getId()).size()
@@ -154,11 +154,11 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
         if (userToken != null && jwtTokenProvider.validateToken(userToken)) {
             // 유효한 토큰이면 user data 추출
             UserDto userDto = UserDto.toDto(
-                    userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(() -> new UserNotFoundException()));
+                    userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(UserNotFoundException::new));
 
             // request param에서 service id 추출
             ServiceDto serviceDto = ServiceDto.toDto(
-                    serviceRepository.findById(servicId).orElseThrow(() -> new ServiceNotFoundException()));
+                    serviceRepository.findById(servicId).orElseThrow(ServiceNotFoundException::new));
 
             // user와 service를 이용해 key 탐색
             List<UserServiceKey> serviceKeys = userServiceKeyRepository.findByService_IdAndUser_Id(serviceDto.getId(), userDto.getId());

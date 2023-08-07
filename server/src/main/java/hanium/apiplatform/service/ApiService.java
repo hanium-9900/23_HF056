@@ -1,17 +1,19 @@
 package hanium.apiplatform.service;
 
 import com.mysql.cj.conf.ConnectionUrlParser.Pair;
-import hanium.apiplatform.dto.ApiDto;
-import hanium.apiplatform.dto.HeaderDto;
-import hanium.apiplatform.dto.RequestParameterDto;
-import hanium.apiplatform.dto.ResponseParameterDto;
-import hanium.apiplatform.dto.ServiceDto;
-import hanium.apiplatform.dto.UserServiceKeyDto;
+import hanium.apiplatform.dto.*;
 import hanium.apiplatform.entity.Api;
 import hanium.apiplatform.exception.ApiNotFoundException;
 import hanium.apiplatform.exception.ConnectionRefusedException;
 import hanium.apiplatform.exception.OverLimitException;
 import hanium.apiplatform.repository.ApiRepository;
+import lombok.RequiredArgsConstructor;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.stereotype.Service;
+
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -23,12 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -63,7 +59,7 @@ public class ApiService {
     }*/
 
     private Pair<Integer, String> requestApi(String method, String host, String path, ArrayList<HeaderDto> headers,
-        ArrayList<RequestParameterDto> requestParameters, String apiKey) throws IOException {
+                                             ArrayList<RequestParameterDto> requestParameters, String apiKey) throws IOException {
 
         int responseCode = 0;
         String response = null;
@@ -197,18 +193,18 @@ public class ApiService {
                 LocalDate now = LocalDate.now();
 
                 String sql =
-                    "select count(*) as count from api_usage where api_id = :apiId and user_id = :userId and year(creation_timestamp) = :year "
-                        + "and month(creation_timestamp) = :month and day(creation_timestamp) = :day ;";
+                        "select count(*) as count from api_usage where api_id = :apiId and user_id = :userId and year(creation_timestamp) = :year "
+                                + "and month(creation_timestamp) = :month and day(creation_timestamp) = :day ;";
 
                 int usage = ((BigInteger) entityManager.createNativeQuery(sql)
-                    .setParameter("apiId", apiDto.getId())
-                    .setParameter("userId", userServiceKeyDto.getUser().getId())
-                    .setParameter("year", now.getYear())
-                    .setParameter("month", now.getMonthValue())
-                    .setParameter("day", now.getDayOfMonth())
-                    .getSingleResult()).intValue();
+                        .setParameter("apiId", apiDto.getId())
+                        .setParameter("userId", userServiceKeyDto.getUser().getId())
+                        .setParameter("year", now.getYear())
+                        .setParameter("month", now.getMonthValue())
+                        .setParameter("day", now.getDayOfMonth())
+                        .getSingleResult()).intValue();
 
-                Api api = apiRepository.findById(apiDto.getId()).orElseThrow(() -> new ApiNotFoundException());
+                Api api = apiRepository.findById(apiDto.getId()).orElseThrow(ApiNotFoundException::new);
 
                 if (usage > api.getLimitation()) {
                     throw new OverLimitException();
@@ -232,7 +228,7 @@ public class ApiService {
     }
 
     public Pair<Integer, String> requestFromProxyApi(String method, String host, String path, HashMap<String, String> paramMap,
-        String apiKey) throws IOException {
+                                                     String apiKey) throws IOException {
 
         int responseCode = 0;
         String response = null;
