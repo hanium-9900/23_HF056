@@ -32,19 +32,13 @@ import java.util.HashMap;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
+
+import hanium.apiplatform.service.ServiceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin()
@@ -54,6 +48,7 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
 
     private final ApiService apiService;
     private final KeyIssueService keyIssueService;
+    private final ServiceService serviceService;
 
     private final ServiceRepository serviceRepository;
     private final UserServiceKeyRepository userServiceKeyRepository;
@@ -111,13 +106,15 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
         return result;
     }
 
-    // TODO
-    /*@PutMapping("/{id}")
+    // TODO : 서비스 수정
+    @PutMapping("/{id}")
     public ServiceDto updateServiceById(@PathVariable("id") Long id, @RequestBody ServiceDto serviceDto, HttpServletRequest header) {
         String userToken = jwtTokenProvider.resolveToken(header);
         User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(() -> new UserNotFoundException());
+        serviceDto.setId(id);
 
-    }*/
+        return ServiceDto.toDto(serviceService.updateServiceInfo(UserDto.toDto(user), serviceDto));
+    }
 
     @DeleteMapping("/{id}")
     public Long deleteServiceById(@PathVariable("id") Long id) {
