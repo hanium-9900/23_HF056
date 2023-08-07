@@ -79,7 +79,7 @@ export default function ServiceInfoPage({ params }: { params: { serviceId: strin
       {/* 서비스 정보 */}
       <div className="mb-8">
         <div className="mb-8">
-          <div className="text-blue-500 mb-1">공간</div>
+          <div className="text-blue-500 mb-1">{service.category}</div>
           <div className="flex items-center justify-between text-3xl font-bold">
             <span>{service.title}</span>
             <span className="text-blue-500">{service.price} &#8361;</span>
