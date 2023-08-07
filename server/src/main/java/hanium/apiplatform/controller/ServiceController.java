@@ -1,7 +1,11 @@
 package hanium.apiplatform.controller;
 
+import com.mysql.cj.conf.ConnectionUrlParser.Pair;
 import hanium.apiplatform.config.JwtTokenProvider;
-import hanium.apiplatform.dto.*;
+import hanium.apiplatform.dto.ApiDto;
+import hanium.apiplatform.dto.ServiceDto;
+import hanium.apiplatform.dto.UserDto;
+import hanium.apiplatform.dto.UserServiceKeyDto;
 import hanium.apiplatform.entity.*;
 import hanium.apiplatform.exception.*;
 import hanium.apiplatform.repository.ApiUsageRepository;
@@ -10,17 +14,18 @@ import hanium.apiplatform.repository.UserRepository;
 import hanium.apiplatform.repository.UserServiceKeyRepository;
 import hanium.apiplatform.service.ApiService;
 import hanium.apiplatform.service.KeyIssueService;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import com.mysql.cj.conf.ConnectionUrlParser.Pair;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin()
@@ -57,6 +62,15 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
         service.setUser(user);
 
         return ServiceDto.toDto(serviceRepository.save(service));
+    }
+
+    @GetMapping("/registered")
+    public List<ServiceDto> getRegisteredService(HttpServletRequest request) {
+        String userToken = jwtTokenProvider.resolveToken(request);
+        User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(() -> new UserNotFoundException());
+        List<Service> services = serviceRepository.findServicesByUserId(user.getId());
+
+        return services.stream().map(ServiceDto::toDto).collect(Collectors.toList());
     }
 
     // 서비스 id로 조회
@@ -181,9 +195,9 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
 
             // key에 연결된 servie, api 경로가 올바른지 검증
             Pair<Boolean, ApiDto> pathVerificationResult = apiService.verifyPath(userServiceKeyDto, "GET", serviceId, apiName);
-            boolean isPathAndKeyVarified =pathVerificationResult.left;
+            boolean isPathAndKeyVarified = pathVerificationResult.left;
             ApiDto verifiedApiDto = pathVerificationResult.right;
-            if(!isPathAndKeyVarified){
+            if (!isPathAndKeyVarified) {
                 throw new ConnectionRefusedException();
             }
 
@@ -199,15 +213,15 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
 
             ApiUsage apiUsage = new ApiUsage();
             apiUsage.setUser(serviceKeys.get(0).getUser());
-            for(Api api : serviceKeys.get(0).getService().getApis()){
-                if(api.getId().equals(verifiedApiDto.getId())){
+            for (Api api : serviceKeys.get(0).getService().getApis()) {
+                if (api.getId().equals(verifiedApiDto.getId())) {
                     apiUsage.setApi(api);
                 }
             }
             apiUsage.setResponseCode(responseCode);
             apiUsageRepository.save(apiUsage);
 
-            if (responseCode >= 200 && responseCode < 300){
+            if (responseCode >= 200 && responseCode < 300) {
                 return new ResponseEntity<>(response, headers, HttpStatus.ACCEPTED);
                 //return new String(response.getBytes(), "euc-kr");
             }
