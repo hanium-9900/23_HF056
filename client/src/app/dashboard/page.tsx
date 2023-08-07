@@ -1,9 +1,19 @@
-import { api } from '@/api'
+import { ServiceResponse, api } from '@/api'
 import ServiceListRenderer from '../components/ServiceListRenderer'
+import axios from 'axios'
 
 export default async function Page() {
   const { data: registeredServices } = await api.services.registeredList()
-  const { data: purchasedServices } = await api.services.purchasedList()
+  // const { data: purchasedServices } = await api.services.purchasedList()
+
+  // [TODO] 서버 API 완료시 제거
+  let purchasedServices: ServiceResponse[] = []
+  try {
+    const { data } = await api.services.purchasedList()
+    purchasedServices = data
+  } catch (e) {
+    purchasedServices = []
+  }
 
   return (
     <main className="max-w-7xl mx-auto py-10 px-3">
@@ -11,7 +21,7 @@ export default async function Page() {
 
       <div className="mb-12">
         <h2 className="text-xl font-bold mb-7">내가 등록한 서비스</h2>
-        <ServiceListRenderer services={registeredServices} />
+        <ServiceListRenderer isDashboard={true} services={registeredServices} />
       </div>
 
       <div className="mb-12">

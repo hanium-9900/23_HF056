@@ -185,8 +185,7 @@ export const api = {
      * 내가 구매한 서비스 목록 조회
      */
     purchasedList() {
-      return axios.get<ServiceResponse[]>(`/services/registered`);
-      // return axios.get<ServiceResponse[]>('/services/purchased');
+      return axios.get<ServiceResponse[]>('/services/purchased');
     },
   },
   /**
