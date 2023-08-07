@@ -141,7 +141,7 @@ export const api = {
      * 서비스 상세 조회
      */
     show(serviceId: number) {
-      return axios.get<ServiceResponse>(`/services/${serviceId}`);
+      return axios.get<Service>(`/services/${serviceId}`);
     },
     /**
      * 서비스 신고
