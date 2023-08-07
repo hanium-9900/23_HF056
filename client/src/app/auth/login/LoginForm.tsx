@@ -3,11 +3,12 @@
 import Link from 'next/link';
 import { FormEvent, useRef } from 'react';
 import { signIn } from 'next-auth/react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'react-toastify';
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -38,9 +39,10 @@ export default function LoginForm() {
         toast.update(loadingToastId, { render: "알 수 없는 오류가 발생했습니다!", type: "error", autoClose: 3000, isLoading: false });
       }
     } else {
-      // update();
-      // router.replace(searchParams.get('callbackUrl') || '/');
-      location.href = searchParams.get('callbackUrl') || '/';
+      toast.update(loadingToastId, { render: "로그인되었습니다!", type: "success", autoClose: 3000, isLoading: false });
+
+      router.replace(searchParams.get('callbackUrl') || '/');
+      router.refresh();
     }
   }
 

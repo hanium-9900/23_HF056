@@ -2,15 +2,32 @@
 
 import { useEffect, useState } from 'react';
 import './page.css';
-import { Service } from '../register/types';
 import ApiSpecification from './components/ApiSpecification';
 import ApiPurchaseButton from './components/ApiPurchaseButton';
 import Link from 'next/link';
-import { api } from '@/api';
 import { useRouter } from 'next/navigation';
+
+import { api, ServiceResponse } from '@/api';
 
 export default function ServiceInfoPage({ params }: { params: { serviceId: string } }) {
   const router = useRouter();
+
+  const [service, setService] = useState<ServiceResponse | null>(null);
+  const [selectedApi, setSelectedApi] = useState(0);
+
+  useEffect(() => {
+    api.services.show(Number(params.serviceId))
+      .then(response => {
+        setService(response.data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, [params.serviceId]);
+
+  if (!service) {
+    return <div>Loading...</div>;
+  }
 
   async function deleteService() {
     if (confirm('정말 삭제하시겠습니까?')) { // [TODO] 컨펌 Modal로 대체
@@ -30,61 +47,12 @@ export default function ServiceInfoPage({ params }: { params: { serviceId: strin
     }
   }
 
-  // [TEMP] 임시 데이터
-  const [service, setService] = useState<Service>({
-    category: '기타',
-    title: '대구광역시 행정동별 유동인구',
-    price: 30000000,
-    description:
-      '1500만 사용자의 통신 데이터를 근간으로 대구광역시 지역단위(광역시도, 시군구, 읍면동, 50M구역)별 유동인구 정보로 시간대별, 성별, 연령별로 유동인구 정보를 확인 할 수 있는 상품데이터',
-    key: 'asd123asd123asd123',
-    apis: [
-      {
-        host: 'https://example.com',
-        method: 'GET',
-        description: '테스트 API 1번',
-        path: '/example/api1',
-        limitation: 1000,
-        headers: [
-          {
-            key: '테스트 헤더1',
-            description: '테스트 헤더1 설명',
-            required: true,
-          },
-        ],
-        requestParameters: [],
-        responseParameters: [],
-        errorCodes: [],
-      },
-      {
-        host: 'https://example.com',
-        method: 'GET',
-        description: '테스트 API 2번',
-        path: '/example/api2',
-        limitation: 2000,
-        headers: [
-          {
-            key: '테스트 헤더2',
-            description: '테스트 헤더2 설명',
-            required: false,
-          },
-        ],
-        requestParameters: [],
-        responseParameters: [],
-        errorCodes: [],
-      },
-    ],
-  });
-  const [selectedApi, setSelectedApi] = useState(0);
-
-  // [TODO] 서버로부터 가져오기
-
   return (
     <main className="container xl:max-w-5xl mx-auto py-10 px-3">
       {/* 서비스 정보 */}
       <div className="mb-8">
         <div className="mb-8">
-          <div className="text-blue-500 mb-1">공간</div>
+          <div className="text-blue-500 mb-1">{service.category}</div>
           <div className="flex items-center justify-between text-3xl font-bold">
             <span>{service.title}</span>
             <span className="text-blue-500">{service.price} &#8361;</span>

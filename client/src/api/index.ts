@@ -134,8 +134,8 @@ export const api = {
     /**
      * 서비스 목록 조회
      */
-    list() {
-      return axios.get<ServiceResponse[]>('/services');
+    list(category?: string) {
+      return axios.get<ServiceResponse[]>(`/services${category ? `?category=${category}` : ''}`);
     },
     /**
      * 서비스 상세 조회
@@ -159,7 +159,7 @@ export const api = {
      * 서비스 사용량 통계
      */
     statistics(serviceId: number, year?: number, month?: number) {
-      const calculatedYear = year || new Date().getFullYear() + 1;
+      const calculatedYear = year || new Date().getFullYear();
       const calculatedMonth = month || new Date().getMonth() + 1;
 
       return axios.get<ServiceStatisticsResponse[]>(`/services/${serviceId}/statistics?year=${calculatedYear}&month=${calculatedMonth}`);
@@ -180,6 +180,18 @@ export const api = {
      */
     errorLogs(serviceId: number, limit: number = 10) {
       return axios.get<ErrorLogResponse[]>(`/services/${serviceId}/error-log?limit=${limit}`);
+    },
+    /**
+     * 내가 등록한 서비스 목록 조회
+     */
+    registeredList() {
+      return axios.get<ServiceResponse[]>(`/services/registered`);
+    },
+    /**
+     * 내가 구매한 서비스 목록 조회
+     */
+    purchasedList() {
+      return axios.get<ServiceResponse[]>('/services/purchased');
     },
   },
   /**

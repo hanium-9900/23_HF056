@@ -1,4 +1,4 @@
-import { Service } from '../../register/types';
+import { ServiceResponse } from '@/api';
 
 export default function ApiPurchaseModal({
   opened,
@@ -7,7 +7,7 @@ export default function ApiPurchaseModal({
   onPurchase,
 }: {
   opened: boolean;
-  service: Service;
+  service: ServiceResponse;
   onCancel: () => void;
   onPurchase: () => void;
 }) {
