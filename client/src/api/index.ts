@@ -122,6 +122,22 @@ export const api = {
     register(service: any) {
       return axios.post('/services', service);
     },
+    
+    /**
+     * 서비스 구매
+     */
+    purchaseService(id: number) {
+      return axios.post(`/services/${id}/purchase`,id);
+    },
+
+    /**
+     * 서비스 키요청
+     */
+
+    getServiceKey(id: number) {
+      return axios.get<string>(`/services/${id}/key`);
+    },
+
     /**
      * 서비스 수정
      */
@@ -150,10 +166,16 @@ export const api = {
       // 신고
     },
     /**
+     * 서비스 삭제
+     */
+    delete(serviceId: number) {
+      return axios.delete(`/services/${serviceId}`);
+    },
+    /**
      * 서비스 사용량 통계
      */
     statistics(serviceId: number, year?: number, month?: number) {
-      const calculatedYear = year || new Date().getFullYear() + 1;
+      const calculatedYear = year || new Date().getFullYear();
       const calculatedMonth = month || new Date().getMonth() + 1;
 
       return axios.get<ServiceStatisticsResponse[]>(`/services/${serviceId}/statistics?year=${calculatedYear}&month=${calculatedMonth}`);
@@ -175,6 +197,18 @@ export const api = {
     errorLogs(serviceId: number, limit: number = 10) {
       return axios.get<ErrorLogResponse[]>(`/services/${serviceId}/error-log?limit=${limit}`);
     },
+    /**
+     * 내가 등록한 서비스 목록 조회
+     */
+    registeredList() {
+      return axios.get<ServiceResponse[]>(`/services/registered`);
+    },
+    /**
+     * 내가 구매한 서비스 목록 조회
+     */
+    purchasedList() {
+      return axios.get<ServiceResponse[]>('/services/purchased');
+    },
   },
   /**
    * 에러 로그
@@ -188,3 +222,4 @@ export const api = {
     },
   },
 };
+
