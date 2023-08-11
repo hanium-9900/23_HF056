@@ -15,17 +15,18 @@ export default function ApiPurchaseButton({ service }: { service: ServiceRespons
     api.services.purchaseService(Number(service.id))
       .then(response => {
         setBuy(response.data);
+        console.log(service.id);
+        console.log(buy);
+        if(buy){
+        const key=api.services.getServiceKey(Number(service.id));
+        console.log(key);
+        }
+    setOpened(false);
       })
       .catch(error => {
         console.error(error);
       });
-    console.log(service.id);
-    alert(buy);
-    if(buy){
-    const key=api.services.getServiceKey(Number(service.id));
-    console.log(key);
-  }
-    setOpened(false);
+    
   }
 
   function cancel() {
