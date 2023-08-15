@@ -14,19 +14,12 @@ export interface ApiInfo {
   limitation: number;
   headers: Header[];
   requestParameters: string;
-  responseParameters: ResponseParameter[];
+  responseParameters: string;
   errorCodes: ErrorCode[];
 }
 
 export interface Header {
   key: string;
-  description: string;
-  required: boolean;
-}
-
-export interface ResponseParameter {
-  key: string;
-  type: string; // [TODO] enum-like type
   description: string;
   required: boolean;
 }

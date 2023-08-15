@@ -23,13 +23,7 @@ export interface ServiceResponse {
       description: string;
     }[];
     requestParameters: string; // [TODO] json schema (string or object typing)
-    responseParameters: {
-      id: number;
-      required: 0 | 1;
-      key: string;
-      type: string; // [TODO] enum
-      description: string;
-    }[];
+    responseParameters: string; // [TODO] json schema (string or object typing)
     errorCodes: {
       id: number;
       statusCode: number;
