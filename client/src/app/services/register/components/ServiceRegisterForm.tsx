@@ -38,7 +38,7 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
           description: h.description,
           required: h.required === 1,
         })) || [],
-      requestParameters: api.method || '',
+      requestParameters: api.requestParameters || '',
       responseParameters:
         api.responseParameters?.map(rp => ({
           key: rp.key,
