@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from 'next/image'
 import { ServiceResponse } from "@/api";
 
-export default function ServiceListRenderer({ services, isDashboard = false }: { services: ServiceResponse[], isDashboard?: boolean }) {
+export default function ServiceListRenderer({ services, isDashboard = false, emptyText = '해당되는 서비스가 없습니다.' }: { services: ServiceResponse[], isDashboard?: boolean, emptyText?: string }) {
   return (
     <>
       <div className="grid grid-cols-3 gap-5">
@@ -36,7 +36,7 @@ export default function ServiceListRenderer({ services, isDashboard = false }: {
           <div className="flex flex-col items-center">
             <Image className="mb-3" width={64} height={64} src='/block.svg' alt="Empty" />
             <div className="text-center text-gray-400 text-2xl">
-              구매한 서비스가 없습니다.
+              {emptyText}
             </div>
           </div>
         )}
