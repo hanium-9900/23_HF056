@@ -7,7 +7,7 @@ export default function Page() {
   const [schema, setSchema] = useState<any>(null)
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-4xl mx-auto">
       <div className="mb-6">
         <JsonSchemaEditor onChange={(e) => {
           const schema = JSON.parse(e)

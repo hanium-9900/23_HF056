@@ -3,26 +3,44 @@
 import 'antd/dist/antd.css'
 import 'json-schema-editor-visual/dist/main.css'
 import './JsonSchemaEditor.css'
+import dynamic from 'next/dynamic'
+import { useEffect, useState } from 'react'
 
-// @ts-ignore
-import schemaEditor from '@leslieliu/react-jsonschema-editor/dist/main.js';
+export default function JsonSchemaEditor({ value, onChange }: { value?: string, onChange: (value: any) => void }) {
 
-const SchemaEditor = schemaEditor({});
+  const [SchemaEditor, setSchemaEditor] = useState<any>(null)
 
-export default function JsonSchemaEditor({ onChange }: { onChange: (value: any) => void }) {
-  return (
-    <SchemaEditor
-      showEditor={false}
-      isMock={false}
-      data={JSON.stringify({
-        title: "루트",
-        type: "object",
-        properties: []
-      })}
+  useEffect(() => {
+    const SchemaEditor = dynamic<any>(() => (
       // @ts-ignore
-      onChange={(e) => {
-        onChange(e)
-      }}
-    />
-  )
+      import('@leslieliu/react-jsonschema-editor/dist/main.js')
+        .then(obj => obj.default({}))
+    ), {
+      ssr: false
+    });
+    setSchemaEditor(() => SchemaEditor)
+  }, [])
+
+  if (!SchemaEditor) {
+    return (
+      <div>loading...</div>
+    )
+  } else {
+
+    return (
+      <SchemaEditor
+        showEditor={false}
+        isMock={false}
+        data={value ?? JSON.stringify({
+          title: "루트",
+          type: "object",
+          properties: {}
+        })}
+        // @ts-ignore
+        onChange={(e) => {
+          onChange(e)
+        }}
+      />
+    )
+  }
 }
