@@ -9,7 +9,6 @@ import { getServerSession } from 'next-auth';
 
 export default async function ServiceInfoPage({ params }: { params: { serviceId: string } }) {
   const session = await getServerSession();
-  console.log('session:', session)
 
   const serviceId = Number(params.serviceId);
   const { data: service } = await api.services.show(serviceId);
@@ -20,7 +19,6 @@ export default async function ServiceInfoPage({ params }: { params: { serviceId:
     try {
       const { data } = await api.services.getServiceKey(serviceId);
       serviceKey = data;
-      console.log('serviceKey:', serviceKey)
     } catch (e) {
       console.log((e as any).response.data)
     }
