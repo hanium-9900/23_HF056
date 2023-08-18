@@ -87,6 +87,25 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
         return services.stream().map(ServiceDto::toDto).collect(Collectors.toList());
     }
 
+    /**
+     * 구매한 서비스 목록 조회
+     */
+    @GetMapping("/purchased")
+    public List<ServiceDto> getPurchasedService(HttpServletRequest request){
+        String userToken = jwtTokenProvider.resolveToken(request);
+        User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(UserNotFoundException::new);
+        List<UserServiceKey> userServiceKeys = userServiceKeyRepository.findByUser_Id(user.getId());
+
+        List<ServiceDto> serviceDtos = new ArrayList<>();
+        for(UserServiceKey userServiceKey : userServiceKeys){
+            serviceDtos.add(
+                    ServiceDto.toDto(userServiceKey.getService())
+            );
+        }
+
+        return serviceDtos;
+    }
+
     // 서비스 id로 조회
     @GetMapping("/{id}")
     public ServiceDto getServiceById(@PathVariable("id") Long id) {
