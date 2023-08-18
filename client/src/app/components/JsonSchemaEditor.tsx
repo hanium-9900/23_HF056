@@ -32,7 +32,7 @@ export default function JsonSchemaEditor({ value, onChange }: { value?: string, 
         showEditor={false}
         isMock={false}
         data={value || JSON.stringify({
-          title: "응답",
+          title: "루트",
           type: "object",
           properties: {}
         })}
