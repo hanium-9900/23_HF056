@@ -1,4 +1,4 @@
-package proxyapiserver.hanium.proxyapiserver;
+package hanium.proxyapiserver;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
