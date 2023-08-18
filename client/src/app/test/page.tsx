@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import JsonSchemaEditor from "../components/JsonSchemaEditor";
+import JsonSchemaSpec from "../services/[serviceId]/components/JsonSchemaSpec";
 
 export default function Page() {
   const [schema, setSchema] = useState<any>(null)
@@ -14,12 +15,15 @@ export default function Page() {
           setSchema(schema)
         }} />
       </div>
-      <div>
-        <div className="mb-2 text-xl font-bold">결과 Schema</div>
-        <pre className="p-2 rounded bg-gray-200">
-          <code>{JSON.stringify(schema, undefined, 2)}</code>
-        </pre>
-      </div>
+      {schema && (
+        <div>
+          <div className="mb-2 text-xl font-bold">결과 Schema</div>
+          <pre className="p-2 rounded bg-gray-200">
+            <code>{JSON.stringify(schema, undefined, 2)}</code>
+          </pre>
+          <JsonSchemaSpec schema={schema} />
+        </div>
+      )}
     </div >
   )
 }
