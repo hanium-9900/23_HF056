@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import JsonSchemaEditor from "../components/JsonSchemaEditor";
-import JsonSchemaSpec from "../services/[serviceId]/components/JsonSchemaSpec";
+import JsonSchemaSpec from "../components/JsonSchemaSpec";
 
 export default function Page() {
   const [schema, setSchema] = useState<any>(null)
