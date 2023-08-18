@@ -31,8 +31,8 @@ export default function JsonSchemaEditor({ value, onChange }: { value?: string, 
       <SchemaEditor
         showEditor={false}
         isMock={false}
-        data={value ?? JSON.stringify({
-          title: "루트",
+        data={value || JSON.stringify({
+          title: "응답",
           type: "object",
           properties: {}
         })}
