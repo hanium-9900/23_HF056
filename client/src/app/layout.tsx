@@ -17,7 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <AuthProvider>
           <ToastProvider>
-            {/* @ts-expect-error Async Server Component */}
+            {}
             <Header></Header>
             {children}
           </ToastProvider>

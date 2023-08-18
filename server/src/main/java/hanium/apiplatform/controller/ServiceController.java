@@ -2,10 +2,7 @@ package hanium.apiplatform.controller;
 
 import com.mysql.cj.conf.ConnectionUrlParser.Pair;
 import hanium.apiplatform.config.JwtTokenProvider;
-import hanium.apiplatform.dto.ApiDto;
-import hanium.apiplatform.dto.ServiceDto;
-import hanium.apiplatform.dto.UserDto;
-import hanium.apiplatform.dto.UserServiceKeyDto;
+import hanium.apiplatform.dto.*;
 import hanium.apiplatform.entity.*;
 import hanium.apiplatform.exception.*;
 import hanium.apiplatform.repository.ApiUsageRepository;
@@ -14,6 +11,8 @@ import hanium.apiplatform.repository.UserRepository;
 import hanium.apiplatform.repository.UserServiceKeyRepository;
 import hanium.apiplatform.service.ApiService;
 import hanium.apiplatform.service.KeyIssueService;
+import hanium.apiplatform.service.ReportService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -46,6 +45,7 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
     private final ApiService apiService;
     private final KeyIssueService keyIssueService;
     private final ServiceService serviceService;
+    private final ReportService reportService;
 
     private final ServiceRepository serviceRepository;
     private final UserServiceKeyRepository userServiceKeyRepository;
@@ -84,6 +84,75 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
         List<Service> services = serviceRepository.findServicesByUserId(user.getId());
 
         return services.stream().map(ServiceDto::toDto).collect(Collectors.toList());
+    }
+
+    /**
+     * 구매한 서비스 목록 조회
+     */
+    @GetMapping("/purchased")
+    public List<ServiceDto> getPurchasedService(HttpServletRequest request){
+        String userToken = jwtTokenProvider.resolveToken(request);
+        User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken)).orElseThrow(UserNotFoundException::new);
+        List<UserServiceKey> userServiceKeys = userServiceKeyRepository.findByUser_Id(user.getId());
+
+        List<ServiceDto> serviceDtos = new ArrayList<>();
+        for(UserServiceKey userServiceKey : userServiceKeys){
+            serviceDtos.add(
+                    ServiceDto.toDto(userServiceKey.getService())
+            );
+        }
+
+        return serviceDtos;
+    }
+
+    /**
+     * 서비스 신고
+     */
+    @PostMapping("/{id}/report")
+    public ReportDto reportServiceById(@PathVariable("id") Long id, @RequestBody ReportDto reportDto, HttpServletRequest request){
+        if(reportDto.getReason() == null){
+            throw new ReportWithoutReasonException();
+        }
+
+        // 헤더에서 JWT를 받아온다.
+        String userToken = jwtTokenProvider.resolveToken(request);
+        // 유효한 토큰인지 확인한다.
+        if (userToken != null && jwtTokenProvider.validateToken(userToken)) {
+            // 유효한 토큰이면 user data 추출
+            User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(userToken))
+                    .orElseThrow(UserNotFoundException::new);
+            UserDto userDto = UserDto.toDto(user);
+            reportDto.setUser(userDto);
+
+            // request param에서 service id 추출
+            Service service = serviceRepository.findById(id)
+                    .orElseThrow(ServiceNotFoundException::new);
+            ServiceDto serviceDto = ServiceDto.toDto(service);
+            reportDto.setService(serviceDto);
+
+            // user와 service를 이용해 key 탐색
+            List<UserServiceKey> serviceKeys = userServiceKeyRepository.findByService_IdAndUser_Id(serviceDto.getId(), userDto.getId());
+            if (serviceKeys.size() == 0) {
+                throw new KeyNotFoundException();
+            }
+            // key가 2개 이상인 경우
+            else if (serviceKeys.size() > 1) {
+                throw new DuplicateServiceKeyException();
+            }
+            // 정상적으로 1개의 key가 발견되면 신고 가능
+            else {
+                if(reportService.isReportDuplicated(reportDto)){
+                    throw new DuplicatedReportException();
+                }
+                else{
+                    ReportDto savedReport = reportService.saveReport(reportDto, user, service);
+                    System.out.println(savedReport);
+                    return savedReport;
+                }
+            }
+        } else {
+            throw new NotValidException();
+        }
     }
 
     // 서비스 id로 조회
@@ -157,7 +226,6 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
     }
 
     // proxy service key 요청 처리
-    // TODO: TEST
     @GetMapping("/{id}/key")
     public String getProxyServiceKey(@PathVariable("id") Long servicId, HttpServletRequest header) {
         // 헤더에서 JWT를 받아온다.
@@ -191,7 +259,6 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
     }
 
     // proxy api 요청 처리
-    // TODO test
     @GetMapping("/{serviceiD}/{apiName}")
     public ResponseEntity getDataThroughProxyApi(
             @PathVariable("serviceiD") long serviceId,
@@ -291,5 +358,17 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
                 .setParameter("id", id)
                 .setParameter("limit", limit)
                 .getResultList();
+    }
+
+    /**
+     * 서비스 상태 확인
+     * responseCode가 400 이상이면 false 미만이면 true
+     */
+    @GetMapping("/{id}/status")
+    public boolean getServiceStatus(@PathVariable("id") Long id) {
+        return serviceService.serviceStatus(
+                ServiceDto.toDto(
+                        serviceRepository.findById(id).orElseThrow(ServiceNotFoundException::new)
+                ));
     }
 }

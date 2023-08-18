@@ -1,14 +1,32 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ApiPurchaseModal from './ApiPurchaseModal';
-import {ServiceResponse } from '@/api';
+import { api, ServiceResponse } from '@/api';
 
 export default function ApiPurchaseButton({ service }: { service: ServiceResponse }) {
   const [opened, setOpened] = useState(false);
+  const [buy, setBuy]=useState(false);
+  const [sevicekey, setKey]=useState('');
+
+  
+    
 
   function purchase() {
     // [TODO] 구매 요청 처리
-    alert('미구현');
+    api.services.purchaseService(Number(service.id))
+      .then(response => {
+        setBuy(response.data);
+        console.log(service.id);
+        console.log(buy);
+        if(buy){
+        const key=api.services.getServiceKey(Number(service.id));
+        console.log(key);
+        }
     setOpened(false);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    
   }
 
   function cancel() {

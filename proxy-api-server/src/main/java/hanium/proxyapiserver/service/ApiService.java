@@ -1,13 +1,12 @@
-package hanium.apiplatform.service;
+package hanium.proxyapiserver.service;
 
 import com.mysql.cj.conf.ConnectionUrlParser.Pair;
-import hanium.apiplatform.dto.*;
-import hanium.apiplatform.entity.Api;
-import hanium.apiplatform.entity.RequestParameter;
-import hanium.apiplatform.exception.ApiNotFoundException;
-import hanium.apiplatform.exception.ConnectionRefusedException;
-import hanium.apiplatform.exception.OverLimitException;
-import hanium.apiplatform.repository.ApiRepository;
+import hanium.proxyapiserver.dto.*;
+import hanium.proxyapiserver.entity.Api;
+import hanium.proxyapiserver.exception.ApiNotFoundException;
+import hanium.proxyapiserver.exception.ConnectionRefusedException;
+import hanium.proxyapiserver.exception.OverLimitException;
+import hanium.proxyapiserver.repository.ApiRepository;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -1,8 +1,6 @@
-package hanium.apiplatform.repository;
+package hanium.proxyapiserver.repository;
 
-import hanium.apiplatform.entity.Service;
-import hanium.apiplatform.entity.User;
-import hanium.apiplatform.entity.UserServiceKey;
+import hanium.proxyapiserver.entity.UserServiceKey;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

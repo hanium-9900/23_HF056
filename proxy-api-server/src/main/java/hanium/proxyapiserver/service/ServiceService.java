@@ -1,17 +1,14 @@
-package hanium.apiplatform.service;
+package hanium.proxyapiserver.service;
 
-import hanium.apiplatform.dto.ApiDto;
-import hanium.apiplatform.dto.ServiceDto;
-import hanium.apiplatform.dto.UserDto;
-import hanium.apiplatform.entity.Api;
-import hanium.apiplatform.exception.NotPermittedUserException;
+import hanium.proxyapiserver.dto.ApiDto;
+import hanium.proxyapiserver.dto.ServiceDto;
+import hanium.proxyapiserver.dto.UserDto;
+import hanium.proxyapiserver.exception.NotPermittedUserException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
-import java.io.IOException;
-import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -21,8 +18,8 @@ public class ServiceService {
 
     private final ApiService apiService;
 
-    public hanium.apiplatform.entity.Service updateServiceInfo(UserDto userDto, ServiceDto serviceDto){
-        hanium.apiplatform.entity.Service service = em.find(hanium.apiplatform.entity.Service.class, serviceDto.getId());
+    public hanium.proxyapiserver.entity.Service updateServiceInfo(UserDto userDto, ServiceDto serviceDto){
+        hanium.proxyapiserver.entity.Service service = em.find(hanium.proxyapiserver.entity.Service.class, serviceDto.getId());
 
         if(userDto.getEmail().equals(service.getUser().getEmail())){
             service.setTitle(serviceDto.getTitle());

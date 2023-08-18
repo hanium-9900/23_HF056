@@ -1,12 +1,11 @@
-package hanium.apiplatform.service;
+package hanium.proxyapiserver.service;
 
-import hanium.apiplatform.dto.UserDto;
-import hanium.apiplatform.entity.User;
-import hanium.apiplatform.repository.UserRepository;
+import hanium.proxyapiserver.dto.UserDto;
+import hanium.proxyapiserver.entity.User;
+import hanium.proxyapiserver.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
