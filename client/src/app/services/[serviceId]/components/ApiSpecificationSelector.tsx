@@ -1,8 +1,8 @@
-'use client'
+'use client';
 
-import { ServiceResponse } from "@/api";
-import ApiSpecification from "./ApiSpecification";
-import { useState } from "react";
+import { ServiceResponse } from '@/api';
+import ApiSpecification from './ApiSpecification';
+import { useState } from 'react';
 
 export default function ApiSpecificationSelector({ service }: { service: ServiceResponse }) {
   const [selectedApi, setSelectedApi] = useState(0);
@@ -10,7 +10,7 @@ export default function ApiSpecificationSelector({ service }: { service: Service
   return (
     <>
       {/* API 선택 */}
-      < div className="flex items-center mb-6" >
+      <div className="flex items-center mb-6">
         <span className="font-bold mr-3">API 구분</span>
         <select onChange={e => setSelectedApi(Number.parseInt(e.target.value))}>
           {service.apis.map((api, idx) => (
@@ -19,8 +19,8 @@ export default function ApiSpecificationSelector({ service }: { service: Service
             </option>
           ))}
         </select>
-      </div >
+      </div>
       <ApiSpecification api={service.apis[selectedApi]} />
     </>
-  )
+  );
 }

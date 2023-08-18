@@ -21,7 +21,7 @@ export default async function ServiceInfoPage({ params }: { params: { serviceId:
       const { data } = await api.services.getServiceKey(serviceId);
       serviceKey = data;
     } catch (e) {
-      console.log((e as any).response.data)
+      console.log((e as any).response.data);
     }
   }
 
@@ -38,13 +38,7 @@ export default async function ServiceInfoPage({ params }: { params: { serviceId:
         </div>
         <div className="flex items-center justify-between">
           <span className="text-gray-500 break-keep mr-6">{service.description}</span>
-          {session && (
-            (!isMine && !serviceKey) ? (
-              <ApiPurchaseButton service={service} />
-            ) : (
-              <ApiReportButton service={service} />
-            )
-          )}
+          {session && (!isMine && !serviceKey ? <ApiPurchaseButton service={service} /> : <ApiReportButton service={service} />)}
         </div>
       </div>
       {/* 서비스 관리 버튼 */}
@@ -58,9 +52,9 @@ export default async function ServiceInfoPage({ params }: { params: { serviceId:
       )}
       {/* 서비스 키 */}
       {serviceKey && (
-        <div className='flex items-center mb-16'>
+        <div className="flex items-center mb-16">
           <span className="font-bold mr-3 shrink-0">서비스 키</span>
-          <input type='text' value={serviceKey} readOnly={true} />
+          <input type="text" value={serviceKey} readOnly={true} />
         </div>
       )}
       <ApiSpecificationSelector service={service} />

@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import ApiPurchaseModal from './ApiPurchaseModal';
@@ -21,11 +21,11 @@ export default function ApiReportButton({ service }: { service: ServiceResponse 
     try {
       await api.services.claim(service.id, content);
 
-      toast.success('신고가 접수되었습니다!')
+      toast.success('신고가 접수되었습니다!');
       setOpened(false);
     } catch (e) {
       if (axios.isAxiosError(e)) {
-        toast.error('신고 접수에 실패했습니다! (로그 확인)')
+        toast.error('신고 접수에 실패했습니다! (로그 확인)');
         console.error(e.response?.data);
       }
     }
@@ -48,23 +48,23 @@ export default function ApiReportButton({ service }: { service: ServiceResponse 
         <div className="text-center mb-4">
           <div className="font-bold text-xl mb-4">“{service.title}”</div>
           <div className="font-bold mb-2">신고</div>
-          <textarea ref={contentRef} placeholder='내용을 입력해주세요.' rows={10}></textarea>
+          <textarea ref={contentRef} placeholder="내용을 입력해주세요." rows={10}></textarea>
         </div>
         <div className="flex justify-center items-center gap-6">
-          <button
-            type="button"
-            className="btn btn-secondary-outline"
-            onClick={() => setOpened(false)}
-          >취소</button>
+          <button type="button" className="btn btn-secondary-outline" onClick={() => setOpened(false)}>
+            취소
+          </button>
           <button
             type="button"
             className="btn btn-danger"
             onClick={() => {
               report();
             }}
-          >신고</button>
+          >
+            신고
+          </button>
         </div>
-      </Modal >
+      </Modal>
     </>
   );
 }

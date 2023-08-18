@@ -16,7 +16,7 @@ export default async function Header() {
     <header className="border-b">
       <div className="container mx-auto flex items-center py-2">
         <Link href="/" className="inline-flex items-center text-lg font-bold py-2 px-3 mr-auto">
-          <Image className='mr-2' src="/logo.svg" width={28} height={28} alt='데이터 유통 API 플랫폼' />
+          <Image className="mr-2" src="/logo.svg" width={28} height={28} alt="데이터 유통 API 플랫폼" />
           데이터 유통 API 플랫폼
         </Link>
         <nav>

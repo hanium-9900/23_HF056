@@ -1,9 +1,9 @@
-import { api } from '@/api'
-import ServiceListRenderer from '../components/ServiceListRenderer'
+import { api } from '@/api';
+import ServiceListRenderer from '../components/ServiceListRenderer';
 
 export default async function Page() {
-  const { data: registeredServices } = await api.services.registeredList()
-  const { data: purchasedServices } = await api.services.purchasedList()
+  const { data: registeredServices } = await api.services.registeredList();
+  const { data: purchasedServices } = await api.services.purchasedList();
 
   return (
     <main className="max-w-7xl mx-auto py-10 px-3">
@@ -18,7 +18,6 @@ export default async function Page() {
         <h2 className="text-xl font-bold mb-7">내가 구매한 서비스</h2>
         <ServiceListRenderer services={purchasedServices} />
       </div>
-
     </main>
-  )
+  );
 }

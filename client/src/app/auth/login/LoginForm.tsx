@@ -24,7 +24,7 @@ export default function LoginForm() {
       return;
     }
 
-    const loadingToastId = toast.loading('로그인 중입니다..',)
+    const loadingToastId = toast.loading('로그인 중입니다..');
     const result = await signIn('credentials', {
       email: emailRef.current.value,
       password: passwordRef.current.value,
@@ -32,14 +32,14 @@ export default function LoginForm() {
     });
     if (result?.error) {
       if (result.error === 'User Not Found') {
-        toast.update(loadingToastId, { render: "존재하지 않는 이메일입니다!", type: "error", autoClose: 3000, isLoading: false });
+        toast.update(loadingToastId, { render: '존재하지 않는 이메일입니다!', type: 'error', autoClose: 3000, isLoading: false });
       } else if (result.error === 'Wrong Password') {
-        toast.update(loadingToastId, { render: "비밀번호가 틀렸습니다!", type: "error", autoClose: 3000, isLoading: false });
+        toast.update(loadingToastId, { render: '비밀번호가 틀렸습니다!', type: 'error', autoClose: 3000, isLoading: false });
       } else {
-        toast.update(loadingToastId, { render: "알 수 없는 오류가 발생했습니다!", type: "error", autoClose: 3000, isLoading: false });
+        toast.update(loadingToastId, { render: '알 수 없는 오류가 발생했습니다!', type: 'error', autoClose: 3000, isLoading: false });
       }
     } else {
-      toast.update(loadingToastId, { render: "로그인되었습니다!", type: "success", autoClose: 3000, isLoading: false });
+      toast.update(loadingToastId, { render: '로그인되었습니다!', type: 'success', autoClose: 3000, isLoading: false });
 
       router.replace(searchParams.get('callbackUrl') || '/');
       router.refresh();

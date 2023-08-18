@@ -1,11 +1,11 @@
-import { api } from "@/api";
-import { getServerSession } from "next-auth";
-import Link from "next/link";
-import { redirect } from "next/navigation";
-import ApiLimit from "./components/ApiLimit";
+import { api } from '@/api';
+import { getServerSession } from 'next-auth';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import ApiLimit from './components/ApiLimit';
 import PieGraph from './components/PieGraph';
-import LineGraph from "./components/LineGraph";
-import Image from "next/image";
+import LineGraph from './components/LineGraph';
+import Image from 'next/image';
 
 async function getDatas(serviceId: number) {
   const now = new Date();
@@ -43,19 +43,21 @@ export default async function Page({ params }: { params: { serviceId: string } }
     return (
       <main className="mx-auto py-10 px-3">
         <div className="text-center flex flex-col items-center">
-          <Image className="mb-5" width={128} height={128} src='/icon-danger.png' alt="경고" />
+          <Image className="mb-5" width={128} height={128} src="/icon-danger.png" alt="경고" />
           <div className="font-bold text-xl mb-2">접근 권한이 없습니다.</div>
           <div className="font-light">자신이 등록한 서비스의 사용량만 열람할 수 있습니다.</div>
         </div>
       </main>
-    )
-    redirect('/')
+    );
+    redirect('/');
   }
 
   return (
     <main className="mx-auto py-10 px-3" style={{ width: 1500 }}>
       <div className="mb-7">
-        <Link href={`/services/${service.id}`} className=" font-bold text-lg text-blue-500 mb-2">{service.title}</Link>
+        <Link href={`/services/${service.id}`} className=" font-bold text-lg text-blue-500 mb-2">
+          {service.title}
+        </Link>
         <div className="font-bold text-2xl">서비스 사용량 개요</div>
       </div>
 
@@ -69,7 +71,7 @@ export default async function Page({ params }: { params: { serviceId: string } }
       </div>
       <div className="mb-12">
         {service.apis.map(api => (
-          <ApiLimit key={api.id} api={api} usage={usage.find(u => u.id = api.id)} />
+          <ApiLimit key={api.id} api={api} usage={usage.find(u => (u.id = api.id))} />
         ))}
       </div>
       <div className="mb-6">
@@ -108,6 +110,6 @@ export default async function Page({ params }: { params: { serviceId: string } }
           </tbody>
         </table>
       </div>
-    </main >
+    </main>
   );
 }

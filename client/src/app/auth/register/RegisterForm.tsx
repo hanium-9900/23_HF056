@@ -39,22 +39,22 @@ export default function RegisterForm() {
       password,
     };
 
-    const loadingToastId = toast.loading('회원가입 중입니다..',)
+    const loadingToastId = toast.loading('회원가입 중입니다..');
     try {
       setLoading(() => true);
       await api.auth.register(credentials);
 
-      toast.update(loadingToastId, { render: "회원가입이 완료되었습니다!", type: "success", autoClose: 3000, isLoading: false });
+      toast.update(loadingToastId, { render: '회원가입이 완료되었습니다!', type: 'success', autoClose: 3000, isLoading: false });
       router.replace('/auth/login');
     } catch (e) {
       if (axios.isAxiosError<{ message: string }>(e)) {
         if (e.response?.data.message === 'Duplicate Email') {
-          toast.update(loadingToastId, { render: "이미 존재하는 이메일입니다!", type: "error", autoClose: 3000, isLoading: false });
+          toast.update(loadingToastId, { render: '이미 존재하는 이메일입니다!', type: 'error', autoClose: 3000, isLoading: false });
         } else {
-          toast.update(loadingToastId, { render: "알 수 없는 오류가 발생했습니다!", type: "error", autoClose: 3000, isLoading: false });
+          toast.update(loadingToastId, { render: '알 수 없는 오류가 발생했습니다!', type: 'error', autoClose: 3000, isLoading: false });
         }
       } else {
-        toast.update(loadingToastId, { render: "알 수 없는 오류가 발생했습니다!", type: "error", autoClose: 3000, isLoading: false });
+        toast.update(loadingToastId, { render: '알 수 없는 오류가 발생했습니다!', type: 'error', autoClose: 3000, isLoading: false });
       }
     } finally {
       setLoading(() => false);

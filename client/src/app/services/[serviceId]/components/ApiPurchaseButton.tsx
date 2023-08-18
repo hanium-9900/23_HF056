@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useState, useEffect } from 'react';
 import ApiPurchaseModal from './ApiPurchaseModal';
@@ -15,7 +15,8 @@ export default function ApiPurchaseButton({ service }: { service: ServiceRespons
 
   async function purchase() {
     // [TODO] 구매 요청 처리
-    api.services.purchaseService(Number(service.id))
+    api.services
+      .purchaseService(Number(service.id))
       .then(response => {
         setBuy(response.data);
         console.log(service.id);
@@ -25,7 +26,7 @@ export default function ApiPurchaseButton({ service }: { service: ServiceRespons
           console.log(key);
         }
         setOpened(false);
-        toast.success('구매가 완료되었습니다!')
+        toast.success('구매가 완료되었습니다!');
         router.refresh();
       })
       .catch(error => {

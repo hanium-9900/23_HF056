@@ -1,19 +1,19 @@
-'use client'
+'use client';
 
-import { ServiceStatisticsResponse } from "@/api";
+import { ServiceStatisticsResponse } from '@/api';
 import dayjs from 'dayjs';
 // install (please try to align the version of installed @nivo packages)
 // yarn add @nivo/pie
-import dynamic from "next/dynamic";
+import dynamic from 'next/dynamic';
 
-const ResponsiveLine = dynamic(() => import("@nivo/line").then(m => m.ResponsiveLine), { ssr: false });
+const ResponsiveLine = dynamic(() => import('@nivo/line').then(m => m.ResponsiveLine), { ssr: false });
 
 // make sure parent container have a defined height when using
 // responsive component, otherwise height will be 0 and
 // no chart will be rendered.
 // website examples showcase many properties,
 // you'll often use just a few of them.
-export default function LineGraph({ statistics, prevStatistics }: { statistics: ServiceStatisticsResponse[], prevStatistics: ServiceStatisticsResponse[] }) {
+export default function LineGraph({ statistics, prevStatistics }: { statistics: ServiceStatisticsResponse[]; prevStatistics: ServiceStatisticsResponse[] }) {
   const mergedStatistics = [...statistics, ...prevStatistics];
 
   const data: {
@@ -23,32 +23,37 @@ export default function LineGraph({ statistics, prevStatistics }: { statistics: 
       x: string;
       y: number;
     }[];
-  }[] = Object.entries(mergedStatistics.reduce((acc, cur) => {
-    const key = `[${cur.method}] ${cur.path}`
-    if (!acc[key]) {
-      acc[key] = []
-    }
+  }[] = Object.entries(
+    mergedStatistics.reduce(
+      (acc, cur) => {
+        const key = `[${cur.method}] ${cur.path}`;
+        if (!acc[key]) {
+          acc[key] = [];
+        }
 
-    acc[key].push({ ...cur })
+        acc[key].push({ ...cur });
 
-    return acc;
-  }, {} as {
-    [key: string]: typeof mergedStatistics[number][]
-  })).map(([key, stat]) => {
-    stat.sort((a, b) => a.month - b.month || a.day - b.day)
+        return acc;
+      },
+      {} as {
+        [key: string]: (typeof mergedStatistics)[number][];
+      }
+    )
+  ).map(([key, stat]) => {
+    stat.sort((a, b) => a.month - b.month || a.day - b.day);
 
     const curMonth = new Date().getMonth() + 1;
     const curDate = new Date().getDate();
     // const curDate = 31;
     // let iter = dayjs().startOf('month');
     let iter = dayjs().subtract(7, 'day');
-    const data: { x: string, y: number }[] = [];
+    const data: { x: string; y: number }[] = [];
     while (iter.month() + 1 <= curMonth) {
-      console.log(iter)
+      console.log(iter);
       data.push({
         x: iter.format('MM-DD'),
-        y: stat.find(s => s.month === iter.month() + 1 && s.day === iter.date())?.count || 0
-      })
+        y: stat.find(s => s.month === iter.month() + 1 && s.day === iter.date())?.count || 0,
+      });
       iter = iter.add(1, 'day');
 
       if (iter.month() + 1 === curMonth && iter.date() > curDate) break;
@@ -56,8 +61,8 @@ export default function LineGraph({ statistics, prevStatistics }: { statistics: 
 
     return {
       id: key,
-      data
-    }
+      data,
+    };
   });
 
   return (
@@ -71,7 +76,7 @@ export default function LineGraph({ statistics, prevStatistics }: { statistics: 
           min: 0,
           max: 'auto',
           stacked: true,
-          reverse: false
+          reverse: false,
         }}
         yFormat=" >-.2f"
         axisTop={null}
@@ -82,7 +87,7 @@ export default function LineGraph({ statistics, prevStatistics }: { statistics: 
           tickRotation: 0,
           legend: '날짜',
           legendOffset: 36,
-          legendPosition: 'middle'
+          legendPosition: 'middle',
         }}
         axisLeft={{
           tickSize: 5,
@@ -90,7 +95,7 @@ export default function LineGraph({ statistics, prevStatistics }: { statistics: 
           tickRotation: 0,
           legend: '호출 수',
           legendOffset: -40,
-          legendPosition: 'middle'
+          legendPosition: 'middle',
         }}
         colors={{ scheme: 'set1' }}
         pointSize={10}
@@ -120,11 +125,11 @@ export default function LineGraph({ statistics, prevStatistics }: { statistics: 
                 on: 'hover',
                 style: {
                   itemBackground: 'rgba(0, 0, 0, .03)',
-                  itemOpacity: 1
-                }
-              }
-            ]
-          }
+                  itemOpacity: 1,
+                },
+              },
+            ],
+          },
         ]}
       />
     </>
