@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/23_HF056.iml" filepath="$PROJECT_DIR$/.idea/23_HF056.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/api-platform.main.iml" filepath="$PROJECT_DIR$/.idea/modules/api-platform.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/hanium.proxyapiserver.main.iml" filepath="$PROJECT_DIR$/.idea/modules/hanium.proxyapiserver.main.iml" />
     </modules>
   </component>
 </project>
