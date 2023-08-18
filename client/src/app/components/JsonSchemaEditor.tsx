@@ -33,6 +33,7 @@ export default function JsonSchemaEditor({ value, onChange }: { value?: string, 
         isMock={false}
         data={value || JSON.stringify({
           title: "루트",
+          description: 'JSON 최상위 객체',
           type: "object",
           properties: {}
         })}
