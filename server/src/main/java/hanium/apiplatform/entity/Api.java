@@ -117,6 +117,62 @@ public class Api {
         return api;
     }
 
+    public static ArrayList<Api> toEntity(ArrayList<ApiDto> apiDtos) {
+        ArrayList<Api> apis = new ArrayList<>();
+
+        for(ApiDto apiDto : apiDtos){
+            Api api = new Api();
+
+            api.setHost(apiDto.getHost());
+            api.setDescription(apiDto.getDescription());
+            api.setMethod(apiDto.getMethod());
+            api.setPath(apiDto.getPath());
+            api.setLimitation((apiDto.getLimitation()));
+
+            for (HeaderDto headerDto : apiDto.getHeaders()) {
+                Header header = new Header();
+                header.setDescription(headerDto.getDescription());
+                header.setKey(headerDto.getKey());
+                header.setType(headerDto.getType());
+                header.setRequired(headerDto.getRequired());
+
+                api.addHeader(header);
+            }
+
+            for (RequestParameterDto requestParameterDto : apiDto.getRequestParameters()) {
+                RequestParameter requestParameter = new RequestParameter();
+                requestParameter.setDescription(requestParameterDto.getDescription());
+                requestParameter.setKey(requestParameterDto.getKey());
+                requestParameter.setType(requestParameterDto.getType());
+                requestParameter.setRequired(requestParameterDto.getRequired());
+
+                api.addRequestParameter(requestParameter);
+            }
+
+            for (ResponseParameterDto responseParameterDto : apiDto.getResponseParameters()) {
+                ResponseParameter responseParameter = new ResponseParameter();
+                responseParameter.setDescription(responseParameterDto.getDescription());
+                responseParameter.setKey(responseParameterDto.getKey());
+                responseParameter.setType(responseParameterDto.getType());
+                responseParameter.setRequired(responseParameterDto.getRequired());
+
+                api.addResponseParameter(responseParameter);
+            }
+
+            for (ErrorCodeDto errorCodeDto : apiDto.getErrorCodes()) {
+                ErrorCode errorCode = new ErrorCode();
+                errorCode.setDescription(errorCodeDto.getDescription());
+                errorCode.setStatusCode(errorCodeDto.getStatusCode());
+
+                api.addErrorCode(errorCode);
+            }
+
+            apis.add(api);
+        }
+
+        return apis;
+    }
+
     public void addHeader(Header header) {
         this.headers.add(header);
         header.updateApi(this);

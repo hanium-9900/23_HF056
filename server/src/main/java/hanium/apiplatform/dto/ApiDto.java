@@ -6,6 +6,8 @@ import hanium.apiplatform.entity.Header;
 import hanium.apiplatform.entity.RequestParameter;
 import hanium.apiplatform.entity.ResponseParameter;
 import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -52,7 +54,7 @@ public class ApiDto {
         return apiDto;
     }
 
-    public static ArrayList<ApiDto> toDto(ArrayList<Api> apis) {
+    public static ArrayList<ApiDto> toDto(List<Api> apis) {
         ArrayList<ApiDto> apiDtos = new ArrayList<>(apis.size());
 
         for (Api api :

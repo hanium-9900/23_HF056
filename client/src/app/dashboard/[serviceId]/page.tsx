@@ -5,16 +5,20 @@ import { redirect } from "next/navigation";
 import ApiLimit from "./components/ApiLimit";
 import PieGraph from './components/PieGraph';
 import LineGraph from "./components/LineGraph";
+import Image from "next/image";
 
 async function getDatas(serviceId: number) {
+  const now = new Date();
+
   const p1 = api.services.show(serviceId).then(res => res.data);
   const p2 = api.services.errorLogs(serviceId).then(res => res.data);
-  const p3 = api.services.statistics(serviceId, new Date().getMonth() + 1).then(res => res.data);
+  const p3 = api.services.statistics(serviceId, now.getFullYear(), now.getMonth() + 1).then(res => res.data);
   const p4 = api.services.usage(serviceId).then(res => res.data);
 
-  let prevMonth = new Date().getMonth() - 1;
+  let prevMonth = now.getMonth() - 1;
+  const prevYear = prevMonth < 0 ? now.getFullYear() - 1 : now.getFullYear();
   prevMonth = prevMonth < 0 ? 12 : prevMonth + 1;
-  const p5 = api.services.statistics(serviceId, prevMonth).then(res => res.data);
+  const p5 = api.services.statistics(serviceId, prevYear, prevMonth).then(res => res.data);
 
   const [service, errorLogs, statistics, usage, prevStatistics] = await Promise.all([p1, p2, p3, p4, p5]);
 
@@ -36,6 +40,15 @@ export default async function Page({ params }: { params: { serviceId: string } }
   const { service, errorLogs, statistics, usage, prevStatistics } = await getDatas(serviceId);
   const session = await getServerSession();
   if (session?.user?.email !== service.user.email) {
+    return (
+      <main className="mx-auto py-10 px-3">
+        <div className="text-center flex flex-col items-center">
+          <Image className="mb-5" width={128} height={128} src='/icon-danger.png' alt="경고" />
+          <div className="font-bold text-xl mb-2">접근 권한이 없습니다.</div>
+          <div className="font-light">자신이 등록한 서비스의 사용량만 열람할 수 있습니다.</div>
+        </div>
+      </main>
+    )
     redirect('/')
   }
 

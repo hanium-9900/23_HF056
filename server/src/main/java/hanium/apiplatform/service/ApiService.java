@@ -1,17 +1,20 @@
 package hanium.apiplatform.service;
 
 import com.mysql.cj.conf.ConnectionUrlParser.Pair;
-import hanium.apiplatform.dto.ApiDto;
-import hanium.apiplatform.dto.HeaderDto;
-import hanium.apiplatform.dto.RequestParameterDto;
-import hanium.apiplatform.dto.ResponseParameterDto;
-import hanium.apiplatform.dto.ServiceDto;
-import hanium.apiplatform.dto.UserServiceKeyDto;
+import hanium.apiplatform.dto.*;
 import hanium.apiplatform.entity.Api;
+import hanium.apiplatform.entity.RequestParameter;
 import hanium.apiplatform.exception.ApiNotFoundException;
 import hanium.apiplatform.exception.ConnectionRefusedException;
 import hanium.apiplatform.exception.OverLimitException;
 import hanium.apiplatform.repository.ApiRepository;
+import lombok.RequiredArgsConstructor;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.stereotype.Service;
+
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -23,12 +26,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -37,10 +34,14 @@ public class ApiService {
 
     private final EntityManager entityManager;
     private final ApiRepository apiRepository;
+    private final HeaderService headerService;
+    private final RequestParameterService requestParameterService;
+    private final ResponseParameterService responseParameterService;
+    private final ErrorCodeService errorCodeService;
 
-    /*private final EntityManager em;
+    private final EntityManager em;
 
-    public Api updateApiInfo(ApiDto apiDto){
+    public ApiDto updateApiInfo(ApiDto apiDto){
         Api api = em.find(Api.class, apiDto.getId());
 
         api.setHost(api.getHost());
@@ -48,22 +49,51 @@ public class ApiService {
         api.setMethod(api.getMethod());
         api.setPath(api.getPath());
 
-        return api;
+        return ApiDto.toDto(api);
     }
 
-    public ArrayList<Api> updateApiInfo(ApiDto apiDto){
-        Api api = em.find(Api.class, apiDto.getId());
+    public ArrayList<ApiDto> updateApiInfos(ArrayList<ApiDto> apiDtos){
+        ArrayList<ApiDto> updatedApiDtos = new ArrayList<>();
 
-        api.setHost(api.getHost());
-        api.setDescription(api.getDescription());
-        api.setMethod(api.getMethod());
-        api.setPath(api.getPath());
+        for(ApiDto apiDto : apiDtos){
+            Api api = em.find(Api.class, apiDto.getId());
 
-        return api;
-    }*/
+            api.setHost(apiDto.getHost());
+            api.setDescription(apiDto.getDescription());
+            api.setMethod(apiDto.getMethod());
+            api.setPath(apiDto.getPath());
+
+            List<HeaderDto> updatedHeaderDtos = headerService.updateHeaderInfos(apiDto.getHeaders());
+            List<RequestParameterDto> updatedRequestParameterDtos =
+                    requestParameterService.updateRequestParameters
+                            (apiDto.getRequestParameters());
+            List<ResponseParameterDto> updatedResponseParameterDtos =
+                    responseParameterService.updateResponseParameters
+                            (apiDto.getResponseParameters());
+            List<ErrorCodeDto> updatedErrorCodeDtos =
+                    errorCodeService.updateErrorCodes(apiDto.getErrorCodes());
+
+            api.setLimitation(apiDto.getLimitation());
+
+            ApiDto updatedDto = new ApiDto();
+            updatedDto.setHost(api.getHost());
+            updatedDto.setDescription(api.getDescription());
+            updatedDto.setMethod(api.getMethod());
+            updatedDto.setPath(api.getPath());
+            updatedDto.setHeaders((ArrayList<HeaderDto>) updatedHeaderDtos);
+            updatedDto.setRequestParameters((ArrayList<RequestParameterDto>) updatedRequestParameterDtos);
+            updatedDto.setResponseParameters((ArrayList<ResponseParameterDto>) updatedResponseParameterDtos);
+            updatedDto.setErrorCodes((ArrayList<ErrorCodeDto>) updatedErrorCodeDtos);
+            updatedDto.setLimitation(api.getLimitation());
+
+            updatedApiDtos.add(ApiDto.toDto(api));
+        }
+
+        return updatedApiDtos;
+    }
 
     private Pair<Integer, String> requestApi(String method, String host, String path, ArrayList<HeaderDto> headers,
-        ArrayList<RequestParameterDto> requestParameters, String apiKey) throws IOException {
+                                             ArrayList<RequestParameterDto> requestParameters, String apiKey) throws IOException {
 
         int responseCode = 0;
         String response = null;
@@ -197,18 +227,18 @@ public class ApiService {
                 LocalDate now = LocalDate.now();
 
                 String sql =
-                    "select count(*) as count from api_usage where api_id = :apiId and user_id = :userId and year(creation_timestamp) = :year "
-                        + "and month(creation_timestamp) = :month and day(creation_timestamp) = :day ;";
+                        "select count(*) as count from api_usage where api_id = :apiId and user_id = :userId and year(creation_timestamp) = :year "
+                                + "and month(creation_timestamp) = :month and day(creation_timestamp) = :day ;";
 
                 int usage = ((BigInteger) entityManager.createNativeQuery(sql)
-                    .setParameter("apiId", apiDto.getId())
-                    .setParameter("userId", userServiceKeyDto.getUser().getId())
-                    .setParameter("year", now.getYear())
-                    .setParameter("month", now.getMonthValue())
-                    .setParameter("day", now.getDayOfMonth())
-                    .getSingleResult()).intValue();
+                        .setParameter("apiId", apiDto.getId())
+                        .setParameter("userId", userServiceKeyDto.getUser().getId())
+                        .setParameter("year", now.getYear())
+                        .setParameter("month", now.getMonthValue())
+                        .setParameter("day", now.getDayOfMonth())
+                        .getSingleResult()).intValue();
 
-                Api api = apiRepository.findById(apiDto.getId()).orElseThrow(() -> new ApiNotFoundException());
+                Api api = apiRepository.findById(apiDto.getId()).orElseThrow(ApiNotFoundException::new);
 
                 if (usage > api.getLimitation()) {
                     throw new OverLimitException();
@@ -232,7 +262,7 @@ public class ApiService {
     }
 
     public Pair<Integer, String> requestFromProxyApi(String method, String host, String path, HashMap<String, String> paramMap,
-        String apiKey) throws IOException {
+                                                     String apiKey) throws IOException {
 
         int responseCode = 0;
         String response = null;
@@ -297,5 +327,22 @@ public class ApiService {
         }
 
         return new Pair<>(responseCode, response);
+    }
+
+    public int apiResponseCode(ApiDto apiDto, String apiKey) {
+        try{
+            String host = apiDto.getHost();
+            String path = apiDto.getPath();
+            String method = apiDto.getMethod();
+            ArrayList<HeaderDto> headers = apiDto.getHeaders();
+            ArrayList<RequestParameterDto> requestParameters = apiDto.getRequestParameters();
+
+            Pair<Integer, String> result = requestApi(method, host, path, headers, requestParameters, apiKey);
+
+            return result.left;
+        }
+        catch (ConnectionRefusedException | IOException exception){
+            return 400;
+        }
     }
 }

@@ -9,6 +9,7 @@ export default async function Header() {
   const links = [
     { name: '서비스 등록', href: '/services/register' },
     { name: '서비스 목록', href: '/services' },
+    { name: '대시보드', href: '/dashboard' },
   ];
 
   return (
