@@ -20,7 +20,7 @@ export default function ApiSpecificationSelector({ service }: { service: Service
           ))}
         </select>
       </div>
-      <ApiSpecification api={service.apis[selectedApi]} />
+      <ApiSpecification serviceId={service.id} api={service.apis[selectedApi]} />
     </>
   );
 }
