@@ -6,6 +6,7 @@ import { api } from '@/api';
 import ServiceDeleteButton from './components/ServiceDeleteButton';
 import ApiSpecificationSelector from './components/ApiSpecificationSelector';
 import { getServerSession } from 'next-auth';
+import ApiReportButton from './components/ApiReportButton';
 
 export default async function ServiceInfoPage({ params }: { params: { serviceId: string } }) {
   const session = await getServerSession();
@@ -41,12 +42,7 @@ export default async function ServiceInfoPage({ params }: { params: { serviceId:
             (!isMine && !serviceKey) ? (
               <ApiPurchaseButton service={service} />
             ) : (
-              <button
-                className="btn btn-form shrink-0"
-                disabled={true}
-              >
-                구매함
-              </button>
+              <ApiReportButton service={service} />
             )
           )}
         </div>
