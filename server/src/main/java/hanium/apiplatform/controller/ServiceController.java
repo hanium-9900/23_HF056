@@ -14,6 +14,7 @@ import hanium.apiplatform.repository.UserRepository;
 import hanium.apiplatform.repository.UserServiceKeyRepository;
 import hanium.apiplatform.service.ApiService;
 import hanium.apiplatform.service.KeyIssueService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -157,7 +158,6 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
     }
 
     // proxy service key 요청 처리
-    // TODO: TEST
     @GetMapping("/{id}/key")
     public String getProxyServiceKey(@PathVariable("id") Long servicId, HttpServletRequest header) {
         // 헤더에서 JWT를 받아온다.
@@ -191,7 +191,6 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
     }
 
     // proxy api 요청 처리
-    // TODO test
     @GetMapping("/{serviceiD}/{apiName}")
     public ResponseEntity getDataThroughProxyApi(
             @PathVariable("serviceiD") long serviceId,
@@ -291,5 +290,17 @@ public class ServiceController { // API 제공 서비스를 처리하는 컨트�
                 .setParameter("id", id)
                 .setParameter("limit", limit)
                 .getResultList();
+    }
+
+    /**
+     * 서비스 상태 확인
+     * responseCode가 400 이상이면 false 미만이면 true
+     */
+    @GetMapping("/{id}/status")
+    public boolean getServiceStatus(@PathVariable("id") Long id) {
+        return serviceService.serviceStatus(
+                ServiceDto.toDto(
+                        serviceRepository.findById(id).orElseThrow(ServiceNotFoundException::new)
+                ));
     }
 }

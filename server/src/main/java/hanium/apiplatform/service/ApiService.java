@@ -328,4 +328,21 @@ public class ApiService {
 
         return new Pair<>(responseCode, response);
     }
+
+    public int apiResponseCode(ApiDto apiDto, String apiKey) {
+        try{
+            String host = apiDto.getHost();
+            String path = apiDto.getPath();
+            String method = apiDto.getMethod();
+            ArrayList<HeaderDto> headers = apiDto.getHeaders();
+            ArrayList<RequestParameterDto> requestParameters = apiDto.getRequestParameters();
+
+            Pair<Integer, String> result = requestApi(method, host, path, headers, requestParameters, apiKey);
+
+            return result.left;
+        }
+        catch (ConnectionRefusedException | IOException exception){
+            return 400;
+        }
+    }
 }
