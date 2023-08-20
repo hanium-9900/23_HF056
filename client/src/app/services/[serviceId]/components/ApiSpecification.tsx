@@ -1,8 +1,15 @@
 import { ServiceResponse } from '@/api';
 
-export default function ApiSpecification({ api }: { api: ServiceResponse['apis'][number] }) {
+export default function ApiSpecification({ serviceId, api }: { serviceId: number, api: ServiceResponse['apis'][number] }) {
+  const proxyUrl = `${process.env.NEXT_PUBLIC_PROXY_BASEURL}/services/${serviceId}${api.path}`;
+
   return (
     <div>
+      {/* API 프록시 HOST */}
+      <div className="flex items-center mb-6">
+        <span className="font-bold shrink-0 mr-3">요청 URL</span>
+        <input type="text" readOnly={true} value={proxyUrl} />
+      </div>
       {/* API 헤더 정보 */}
       <div className="mb-6">
         <div className="font-bold mb-2">헤더</div>

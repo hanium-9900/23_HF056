@@ -189,7 +189,9 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
           <div className="font-bold mb-2">서비스 이름</div>
           <select onChange={e => updateInfo({ category: e.target.value })} value={info.category} required>
             {categories.map(category => (
-              <option key={category} value={category}>{category}</option>
+              <option key={category} value={category}>
+                {category}
+              </option>
             ))}
           </select>
         </label>

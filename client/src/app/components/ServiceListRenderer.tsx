@@ -1,8 +1,16 @@
-import Link from "next/link";
-import Image from 'next/image'
-import { ServiceResponse } from "@/api";
+import Link from 'next/link';
+import Image from 'next/image';
+import { ServiceResponse } from '@/api';
 
-export default function ServiceListRenderer({ services, isDashboard = false, emptyText = '해당되는 서비스가 없습니다.' }: { services: ServiceResponse[], isDashboard?: boolean, emptyText?: string }) {
+export default function ServiceListRenderer({
+  services,
+  isDashboard = false,
+  emptyText = '해당되는 서비스가 없습니다.',
+}: {
+  services: ServiceResponse[];
+  isDashboard?: boolean;
+  emptyText?: string;
+}) {
   return (
     <>
       <div className="grid grid-cols-3 gap-5">
@@ -24,7 +32,7 @@ export default function ServiceListRenderer({ services, isDashboard = false, emp
               <div className="flex justify-end items-center text-blue-500 font-bold">
                 사용량 조회
                 <span className="p-1 rounded-full bg-blue-500 ml-1">
-                  <Image width={16} height={16} src='arrow.svg' alt="Arrow" />
+                  <Image width={16} height={16} src="arrow.svg" alt="Arrow" />
                 </span>
               </div>
             )}
@@ -34,13 +42,11 @@ export default function ServiceListRenderer({ services, isDashboard = false, emp
       <div>
         {services.length === 0 && (
           <div className="flex flex-col items-center">
-            <Image className="mb-3" width={64} height={64} src='/block.svg' alt="Empty" />
-            <div className="text-center text-gray-400 text-2xl">
-              {emptyText}
-            </div>
+            <Image className="mb-3" width={64} height={64} src="/block.svg" alt="Empty" />
+            <div className="text-center text-gray-400 text-2xl">{emptyText}</div>
           </div>
         )}
       </div>
     </>
-  )
+  );
 }

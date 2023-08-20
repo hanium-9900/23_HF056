@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { ToastContainer } from "react-toastify";
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 interface ToastProviderProps {
@@ -11,15 +11,7 @@ export default function ToastProvider({ children }: ToastProviderProps) {
   return (
     <>
       {children}
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        newestOnTop={false}
-        closeOnClick
-        pauseOnFocusLoss
-        pauseOnHover
-        theme="colored"
-      />
+      <ToastContainer position="top-right" autoClose={3000} newestOnTop={false} closeOnClick pauseOnFocusLoss pauseOnHover theme="colored" />
     </>
   );
 }

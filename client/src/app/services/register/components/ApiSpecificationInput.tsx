@@ -65,7 +65,14 @@ export default function ApiSpecificationInput({
       <label className="block mb-6">
         <div className="font-bold mb-2">사용자당 일일 호출 제한</div>
         <div className="flex items-center">
-          <input type="number" placeholder="100" onChange={e => updateSpecification({ limitation: Number.parseInt(e.target.value) })} value={api.limitation} min={-1} required />
+          <input
+            type="number"
+            placeholder="100"
+            onChange={e => updateSpecification({ limitation: Number.parseInt(e.target.value) })}
+            value={api.limitation}
+            min={-1}
+            required
+          />
           <span className="ml-3">회</span>
         </div>
       </label>

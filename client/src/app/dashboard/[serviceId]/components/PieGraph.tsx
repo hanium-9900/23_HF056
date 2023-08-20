@@ -1,11 +1,11 @@
-'use client'
+'use client';
 
-import { ServiceStatisticsResponse } from "@/api";
+import { ServiceStatisticsResponse } from '@/api';
 // install (please try to align the version of installed @nivo packages)
 // yarn add @nivo/pie
-import dynamic from "next/dynamic";
+import dynamic from 'next/dynamic';
 
-const ResponsivePie = dynamic(() => import("@nivo/pie").then(m => m.ResponsivePie), { ssr: false });
+const ResponsivePie = dynamic(() => import('@nivo/pie').then(m => m.ResponsivePie), { ssr: false });
 
 // make sure parent container have a defined height when using
 // responsive component, otherwise height will be 0 and
@@ -13,7 +13,7 @@ const ResponsivePie = dynamic(() => import("@nivo/pie").then(m => m.ResponsivePi
 // website examples showcase many properties,
 // you'll often use just a few of them.
 export default function PieGraph({ statistics /* see data tab */ }: { statistics: ServiceStatisticsResponse[] }) {
-  const data: { id: string, label?: string, value: number, color?: string; }[] = statistics.map(s => ({
+  const data: { id: string; label?: string; value: number; color?: string }[] = statistics.map(s => ({
     id: `[${s.method}] ${s.path}`,
     label: `[${s.method}] ${s.path}`,
     value: s.count,
@@ -34,12 +34,7 @@ export default function PieGraph({ statistics /* see data tab */ }: { statistics
         colors={{ scheme: 'set1' }}
         borderColor={{
           from: 'color',
-          modifiers: [
-            [
-              'darker',
-              0.2
-            ]
-          ]
+          modifiers: [['darker', 0.2]],
         }}
         arcLinkLabelsSkipAngle={10}
         arcLinkLabelsTextColor={{ theme: 'labels.text.fill' }}
@@ -48,12 +43,7 @@ export default function PieGraph({ statistics /* see data tab */ }: { statistics
         arcLabelsSkipAngle={10}
         arcLabelsTextColor={{
           from: 'color',
-          modifiers: [
-            [
-              'darker',
-              2
-            ]
-          ]
+          modifiers: [['darker', 2]],
         }}
         legends={[
           {
@@ -74,11 +64,11 @@ export default function PieGraph({ statistics /* see data tab */ }: { statistics
               {
                 on: 'hover',
                 style: {
-                  itemTextColor: '#000'
-                }
-              }
-            ]
-          }
+                  itemTextColor: '#000',
+                },
+              },
+            ],
+          },
         ]}
       />
     </>

@@ -110,12 +110,12 @@ export const api = {
     register(service: any) {
       return axios.post('/services', service);
     },
-    
+
     /**
      * 서비스 구매
      */
     purchaseService(id: number) {
-      return axios.post(`/services/${id}/purchase`,id);
+      return axios.post(`/services/${id}/purchase`, id);
     },
 
     /**
@@ -151,7 +151,7 @@ export const api = {
      * 서비스 신고
      */
     claim(serviceId: number, content: string) {
-      // 신고
+      return axios.post(`/services/${serviceId}/report`, { reason: content });
     },
     /**
      * 서비스 삭제
@@ -210,4 +210,3 @@ export const api = {
     },
   },
 };
-

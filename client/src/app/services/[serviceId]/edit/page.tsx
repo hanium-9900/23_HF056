@@ -14,7 +14,7 @@ export default async function Register({ params }: { params: { serviceId: string
 
   const session = await getServerSession();
   if (session?.user?.email !== service.user.email) {
-    redirect(`/services/${params.serviceId}`)
+    redirect(`/services/${params.serviceId}`);
   }
 
   return (
