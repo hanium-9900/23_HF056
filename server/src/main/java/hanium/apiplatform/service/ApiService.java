@@ -93,7 +93,7 @@ public class ApiService {
     }
 
     private Pair<Integer, String> requestApi(String method, String host, String path, ArrayList<HeaderDto> headers,
-                                             ArrayList<RequestParameterDto> requestParameters, String apiKey) throws IOException {
+                                             String requestParameters, String apiKey) throws IOException {
 
         int responseCode = 0;
         String response = null;
@@ -107,16 +107,24 @@ public class ApiService {
                         // TODO
                     }
 
-                    if (!requestParameters.isEmpty()) {
+                    if (requestParameters != null && !requestParameters.isEmpty()) {
                         requestUrlBuilder.append("?");
 
-                        for (RequestParameterDto requestParameter : requestParameters) {
-                            requestUrlBuilder.append(requestParameter.getKey());
+                        JSONObject requestParametersObj = new JSONObject(requestParameters);
+                        JSONObject propertiesObj = requestParametersObj.getJSONObject("properties");
+
+                        Iterator<String> keys = propertiesObj.keys();
+
+                        while (keys.hasNext()) {
+                            String key = keys.next();
+                            String valueType = propertiesObj.getJSONObject(key).getString("type");
+
+                            requestUrlBuilder.append(key);
                             requestUrlBuilder.append('=');
 
-                            if (requestParameter.getType().equals("number")) {
+                            if (valueType.equals("number")) {
                                 requestUrlBuilder.append(50);
-                            } else if (requestParameter.getType().equals("string")) {
+                            } else if (valueType.equals("string")) {
                                 // TODO
                             }
 
