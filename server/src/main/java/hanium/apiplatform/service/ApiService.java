@@ -321,7 +321,7 @@ public class ApiService {
             String path = apiDto.getPath();
             String method = apiDto.getMethod();
             ArrayList<HeaderDto> headers = apiDto.getHeaders();
-            ArrayList<RequestParameterDto> requestParameters = apiDto.getRequestParameters();
+            String requestParameters = apiDto.getRequestParameter();
 
             Pair<Integer, String> result = requestApi(method, host, path, headers, requestParameters, apiKey);
 
