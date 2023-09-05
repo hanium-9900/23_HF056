@@ -3,7 +3,10 @@ package hanium.apiplatform.service;
 import hanium.apiplatform.dto.ResponseParameterDto;
 import hanium.apiplatform.entity.ResponseParameter;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -16,21 +19,37 @@ import java.util.List;
 public class ResponseParameterService {
     private final EntityManager em;
 
-    public List<ResponseParameterDto> updateResponseParameters(List<ResponseParameterDto> responseParameterDtos){
-        List<ResponseParameterDto> updatedResponseParameterDtos =
-                new ArrayList<>();
+    public String updateResponseParameter(String responseParametersJson) {
+        JSONArray responseParametersArray = new JSONArray(responseParametersJson);
+        List<ResponseParameterDto> updatedResponseParameterDtos = new ArrayList<>();
 
-        for (ResponseParameterDto responseParameterDto : responseParameterDtos){
-            ResponseParameter responseParameter = em.find(ResponseParameter.class, responseParameterDto.getId());
+        // 문자열 형태의 response parameter json schema를 JSON 형태로 변환하여 업데이트
+        for (int i = 0; i < responseParametersArray.length(); i++) {
+            JSONObject responseParameterObj = responseParametersArray.getJSONObject(i);
 
-            responseParameter.setDescription(responseParameterDto.getDescription());
-            responseParameter.setKey(responseParameterDto.getKey());
-            responseParameter.setType(responseParameterDto.getType());
-            responseParameter.setRequired(responseParameterDto.getRequired());
+            long responseId = responseParameterObj.getLong("id");
+            ResponseParameter responseParameter = em.find(ResponseParameter.class, responseId);
+
+            responseParameter.setDescription(responseParameterObj.getString("description"));
+            responseParameter.setKey(responseParameterObj.getString("key"));
+            responseParameter.setType(responseParameterObj.getString("type"));
+            responseParameter.setRequired(responseParameterObj.getInt("required"));
 
             updatedResponseParameterDtos.add(ResponseParameterDto.toDto(responseParameter));
         }
 
-        return updatedResponseParameterDtos;
+        // JSON 형태로 변환한 거 다시 문자열 형태로 변환
+        JSONArray updatedArray = new JSONArray();
+        for (ResponseParameterDto dto : updatedResponseParameterDtos) {
+            JSONObject dtoObject = new JSONObject();
+            dtoObject.put("id", dto.getId());
+            dtoObject.put("description", dto.getDescription());
+            dtoObject.put("key", dto.getKey());
+            dtoObject.put("type", dto.getType());
+            dtoObject.put("required", dto.getRequired());
+            updatedArray.put(dtoObject);
+        }
+
+        return updatedArray.toString();
     }
 }
