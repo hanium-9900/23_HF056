@@ -177,40 +177,18 @@ public class ApiService {
         String path = apiDto.getPath();
         String method = apiDto.getMethod();
         ArrayList<HeaderDto> headers = apiDto.getHeaders();
-        ArrayList<RequestParameterDto> requestParameters = apiDto.getRequestParameters();
+        String requestParameter = apiDto.getRequestParameter();
 
-        Pair<Integer, String> result = requestApi(method, host, path, headers, requestParameters, apiKey);
+        Pair<Integer, String> result = requestApi(method, host, path, headers, requestParameter, apiKey);
 
         int responseCode = result.left;
         String response = result.right;
 
         JSONObject jsonObject = new JSONObject(response);
+        JSONObject responseSchema = new JSONObject(apiDto.getResponseParameter());
 
-        ArrayList<ResponseParameterDto> responseParameters = apiDto.getResponseParameters();
-
-        if (responseCode >= 200 && responseCode < 300) {
-            for (ResponseParameterDto responseParameter : responseParameters) {
-                Iterator<String> itr = jsonObject.keys();
-                boolean match = false;
-                while (itr.hasNext()) {
-                    String key = itr.next();
-                    Object value = jsonObject.get(key);
-                    if (value instanceof Number) {
-                        if (responseParameter.getKey().equals(key) && responseParameter.getType().equals("number")) {
-                            match = true;
-                            break;
-                        }
-                    } else if (value instanceof String) {
-                        if (responseParameter.getKey().equals(key) && responseParameter.getType().equals("string")) {
-                            match = true;
-                            break;
-                        }
-                    }
-                }
-                if (!match) {
-                    return false;
-                }
-            }
+        if (responseCode >= 200 && responseCode < 300) {            
+            return JsonSchemaUtils.validateJsonAgainstSchema(jsonObject, responseSchema);
         }
         return true;
     }
