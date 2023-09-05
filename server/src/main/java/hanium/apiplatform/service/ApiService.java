@@ -1,6 +1,7 @@
 package hanium.apiplatform.service;
 
 import com.mysql.cj.conf.ConnectionUrlParser.Pair;
+
 import hanium.apiplatform.dto.*;
 import hanium.apiplatform.entity.Api;
 import hanium.apiplatform.entity.RequestParameter;
@@ -8,6 +9,7 @@ import hanium.apiplatform.exception.ApiNotFoundException;
 import hanium.apiplatform.exception.ConnectionRefusedException;
 import hanium.apiplatform.exception.OverLimitException;
 import hanium.apiplatform.repository.ApiRepository;
+import hanium.apiplatform.JsonSchemaUtils;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,12 +66,10 @@ public class ApiService {
             api.setPath(apiDto.getPath());
 
             List<HeaderDto> updatedHeaderDtos = headerService.updateHeaderInfos(apiDto.getHeaders());
-            List<RequestParameterDto> updatedRequestParameterDtos =
-                    requestParameterService.updateRequestParameters
-                            (apiDto.getRequestParameters());
-            List<ResponseParameterDto> updatedResponseParameterDtos =
-                    responseParameterService.updateResponseParameters
-                            (apiDto.getResponseParameters());
+
+            api.setRequestParameters(apiDto.getRequestParameter());
+            api.setResponseParameters(apiDto.getResponseParameter());
+
             List<ErrorCodeDto> updatedErrorCodeDtos =
                     errorCodeService.updateErrorCodes(apiDto.getErrorCodes());
 
@@ -81,8 +81,8 @@ public class ApiService {
             updatedDto.setMethod(api.getMethod());
             updatedDto.setPath(api.getPath());
             updatedDto.setHeaders((ArrayList<HeaderDto>) updatedHeaderDtos);
-            updatedDto.setRequestParameters((ArrayList<RequestParameterDto>) updatedRequestParameterDtos);
-            updatedDto.setResponseParameters((ArrayList<ResponseParameterDto>) updatedResponseParameterDtos);
+            updatedDto.setRequestParameters(api.getRequestParameters());
+            updatedDto.setResponseParameters(api.getResponseParameters());
             updatedDto.setErrorCodes((ArrayList<ErrorCodeDto>) updatedErrorCodeDtos);
             updatedDto.setLimitation(api.getLimitation());
 
