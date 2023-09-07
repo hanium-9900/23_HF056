@@ -3,7 +3,10 @@ package hanium.apiplatform.service;
 import hanium.apiplatform.dto.RequestParameterDto;
 import hanium.apiplatform.entity.RequestParameter;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -16,23 +19,37 @@ import java.util.List;
 public class RequestParameterService {
     private final EntityManager em;
 
-    public List<RequestParameterDto> updateRequestParameters
-            (List<RequestParameterDto> requestParameterDtos){
-        List<RequestParameterDto> updatedRequestParameterDtos
-                = new ArrayList<>();
+    public String updateRequestParameter(String requestParametersJson) {
+        JSONArray requestParametersArray = new JSONArray(requestParametersJson);
+        List<RequestParameterDto> updatedRequestParameterDtos = new ArrayList<>();
 
-        for (RequestParameterDto requestParameterDto : requestParameterDtos){
-            RequestParameter requestParameter
-                    = em.find(RequestParameter.class, requestParameterDto.getId());
+        // 문자열 형태의 request parameter json schema를 JSON 형태로 변환하여 업데이트
+        for (int i = 0; i < requestParametersArray.length(); i++) {
+            JSONObject requestParameterObj = requestParametersArray.getJSONObject(i);
 
-            requestParameter.setDescription(requestParameterDto.getDescription());
-            requestParameter.setKey(requestParameterDto.getKey());
-            requestParameter.setType(requestParameterDto.getType());
-            requestParameter.setRequired(requestParameterDto.getRequired());
+            long requestId = requestParameterObj.getLong("id");
+            RequestParameter requestParameter = em.find(RequestParameter.class, requestId);
+
+            requestParameter.setDescription(requestParameterObj.getString("description"));
+            requestParameter.setKey(requestParameterObj.getString("key"));
+            requestParameter.setType(requestParameterObj.getString("type"));
+            requestParameter.setRequired(requestParameterObj.getInt("required"));
 
             updatedRequestParameterDtos.add(RequestParameterDto.toDto(requestParameter));
         }
 
-        return updatedRequestParameterDtos;
+        // JSON 형태로 변환한 거 다시 문자열 형태로 변환
+        JSONArray updatedArray = new JSONArray();
+        for (RequestParameterDto dto : updatedRequestParameterDtos) {
+            JSONObject dtoObject = new JSONObject();
+            dtoObject.put("id", dto.getId());
+            dtoObject.put("description", dto.getDescription());
+            dtoObject.put("key", dto.getKey());
+            dtoObject.put("type", dto.getType());
+            dtoObject.put("required", dto.getRequired());
+            updatedArray.put(dtoObject);
+        }
+
+        return updatedArray.toString();
     }
 }

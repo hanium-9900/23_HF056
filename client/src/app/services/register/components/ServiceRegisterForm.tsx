@@ -38,20 +38,8 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
           description: h.description,
           required: h.required === 1,
         })) || [],
-      requestParameters:
-        api.requestParameters?.map(rq => ({
-          key: rq.key,
-          type: rq.type,
-          description: rq.description,
-          required: rq.required === 1,
-        })) || [],
-      responseParameters:
-        api.responseParameters?.map(rp => ({
-          key: rp.key,
-          type: rp.type,
-          description: rp.description,
-          required: rp.required === 1,
-        })) || [],
+      requestParameters: api.requestParameters || '',
+      responseParameters: api.responseParameters || '',
       errorCodes:
         api.errorCodes?.map(ec => ({
           statusCode: ec.statusCode,
@@ -74,8 +62,8 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
         description: '',
         limitation: -1,
         headers: [],
-        requestParameters: [],
-        responseParameters: [],
+        requestParameters: '',
+        responseParameters: '',
         errorCodes: [],
       },
     ]);
@@ -131,14 +119,8 @@ export default function ServiceRegisterForm({ service }: ServiceRegisterFormProp
           ...header,
           required: 1,
         })),
-        requestParameters: api.requestParameters.map(requestParameter => ({
-          ...requestParameter,
-          required: 1,
-        })),
-        responseParameters: api.responseParameters.map(responseParameter => ({
-          ...responseParameter,
-          required: 1,
-        })),
+        requestParameters: api.requestParameters,
+        responseParameters: api.responseParameters,
       })),
     };
 

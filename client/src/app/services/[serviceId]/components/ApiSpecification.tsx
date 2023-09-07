@@ -59,14 +59,16 @@ export default function ApiSpecification({ serviceId, api }: { serviceId: number
             </tr>
           </thead>
           <tbody>
-            {api.requestParameters.map((param, idx) => (
+            {/* [TODO] parse and display based on json schema */}
+            {JSON.stringify(JSON.parse(api.requestParameters), undefined, 2)}
+            {/* {api.requestParameters.map((param, idx) => (
               <tr key={idx}>
                 <td>{param.required ? 'required' : 'optional'}</td>
                 <td>{param.key}</td>
                 <td>{param.type}</td>
                 <td>{param.description}</td>
               </tr>
-            ))}
+            ))} */}
           </tbody>
         </table>
       </div>
@@ -91,14 +93,16 @@ export default function ApiSpecification({ serviceId, api }: { serviceId: number
             </tr>
           </thead>
           <tbody>
-            {api.responseParameters.map((param, idx) => (
+            {/* [TODO] parse and display based on json schema */}
+            {JSON.stringify(JSON.parse(api.responseParameters), undefined, 2)}
+            {/* {api.responseParameters.map((param, idx) => (
               <tr key={idx}>
                 <td>{param.required ? 'required' : 'optional'}</td>
                 <td>{param.key}</td>
                 <td>{param.type}</td>
                 <td>{param.description}</td>
               </tr>
-            ))}
+            ))} */}
           </tbody>
         </table>
       </div>
