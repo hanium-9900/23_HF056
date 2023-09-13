@@ -3,8 +3,6 @@ package hanium.apiplatform.entity;
 import hanium.apiplatform.dto.ApiDto;
 import hanium.apiplatform.dto.ErrorCodeDto;
 import hanium.apiplatform.dto.HeaderDto;
-import hanium.apiplatform.dto.RequestParameterDto;
-import hanium.apiplatform.dto.ResponseParameterDto;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -48,10 +46,10 @@ public class Api {
     @OneToMany(mappedBy = "api", cascade = CascadeType.ALL)
     private List<Header> headers = new ArrayList<>();
 
-    @Column
+    @Column(length = 1000)
     private String requestParameters;
 
-    @Column
+    @Column(length = 1000)
     private String responseParameters;
 
     @OneToMany(mappedBy = "api", cascade = CascadeType.ALL)
@@ -103,7 +101,7 @@ public class Api {
     public static ArrayList<Api> toEntity(ArrayList<ApiDto> apiDtos) {
         ArrayList<Api> apis = new ArrayList<>();
 
-        for(ApiDto apiDto : apiDtos){
+        for (ApiDto apiDto : apiDtos) {
             Api api = new Api();
 
             api.setHost(apiDto.getHost());

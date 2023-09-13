@@ -1,6 +1,9 @@
 import express from 'express';
+import morgan from 'morgan';
 
 const app = express();
+
+app.use(morgan('tiny'));
 
 const weatherData = {
   date: '2023-06-23',
