@@ -1,4 +1,3 @@
-import './page.css';
 import ApiPurchaseButton from './components/ApiPurchaseButton';
 import Link from 'next/link';
 
@@ -21,7 +20,7 @@ export default async function ServiceInfoPage({ params }: { params: { serviceId:
       const { data } = await api.services.getServiceKey(serviceId);
       serviceKey = data;
     } catch (e) {
-      console.log((e as any).response.data);
+      serviceKey = null;
     }
   }
 

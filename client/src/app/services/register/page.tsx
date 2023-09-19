@@ -1,4 +1,3 @@
-import './page.css';
 import ServiceRegisterForm from './components/ServiceRegisterForm';
 
 export default async function Register() {
