@@ -1,7 +1,6 @@
+@import '../../styles/antd.scss';
+@import '../../styles/json-schema-editor.scss';
 .json-schema-editor-container {
-  @import '../../styles/antd.scss';
-  @import '../../styles/json-schema-editor.scss';
-
   .json-schema-react-editor > .import-json-button {
     display: none;
   }
