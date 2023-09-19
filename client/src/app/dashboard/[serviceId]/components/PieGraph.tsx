@@ -13,27 +13,30 @@ const ResponsivePie = dynamic(() => import('@nivo/pie').then(m => m.ResponsivePi
 // website examples showcase many properties,
 // you'll often use just a few of them.
 export default function PieGraph({ statistics /* see data tab */ }: { statistics: ServiceStatisticsResponse[] }) {
-  const mergedStatistics = statistics.reduce((acc, cur) => {
-    const key = `[${cur.method}] ${cur.path}`;
-    if (!acc[key]) {
-      acc[key] = {
-        api_id: cur.api_id,
-        method: cur.method,
-        path: cur.path,
-        count: cur.count,
+  const mergedStatistics = statistics.reduce(
+    (acc, cur) => {
+      const key = `[${cur.method}] ${cur.path}`;
+      if (!acc[key]) {
+        acc[key] = {
+          api_id: cur.api_id,
+          method: cur.method,
+          path: cur.path,
+          count: cur.count,
+        };
+      } else {
+        acc[key].count += cur.count;
+      }
+      return acc;
+    },
+    {} as {
+      [key: string]: {
+        api_id: number;
+        method: string;
+        path: string;
+        count: number;
       };
-    } else {
-      acc[key].count += cur.count;
     }
-    return acc;
-  }, {} as {
-    [key: string]: {
-      api_id: number;
-      method: string;
-      path: string;
-      count: number;
-    };
-  });
+  );
 
   const data: { id: string; label?: string; value: number; color?: string }[] = Object.entries(mergedStatistics).map(([key, s]) => ({
     id: key,

@@ -1,19 +1,21 @@
-'use client'
+'use client';
 
-import { useState } from "react";
-import JsonSchemaEditor from "../components/JsonSchemaEditor";
-import JsonSchemaSpec from "../components/JsonSchemaSpec";
+import { useState } from 'react';
+import JsonSchemaEditor from '../components/JsonSchemaEditor';
+import JsonSchemaSpec from '../components/JsonSchemaSpec';
 
 export default function Page() {
-  const [schema, setSchema] = useState<any>(null)
+  const [schema, setSchema] = useState<any>(null);
 
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-6">
-        <JsonSchemaEditor onChange={(e) => {
-          const schema = JSON.parse(e)
-          setSchema(schema)
-        }} />
+        <JsonSchemaEditor
+          onChange={e => {
+            const schema = JSON.parse(e);
+            setSchema(schema);
+          }}
+        />
       </div>
       {schema && (
         <div>
@@ -24,6 +26,6 @@ export default function Page() {
           <JsonSchemaSpec schema={schema} />
         </div>
       )}
-    </div >
-  )
+    </div>
+  );
 }
