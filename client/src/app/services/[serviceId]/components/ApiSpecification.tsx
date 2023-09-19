@@ -1,7 +1,7 @@
 import { ServiceResponse } from '@/api';
 import JsonSchemaSpec from '@/app/components/JsonSchemaSpec';
 
-export default function ApiSpecification({ serviceId, api }: { serviceId: number, api: ServiceResponse['apis'][number] }) {
+export default function ApiSpecification({ serviceId, api }: { serviceId: number; api: ServiceResponse['apis'][number] }) {
   const proxyUrl = `${process.env.NEXT_PUBLIC_PROXY_BASEURL}/services/${serviceId}${api.path}`;
 
   return (
@@ -36,6 +36,11 @@ export default function ApiSpecification({ serviceId, api }: { serviceId: number
                 <td>{header.description}</td>
               </tr>
             ))}
+            {api.headers.length === 0 && (
+              <tr>
+                <td colSpan={3}>헤더 정보가 없습니다.</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
@@ -70,6 +75,11 @@ export default function ApiSpecification({ serviceId, api }: { serviceId: number
                 <td>{errorCode.description}</td>
               </tr>
             ))}
+            {api.errorCodes.length === 0 && (
+              <tr>
+                <td colSpan={2}>에러 코드 정보가 없습니다.</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
