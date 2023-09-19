@@ -105,7 +105,7 @@ function JsonSchemaTable({ schema, required = false, propertyKey = '응답' }: {
         </div>
         <table>
           <thead>
-            <tr>
+            <tr className="bg-slate-50 border-slate-300 border">
               <th>필수</th>
               <th>키</th>
               <th>이름</th>
