@@ -11,3 +11,6 @@
 | 팀원 | 변찬혁 |
 | 팀원 | 송민하 |
 | 팀원 | 이승헌 |
+
+## Connect to AWS EC2
+`ssh -i "ssh_key.pem" ubuntu@ec2-3-34-215-14.ap-northeast-2.compute.amazonaws.com`
