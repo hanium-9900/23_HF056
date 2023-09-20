@@ -197,6 +197,12 @@ export const api = {
     purchasedList() {
       return axios.get<ServiceResponse[]>('/services/purchased');
     },
+    /**
+     * 서비스 상태 조회
+     */
+    status(serviceId: number) {
+      return axios.get<boolean>(`/services/${serviceId}/status`);
+    },
   },
   /**
    * 에러 로그

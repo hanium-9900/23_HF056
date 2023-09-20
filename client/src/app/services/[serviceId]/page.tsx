@@ -6,6 +6,7 @@ import ServiceDeleteButton from './components/ServiceDeleteButton';
 import ApiSpecificationSelector from './components/ApiSpecificationSelector';
 import { getServerSession } from 'next-auth';
 import ApiReportButton from './components/ApiReportButton';
+import ServiceStatus from '@/app/components/ServiceStatus';
 
 export default async function ServiceInfoPage({ params }: { params: { serviceId: string } }) {
   const session = await getServerSession();
@@ -31,7 +32,10 @@ export default async function ServiceInfoPage({ params }: { params: { serviceId:
         <div className="mb-8">
           <div className="text-blue-500 mb-1">{service.category}</div>
           <div className="flex items-center justify-between text-3xl font-bold">
-            <span>{service.title}</span>
+            <span className='inline-flex'>
+              {service.title}
+              <ServiceStatus serviceId={service.id} />
+            </span>
             <span className="text-blue-500">{service.price.toLocaleString()} &#8361;</span>
           </div>
         </div>
