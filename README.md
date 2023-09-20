@@ -44,6 +44,24 @@ cd server/
 ./restart.sh
 ```
 
+### API Proxy Server
+
+``` bash
+cd proxy-api-server/
+
+# kill current process using 8090 port
+# and start spring boot application
+./restart.sh
+```
+
+### Mock API Server
+
+``` bash
+cd mock-api-server/
+
+node app.js
+```
+
 ## Connect to AWS EC2
 `ssh -i "ssh_key.pem" ubuntu@ec2-3-34-215-14.ap-northeast-2.compute.amazonaws.com`
 
