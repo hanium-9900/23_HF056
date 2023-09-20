@@ -1,6 +1,7 @@
 package hanium.apiplatform.service;
 
 import com.mysql.cj.conf.ConnectionUrlParser.Pair;
+
 import hanium.apiplatform.dto.*;
 import hanium.apiplatform.entity.Api;
 import hanium.apiplatform.entity.RequestParameter;
@@ -8,6 +9,7 @@ import hanium.apiplatform.exception.ApiNotFoundException;
 import hanium.apiplatform.exception.ConnectionRefusedException;
 import hanium.apiplatform.exception.OverLimitException;
 import hanium.apiplatform.repository.ApiRepository;
+import hanium.apiplatform.JsonSchemaUtils;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,12 +66,10 @@ public class ApiService {
             api.setPath(apiDto.getPath());
 
             List<HeaderDto> updatedHeaderDtos = headerService.updateHeaderInfos(apiDto.getHeaders());
-            List<RequestParameterDto> updatedRequestParameterDtos =
-                    requestParameterService.updateRequestParameters
-                            (apiDto.getRequestParameters());
-            List<ResponseParameterDto> updatedResponseParameterDtos =
-                    responseParameterService.updateResponseParameters
-                            (apiDto.getResponseParameters());
+
+            api.setRequestParameters(apiDto.getRequestParameter());
+            api.setResponseParameters(apiDto.getResponseParameter());
+
             List<ErrorCodeDto> updatedErrorCodeDtos =
                     errorCodeService.updateErrorCodes(apiDto.getErrorCodes());
 
@@ -81,8 +81,8 @@ public class ApiService {
             updatedDto.setMethod(api.getMethod());
             updatedDto.setPath(api.getPath());
             updatedDto.setHeaders((ArrayList<HeaderDto>) updatedHeaderDtos);
-            updatedDto.setRequestParameters((ArrayList<RequestParameterDto>) updatedRequestParameterDtos);
-            updatedDto.setResponseParameters((ArrayList<ResponseParameterDto>) updatedResponseParameterDtos);
+            updatedDto.setRequestParameters(api.getRequestParameters());
+            updatedDto.setResponseParameters(api.getResponseParameters());
             updatedDto.setErrorCodes((ArrayList<ErrorCodeDto>) updatedErrorCodeDtos);
             updatedDto.setLimitation(api.getLimitation());
 
@@ -93,7 +93,7 @@ public class ApiService {
     }
 
     private Pair<Integer, String> requestApi(String method, String host, String path, ArrayList<HeaderDto> headers,
-                                             ArrayList<RequestParameterDto> requestParameters, String apiKey) throws IOException {
+                                             String requestParameters, String apiKey) throws IOException {
 
         int responseCode = 0;
         String response = null;
@@ -107,16 +107,24 @@ public class ApiService {
                         // TODO
                     }
 
-                    if (!requestParameters.isEmpty()) {
+                    if (requestParameters != null && !requestParameters.isEmpty()) {
                         requestUrlBuilder.append("?");
 
-                        for (RequestParameterDto requestParameter : requestParameters) {
-                            requestUrlBuilder.append(requestParameter.getKey());
+                        JSONObject requestParametersObj = new JSONObject(requestParameters);
+                        JSONObject propertiesObj = requestParametersObj.getJSONObject("properties");
+
+                        Iterator<String> keys = propertiesObj.keys();
+
+                        while (keys.hasNext()) {
+                            String key = keys.next();
+                            String valueType = propertiesObj.getJSONObject(key).getString("type");
+
+                            requestUrlBuilder.append(key);
                             requestUrlBuilder.append('=');
 
-                            if (requestParameter.getType().equals("number")) {
+                            if (valueType.equals("number")) {
                                 requestUrlBuilder.append(50);
-                            } else if (requestParameter.getType().equals("string")) {
+                            } else if (valueType.equals("string")) {
                                 // TODO
                             }
 
@@ -169,40 +177,18 @@ public class ApiService {
         String path = apiDto.getPath();
         String method = apiDto.getMethod();
         ArrayList<HeaderDto> headers = apiDto.getHeaders();
-        ArrayList<RequestParameterDto> requestParameters = apiDto.getRequestParameters();
+        String requestParameter = apiDto.getRequestParameter();
 
-        Pair<Integer, String> result = requestApi(method, host, path, headers, requestParameters, apiKey);
+        Pair<Integer, String> result = requestApi(method, host, path, headers, requestParameter, apiKey);
 
         int responseCode = result.left;
         String response = result.right;
 
         JSONObject jsonObject = new JSONObject(response);
+        JSONObject responseSchema = new JSONObject(apiDto.getResponseParameter());
 
-        ArrayList<ResponseParameterDto> responseParameters = apiDto.getResponseParameters();
-
-        if (responseCode >= 200 && responseCode < 300) {
-            for (ResponseParameterDto responseParameter : responseParameters) {
-                Iterator<String> itr = jsonObject.keys();
-                boolean match = false;
-                while (itr.hasNext()) {
-                    String key = itr.next();
-                    Object value = jsonObject.get(key);
-                    if (value instanceof Number) {
-                        if (responseParameter.getKey().equals(key) && responseParameter.getType().equals("number")) {
-                            match = true;
-                            break;
-                        }
-                    } else if (value instanceof String) {
-                        if (responseParameter.getKey().equals(key) && responseParameter.getType().equals("string")) {
-                            match = true;
-                            break;
-                        }
-                    }
-                }
-                if (!match) {
-                    return false;
-                }
-            }
+        if (responseCode >= 200 && responseCode < 300) {            
+            return JsonSchemaUtils.validateJsonAgainstSchema(jsonObject, responseSchema);
         }
         return true;
     }
@@ -335,7 +321,7 @@ public class ApiService {
             String path = apiDto.getPath();
             String method = apiDto.getMethod();
             ArrayList<HeaderDto> headers = apiDto.getHeaders();
-            ArrayList<RequestParameterDto> requestParameters = apiDto.getRequestParameters();
+            String requestParameters = apiDto.getRequestParameter();
 
             Pair<Integer, String> result = requestApi(method, host, path, headers, requestParameters, apiKey);
 

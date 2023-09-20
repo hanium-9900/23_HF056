@@ -3,8 +3,6 @@ package hanium.apiplatform.entity;
 import hanium.apiplatform.dto.ApiDto;
 import hanium.apiplatform.dto.ErrorCodeDto;
 import hanium.apiplatform.dto.HeaderDto;
-import hanium.apiplatform.dto.RequestParameterDto;
-import hanium.apiplatform.dto.ResponseParameterDto;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -48,11 +46,11 @@ public class Api {
     @OneToMany(mappedBy = "api", cascade = CascadeType.ALL)
     private List<Header> headers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "api", cascade = CascadeType.ALL)
-    private List<RequestParameter> RequestParameters = new ArrayList<>();
+    @Column(length = 1000)
+    private String requestParameters;
 
-    @OneToMany(mappedBy = "api", cascade = CascadeType.ALL)
-    private List<ResponseParameter> responseParameters = new ArrayList<>();
+    @Column(length = 1000)
+    private String responseParameters;
 
     @OneToMany(mappedBy = "api", cascade = CascadeType.ALL)
     private List<ErrorCode> errorCodes = new ArrayList<>();
@@ -86,25 +84,8 @@ public class Api {
             api.addHeader(header);
         }
 
-        for (RequestParameterDto requestParameterDto : apiDto.getRequestParameters()) {
-            RequestParameter requestParameter = new RequestParameter();
-            requestParameter.setDescription(requestParameterDto.getDescription());
-            requestParameter.setKey(requestParameterDto.getKey());
-            requestParameter.setType(requestParameterDto.getType());
-            requestParameter.setRequired(requestParameterDto.getRequired());
-
-            api.addRequestParameter(requestParameter);
-        }
-
-        for (ResponseParameterDto responseParameterDto : apiDto.getResponseParameters()) {
-            ResponseParameter responseParameter = new ResponseParameter();
-            responseParameter.setDescription(responseParameterDto.getDescription());
-            responseParameter.setKey(responseParameterDto.getKey());
-            responseParameter.setType(responseParameterDto.getType());
-            responseParameter.setRequired(responseParameterDto.getRequired());
-
-            api.addResponseParameter(responseParameter);
-        }
+        api.setRequestParameters((apiDto.getRequestParameter()));
+        api.setResponseParameters((apiDto.getResponseParameter()));
 
         for (ErrorCodeDto errorCodeDto : apiDto.getErrorCodes()) {
             ErrorCode errorCode = new ErrorCode();
@@ -120,7 +101,7 @@ public class Api {
     public static ArrayList<Api> toEntity(ArrayList<ApiDto> apiDtos) {
         ArrayList<Api> apis = new ArrayList<>();
 
-        for(ApiDto apiDto : apiDtos){
+        for (ApiDto apiDto : apiDtos) {
             Api api = new Api();
 
             api.setHost(apiDto.getHost());
@@ -139,25 +120,8 @@ public class Api {
                 api.addHeader(header);
             }
 
-            for (RequestParameterDto requestParameterDto : apiDto.getRequestParameters()) {
-                RequestParameter requestParameter = new RequestParameter();
-                requestParameter.setDescription(requestParameterDto.getDescription());
-                requestParameter.setKey(requestParameterDto.getKey());
-                requestParameter.setType(requestParameterDto.getType());
-                requestParameter.setRequired(requestParameterDto.getRequired());
-
-                api.addRequestParameter(requestParameter);
-            }
-
-            for (ResponseParameterDto responseParameterDto : apiDto.getResponseParameters()) {
-                ResponseParameter responseParameter = new ResponseParameter();
-                responseParameter.setDescription(responseParameterDto.getDescription());
-                responseParameter.setKey(responseParameterDto.getKey());
-                responseParameter.setType(responseParameterDto.getType());
-                responseParameter.setRequired(responseParameterDto.getRequired());
-
-                api.addResponseParameter(responseParameter);
-            }
+            api.setRequestParameters((apiDto.getRequestParameter()));
+            api.setResponseParameters((apiDto.getResponseParameter()));
 
             for (ErrorCodeDto errorCodeDto : apiDto.getErrorCodes()) {
                 ErrorCode errorCode = new ErrorCode();
@@ -176,16 +140,6 @@ public class Api {
     public void addHeader(Header header) {
         this.headers.add(header);
         header.updateApi(this);
-    }
-
-    public void addRequestParameter(RequestParameter parameter) {
-        this.RequestParameters.add(parameter);
-        parameter.updateApi(this);
-    }
-
-    public void addResponseParameter(ResponseParameter responseParameter) {
-        this.responseParameters.add(responseParameter);
-        responseParameter.updateApi(this);
     }
 
     public void addErrorCode(ErrorCode errorCode) {

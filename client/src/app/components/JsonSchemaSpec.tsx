@@ -66,22 +66,22 @@ type JsonSchemaRoot = JsonSchemaInteger | JsonSchemaNumber | JsonSchemaString | 
 
 function getArrayDisplayName(schema: JsonSchemaArray): string {
   if (schema.items.type === 'object') {
-    return `${schema.items.title || '(이름 없음)'}[]`
+    return `${schema.items.title || '(이름 없음)'}[]`;
   } else if (schema.items.type === 'array') {
-    return getArrayDisplayName(schema.items) + '[]'
+    return getArrayDisplayName(schema.items) + '[]';
   } else {
-    return `${schema.items.type}[]`
+    return `${schema.items.type}[]`;
   }
 }
 
-function JsonSchemaRow({ schema, required = false, propertyKey }: { schema: JsonSchemaRoot, required?: boolean, propertyKey: string }) {
+function JsonSchemaRow({ schema, required = false, propertyKey }: { schema: JsonSchemaRoot; required?: boolean; propertyKey: string }) {
   const displayName = schema.title || propertyKey;
 
   let displayType: string = schema.type;
   if (schema.type === 'object') {
-    displayType = `${displayName}`
+    displayType = `${displayName}`;
   } else if (schema.type === 'array') {
-    displayType = getArrayDisplayName(schema)
+    displayType = getArrayDisplayName(schema);
   }
 
   return (
@@ -92,10 +92,10 @@ function JsonSchemaRow({ schema, required = false, propertyKey }: { schema: Json
       <td>{displayType}</td>
       <td>{schema.description ?? '(설명 없음)'}</td>
     </tr>
-  )
+  );
 }
 
-function JsonSchemaTable({ schema, required = false, propertyKey = '응답' }: { schema: JsonSchemaObject, required?: boolean, propertyKey?: string }) {
+function JsonSchemaTable({ schema, required = false, propertyKey = '응답' }: { schema: JsonSchemaObject; required?: boolean; propertyKey?: string }) {
   return (
     <>
       <div className="mb-7">
@@ -105,7 +105,7 @@ function JsonSchemaTable({ schema, required = false, propertyKey = '응답' }: {
         </div>
         <table>
           <thead>
-            <tr>
+            <tr className="bg-slate-50 border-slate-300 border">
               <th>필수</th>
               <th>키</th>
               <th>이름</th>
@@ -121,23 +121,23 @@ function JsonSchemaTable({ schema, required = false, propertyKey = '응답' }: {
         </table>
       </div>
       {/* [TODO] 다연속 Array 제대로 재귀적으로 처리 */}
-      {Object.keys(schema.properties).filter(key => {
-        const prop = schema.properties[key];
-        return (
-          prop.type === 'object'
-          || (prop.type === 'array' && prop.items.type === 'object')
-        )
-      }).map<[string, JsonSchemaObject]>(key => {
-        const prop = schema.properties[key] as JsonSchemaObject | JsonSchemaArray;
-        if (prop.type === 'array') {
-          return [getArrayDisplayName(prop).replaceAll('[]', ''), prop.items as JsonSchemaObject];
-        }
-        return [key, prop];
-      }).map(([key, obj]) => (
-        <JsonSchemaTable schema={obj} propertyKey={obj.title || key} key={key} required={schema.required?.includes(key)} />
-      ))}
+      {Object.keys(schema.properties)
+        .filter(key => {
+          const prop = schema.properties[key];
+          return prop.type === 'object' || (prop.type === 'array' && prop.items.type === 'object');
+        })
+        .map<[string, JsonSchemaObject]>(key => {
+          const prop = schema.properties[key] as JsonSchemaObject | JsonSchemaArray;
+          if (prop.type === 'array') {
+            return [getArrayDisplayName(prop).replaceAll('[]', ''), prop.items as JsonSchemaObject];
+          }
+          return [key, prop];
+        })
+        .map(([key, obj]) => (
+          <JsonSchemaTable schema={obj} propertyKey={obj.title || key} key={key} required={schema.required?.includes(key)} />
+        ))}
     </>
-  )
+  );
 }
 
 export default function JsonSchemaSpec({ schema }: { schema: JsonSchemaRoot }) {
@@ -148,8 +148,6 @@ export default function JsonSchemaSpec({ schema }: { schema: JsonSchemaRoot }) {
       </div>
     );
   } else {
-    return (
-      <div>아직 지원하지 않는 Schema(루트가 Object가 아닌 경우)</div>
-    )
+    return <div>아직 지원하지 않는 Schema(루트가 Object가 아닌 경우)</div>;
   }
 }
