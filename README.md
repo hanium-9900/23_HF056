@@ -12,6 +12,38 @@
 | 팀원 | 송민하 |
 | 팀원 | 이승헌 |
 
+## Installation
+
+### Frontend
+
+``` bash
+cd client/
+
+npm install
+
+# copy sample .env
+cp .env.example .env
+# edit environment variables
+vi .env
+
+# start development build (watching)
+npm run dev
+# or start production build
+npm run start
+# or using pm2
+pm2 start ecosystem.config.js
+```
+
+### Backend
+
+``` bash
+cd server/
+
+# kill current process using 8080 port
+# and start spring boot application
+./restart.sh
+```
+
 ## Connect to AWS EC2
 `ssh -i "ssh_key.pem" ubuntu@ec2-3-34-215-14.ap-northeast-2.compute.amazonaws.com`
 
