@@ -1,6 +1,9 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 export default function Home() {
+  redirect('/services');
+
   return (
     <main className="py-10 text-center">
       <div className="text-xl mb-10">메인페이지(미구현)</div>
