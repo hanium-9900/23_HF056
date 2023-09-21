@@ -15,7 +15,7 @@ export default function ApiLimit({ api, usage }: { api: ServiceResponse['apis'][
             className="absolute top-0 left-0 h-full font-bold text-sm bg-blue-500 text-white rounded-full flex items-center justify-end"
             style={{ width: `${rate}%` }}
           >
-            <div className="pr-3">{rate}%</div>
+            <div className="pr-3">{rate.toFixed(2)}%</div>
           </div>
         </div>
         <div className="flex items-center">
