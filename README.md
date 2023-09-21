@@ -63,7 +63,18 @@ node app.js
 ```
 
 ## Connect to AWS EC2
-`ssh -i "ssh_key.pem" ubuntu@ec2-3-34-215-14.ap-northeast-2.compute.amazonaws.com`
+### ApiPlatform instance
+```bash
+ssh -i "ssh_key.pem" ubuntu@ec2-3-34-215-14.ap-northeast-2.compute.amazonaws.com`
+```
+### proxy-api-server-1
+```bash
+ssh -i "proxy-api-server-key.pem" ubuntu@ec2-43-201-165-63.ap-northeast-2.compute.amazonaws.com
+```
+### proxy-api-server-2
+```bash
+ssh -i "proxy-api-server-key.pem" ubuntu@ec2-3-37-40-61.ap-northeast-2.compute.amazonaws.com
+```
 
 ## How to use locust base load test
 1. Check your python version is 2.7 or later than 3.3
@@ -76,6 +87,8 @@ node app.js
 5-1. Test for api-platform server: `python -m locust -f locustfile_apiplatform.py`  
 5-2. Test for api-platform server: `python -m locust -f locustfile_proxyapiserver.py`  
 6. If you successfully wrote your locust python script, you can see messages like capture below  
->`[date time] {user}/INFO/locust.main: Starting web interface at http://0.0.0.0:8089 (accepting connections from all network interfaces)`  
-`[date time] {user}/INFO/locust.main: Starting Locust 2.16.1`    
-for more information, you can check https://locust.io/
+    ```bash
+    [date time] {user}/INFO/locust.main: Starting web interface at http://0.0.0.0:8089 (accepting connections from all network interfaces)
+    [date time] {user}/INFO/locust.main: Starting Locust 2.16.1`
+    ```
+    for more information, you can check https://locust.io/
