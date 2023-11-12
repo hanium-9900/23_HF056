@@ -88,7 +88,7 @@
 | 팀장 | 박성준   |Frontend|https://github.com/SJ-PARKs|
 | 팀원 | 박민제   |Backend |https://github.com/Park-MinJe|
 | 팀원 | 변찬혁   |Frontend|https://github.com/BIsue|
-| 팀원 | 송민하   |Frontend, Backend||
+| 팀원 | 송민하   |Frontend, Backend|https://github.com/sminha|
 | 팀원 | 이승헌   |Backend|https://github.com/seungheonL|
 
 <!-- ABOUT THE PROJECT -->
